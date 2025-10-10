@@ -12,3 +12,6 @@ Investigated backend technologies: Node.js/Express vs Django vs Ruby on Rails. C
 
 04/10/2025
 Studied TfL Unified API documentation. Reviewed available endpoints for journey planning, service disruptions, and station information. Noted rate limiting considerations (500 requests/minute). Registered for API key.
+
+05/10/2025
+Researched Square Payment API integration. Examined tokenization workflow and PCI compliance requirements. Reviewed sandbox environment setup procedures. Downloaded sample code for payment processing.
