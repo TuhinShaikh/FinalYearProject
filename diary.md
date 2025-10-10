@@ -9,3 +9,6 @@ Researched React vs Angular vs Vue.js for frontend framework selection. Examined
 
 03/10/2025
 Investigated backend technologies: Node.js/Express vs Django vs Ruby on Rails. Compared async capabilities, API development ease, and scalability. Node.js appears most suitable for real-time features required in this project.
+
+04/10/2025
+Studied TfL Unified API documentation. Reviewed available endpoints for journey planning, service disruptions, and station information. Noted rate limiting considerations (500 requests/minute). Registered for API key.
