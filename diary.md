@@ -24,6 +24,9 @@ Drafted project plan document. Wrote abstract outlining project goals, main/seco
 08/10/2025
 Finalized project plan including bibliography with TfL resources, accessibility standards, and web development references. Added acronyms and glossary sections. Reviewed plan for completeness before submission.
 
+09/10/2025
+Initialized Maven project structure for backend. Set up Git repository and pushed initial commit to GitHub. Created .gitignore file. Configured basic project dependencies in pom.xml. Started technology comparison matrix for Week 2 deliverable.
+
 
 
 
