@@ -15,3 +15,6 @@ Studied TfL Unified API documentation. Reviewed available endpoints for journey 
 
 05/10/2025
 Researched Square Payment API integration. Examined tokenization workflow and PCI compliance requirements. Reviewed sandbox environment setup procedures. Downloaded sample code for payment processing.
+
+06/10/2025
+Deep dive into WCAG 2.1 accessibility guidelines. Focused on Level AA compliance requirements: color contrast ratios, keyboard navigation, ARIA labels, and screen reader compatibility. Installed WAVE and axe DevTools for testing.
