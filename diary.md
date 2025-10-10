@@ -20,3 +20,11 @@ Researched Square Payment API integration. Examined tokenization workflow and PC
 Deep dive into WCAG 2.1 accessibility guidelines. Focused on Level AA compliance requirements: color contrast ratios, keyboard navigation, ARIA labels, and screen reader compatibility. Installed WAVE and axe DevTools for testing.
 07/10/2025
 Drafted project plan document. Wrote abstract outlining project goals, main/secondary objectives, and advanced features. Completed timeline breakdown for Term 1 with weekly milestones. Identified risks and mitigation strategies.
+
+08/10/2025
+Finalized project plan including bibliography with TfL resources, accessibility standards, and web development references. Added acronyms and glossary sections. Reviewed plan for completeness before submission.
+
+
+
+
+
