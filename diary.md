@@ -28,7 +28,7 @@ Finalized project plan including bibliography with TfL resources, accessibility 
 Initialized Maven project structure for backend. Set up Git repository and pushed initial commit to GitHub. Created .gitignore file. Configured basic project dependencies in pom.xml. Started technology comparison matrix for Week 2 deliverable.
 
 10/10/2025
-Added in the project plan and key featues in the term planning stage.
+
 
 
 
