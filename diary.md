@@ -49,4 +49,7 @@ Implemented Observer design pattern for real-time notification system. Created O
 16/10/2025
 Designed and coded SVG-based UML class diagram to visualize system architecture. Diagram includes core entities (User, Booking, Payment, TransportRoute, ParkingSpot) and relationships (composition, association, inheritance). Saved diagram as architecture.svg and added to project repository. Validated rendering in browser and documented design rationale.
 
+17/10/2025
+Refactored backend modules to align with Observer pattern. Integrated ObserverManager.notify() into booking confirmation logic. Added unit tests for observer registration and message dispatch. Committed changes to add-svg branch and pushed with upstream tracking. Updated README with architectural diagram and design pattern explanation.
+
 
