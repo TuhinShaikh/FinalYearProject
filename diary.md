@@ -44,7 +44,7 @@ Drafted N-tier architecture diagram showing clear separation: Presentation Layer
 Completed technology stack comparison report (Week 2 deliverable). Wrote software engineering justification for selected technologies: React for reactive UI, Node.js for async operations, PostgreSQL for ACID compliance, Redis for caching. Included performance benchmarks and scalability considerations. Committed all documentation to GitHub.
 
 15/10/2025
-Implemented Observer design pattern for real-time notification system. Created Observer interface and concrete classes: UserObserver and NotificationObserver. Developed ObserverManager singleton to manage subscriptions and dispatch updates. Verified pattern integration with booking workflow using mock data
+Installed PostgreSQL locally and configured development environment. Created initial database named stadium_parking_db. Set up connection pooling configuration. Tested database connectivity from Node.js application.
 
 16/10/2025
 Designed and coded SVG-based UML class diagram to visualize system architecture. Diagram includes core entities (User, Booking, Payment, TransportRoute, ParkingSpot) and relationships (composition, association, inheritance). Saved diagram as architecture.svg and added to project repository. Validated rendering in browser and documented design rationale.
