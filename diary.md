@@ -58,4 +58,8 @@ Implemented Bookings table with proper foreign key relationships to Users and Pa
 19/10/2025
 Created Payments table linked to Bookings: payment_id (UUID), booking_id (FK), amount, square_token, payment_status (ENUM: pending/completed/failed/refunded), processed_at timestamp. Ensured one-to-one relationship with Bookings table.
 
+20/10/2025
+Implemented AccessibilityPreferences table: user_id (FK to Users), needs_step_free (boolean), has_blue_badge (boolean), needs_audio_navigation (boolean), high_contrast_mode (boolean), preferred_text_size (ENUM). Created one-to-one relationship with Users.
 
+21/10/2025
+Started user authentication system. Installed bcrypt for password hashing. Implemented user registration endpoint (POST /api/auth/register) with validation: email format check, password strength requirements (min 8 chars, uppercase, lowercase, number), duplicate email prevention. Successfully tested registration with Postman.
