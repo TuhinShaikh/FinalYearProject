@@ -63,3 +63,6 @@ Implemented AccessibilityPreferences table: user_id (FK to Users), needs_step_fr
 
 21/10/2025
 Started user authentication system. Installed bcrypt for password hashing. Implemented user registration endpoint (POST /api/auth/register) with validation: email format check, password strength requirements (min 8 chars, uppercase, lowercase, number), duplicate email prevention. Successfully tested registration with Postman.
+
+22/10/2025
+Completed login authentication endpoint (POST /api/auth/login). Implemented JWT token generation with 15-minute expiration for access tokens and 7-day expiration for refresh tokens. Created middleware for token verification. Added password comparison using bcrypt. Tested complete auth flow: register → login → access protected route. Committed authentication system to GitHub with comprehensive commit message.
