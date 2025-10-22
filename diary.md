@@ -52,3 +52,10 @@ Began implementing database schema. Created Users table with fields: user_id (UU
 17/10/2025
 Created ParkingSpots table with fields: spot_id (UUID), spot_number (unique), type (ENUM: standard/accessible/premium), is_available (boolean), price_per_hour (DECIMAL), created_at. Added check constraints for price validation (must be positive).
 
+18/10/2025
+Implemented Bookings table with proper foreign key relationships to Users and ParkingSpots. Fields include: booking_id (UUID), user_id (FK), spot_id (FK), booking_date, start_time, end_time, total_amount, status (ENUM: pending/confirmed/cancelled), version_number (for optimistic locking). Created indexes on user_id, spot_id, and booking_date for query optimization.
+
+19/10/2025
+Created Payments table linked to Bookings: payment_id (UUID), booking_id (FK), amount, square_token, payment_status (ENUM: pending/completed/failed/refunded), processed_at timestamp. Ensured one-to-one relationship with Bookings table.
+
+
