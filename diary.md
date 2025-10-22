@@ -47,9 +47,8 @@ Completed technology stack comparison report (Week 2 deliverable). Wrote softwar
 Installed PostgreSQL locally and configured development environment. Created initial database named stadium_parking_db. Set up connection pooling configuration. Tested database connectivity from Node.js application.
 
 16/10/2025
-Designed and coded SVG-based UML class diagram to visualize system architecture. Diagram includes core entities (User, Booking, Payment, TransportRoute, ParkingSpot) and relationships (composition, association, inheritance). Saved diagram as architecture.svg and added to project repository. Validated rendering in browser and documented design rationale.
+Began implementing database schema. Created Users table with fields: user_id (UUID primary key), email (unique), hashed_password, first_name, last_name, is_disabled (boolean), created_at timestamp. Applied NOT NULL constraints where appropriate.
 
 17/10/2025
-Refactored backend modules to align with Observer pattern. Integrated ObserverManager.notify() into booking confirmation logic. Added unit tests for observer registration and message dispatch. Committed changes to add-svg branch and pushed with upstream tracking. Updated README with architectural diagram and design pattern explanation.
-
+Created ParkingSpots table with fields: spot_id (UUID), spot_number (unique), type (ENUM: standard/accessible/premium), is_available (boolean), price_per_hour (DECIMAL), created_at. Added check constraints for price validation (must be positive).
 
