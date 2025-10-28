@@ -1,48 +1,57 @@
-# Project Diary
-This file tracks project progress and reflections.
-
 01/10/2025
 Project officially begins. Reviewed project specification and requirements for Advanced Web Development module. Identified Tottenham Hotspur Stadium parking and transport management as project focus. Started preliminary research on similar applications.
-
 02/10/2025
 Researched React vs Angular vs Vue.js for frontend framework selection. Examined community support, performance benchmarks, and learning curves. Leaning towards React due to strong ecosystem and WebSocket support.
-
 03/10/2025
 Investigated backend technologies: Node.js/Express vs Django vs Ruby on Rails. Compared async capabilities, API development ease, and scalability. Node.js appears most suitable for real-time features required in this project.
-
 04/10/2025
 Studied TfL Unified API documentation. Reviewed available endpoints for journey planning, service disruptions, and station information. Noted rate limiting considerations (500 requests/minute). Registered for API key.
-
 05/10/2025
 Researched Square Payment API integration. Examined tokenization workflow and PCI compliance requirements. Reviewed sandbox environment setup procedures. Downloaded sample code for payment processing.
-
 06/10/2025
 Deep dive into WCAG 2.1 accessibility guidelines. Focused on Level AA compliance requirements: color contrast ratios, keyboard navigation, ARIA labels, and screen reader compatibility. Installed WAVE and axe DevTools for testing.
-
 07/10/2025
 Drafted project plan document. Wrote abstract outlining project goals, main/secondary objectives, and advanced features. Completed timeline breakdown for Term 1 with weekly milestones. Identified risks and mitigation strategies. Submitted project plan at 14:00.
-
 08/10/2025
 Finalized technology comparison matrix. Created detailed comparison table evaluating React, Angular, Vue.js against criteria: performance, learning curve, community support, WebSocket integration, and ecosystem maturity. React selected with justification.
-
 09/10/2025
 Initialized project repository structure. Set up Git repository and pushed initial commit to GitHub. Created .gitignore file and README with project overview. Configured Node.js project with package.json. Installed initial dependencies: Express, PostgreSQL driver, bcrypt, jsonwebtoken.
-
 10/10/2025
 Started database design. Created initial ER diagram for core entities: Users, ParkingSpots, Bookings, Payments, and TransportRoutes. Identified relationships and cardinality. Began normalization analysis to ensure 3NF compliance.
-
 11/10/2025
 Continued database design work. Refined ER diagram with additional entities for accessibility preferences and user profiles. Defined primary keys, foreign keys, and constraints. Documented data dictionary with field types and descriptions.
-
 12/10/2025
 Researched design patterns applicable to project. Studied MVC pattern for overall architecture, Repository pattern for data access abstraction, Observer pattern for WebSocket real-time updates, and Factory pattern for object creation. Documented pattern selection rationale.
-
 13/10/2025
 Drafted N-tier architecture diagram showing clear separation: Presentation Layer (React), Application Layer (Node.js/Express API), and Data Layer (PostgreSQL + Redis). Documented responsibilities and communication protocols between layers.
-
 14/10/2025
-Completed technology stack comparison report (Week 2 deliverable). Wrote software engineering justification for selected technologies: React for reactive UI, Node.js for async operations, PostgreSQL for ACID compliance, Redis for caching. Included performance benchmarks and scalability considerations. Committed all documentation to GitHub.
+Started creating UML class diagrams for system architecture. Designed Observer pattern implementation with Observer interface and ObserverManager singleton. Planned UserObserver and NotificationObserver as concrete implementations for real-time updates.
+15/10/2025
+Continued UML design work. Created class diagram for core domain models: User, Booking, ParkingSpot, Payment, and TransportRoute classes. Defined attributes with data types and visibility modifiers. Identified key methods for each class.
+16/10/2025
+Refined UML relationships between classes. Established composition relationship between Booking and Payment (booking owns payment). Set up association between User and Booking with multiplicity (* bookings per user). Added AccessibilityPreference class with one-to-one relationship to User.
+17/10/2025
+Added method signatures to UML classes. For Booking: createBooking(), cancelBooking(), updateBooking(). For ParkingSpot: checkAvailability(), reserveSpot(), releaseSpot(). For User: register(), login(), updateProfile(). For Payment: processPayment(), refund(), verifyToken().
+18/10/2025
+Designed Repository pattern classes in UML. Created UserRepository, BookingRepository, ParkingSpotRepository, and PaymentRepository interfaces. Each includes standard CRUD methods: findById(), findAll(), save(), update(), delete(). Will implement these for database abstraction.
+19/10/2025
+Added TransportRoute class details to UML. Attributes: routeId, origin, destination, journeyTime, transportType (ENUM), isAccessible, disruptionStatus. Methods: calculateRoute(), getDisruptions(), filterStepFreeRoutes(). Planned integration point with TfL API service layer.
+20/10/2025
+Finalized UML class diagram with all relationships clearly marked. Used standard UML notation: filled diamond for composition, open diamond for aggregation, solid lines for associations, dashed arrows for dependencies, hollow triangle for inheritance. Documented diagram in project documentation folder.
+21/10/2025
+Created sequence diagram for booking flow. Shows interaction: User → BookingController → BookingService → ParkingSpotRepository → Database → PaymentService → Square API. Identified all steps from availability check through payment confirmation. Useful for implementation planning.
+22/10/2025
+Developed sequence diagram for authentication flow. Mapped out: User → AuthController → AuthService → UserRepository → Database → JWT generation → Response. Included error handling paths for invalid credentials and expired tokens.
+23/10/2025
+Created use case diagrams for main system functions. Identified actors: Regular User, Disabled User, Admin, External Systems (TfL API, Square API). Defined use cases: Book Parking, Plan Journey, Make Payment, Manage Accessibility Preferences, View Analytics (admin).
+24/10/2025
+Drew component diagram showing system architecture layers. Presented tier: React components (ParkingMap, BookingForm, TransportPlanner, AccessibilitySettings). Application tier: REST API controllers and service layer. Data tier: PostgreSQL, Redis cache, External APIs. Connected components with interfaces.
+25/10/2025
+Completed all UML documentation. Created deployment diagram showing production architecture: React app deployed to Vercel, Node.js API on Heroku, PostgreSQL database on Heroku Postgres, Redis on Redis Cloud. Documented all diagrams in project wiki. Ready to begin implementation.
+26/10/2025
+Started implementation phase! Installed PostgreSQL locally and configured development environment. Created database stadium_parking_db. Set up connection pooling with pg library. Created .env file for environment variables (DB credentials, JWT secret). Tested database connectivity successfully.
+27/10/2025
+Implemented database schema SQL scripts. Created Users table with constraints: email UNIQUE, password NOT NULL, created_at DEFAULT NOW(). Created ParkingSpots table with CHECK constraint on price (must be > 0). Set up migration scripts folder for version control of schema changes.
 
-
-
-
+28/10/2025
+Created Bookings table with foreign keys to Users and ParkingSpots. Added ON DELETE CASCADE for referential integrity. Implemented version_number column for optimistic locking to prevent double-booking conflicts. Created indexes on frequently queried columns: user_id, spot_id, booking_date, status. Seeded database with 50 test parking spots (30 standard, 15 accessible, 5 premium). Committed schema files to GitHub.
