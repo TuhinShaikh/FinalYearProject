@@ -24,3 +24,17 @@ Continued database design work. Refined ER diagram with additional entities for 
 Researched design patterns applicable to project. Studied MVC pattern for overall architecture, Repository pattern for data access abstraction, Observer pattern for WebSocket real-time updates, and Factory pattern for object creation. Documented pattern selection rationale.
 13/10/2025
 Drafted N-tier architecture diagram showing clear separation: Presentation Layer (React), Application Layer (Node.js/Express API), and Data Layer (PostgreSQL + Redis). Documented responsibilities and communication protocols between layers.
+14/10/2025
+Started creating UML class diagrams for system architecture. Designed Observer pattern implementation with Observer interface and ObserverManager singleton. Planned UserObserver and NotificationObserver as concrete implementations for real-time updates.
+15/10/2025
+Continued UML design work. Created class diagram for core domain models: User, Booking, ParkingSpot, Payment, and TransportRoute classes. Defined attributes with data types and visibility modifiers. Identified key methods for each class.
+16/10/2025
+Refined UML relationships between classes. Established composition relationship between Booking and Payment (booking owns payment). Set up association between User and Booking with multiplicity (* bookings per user). Added AccessibilityPreference class with one-to-one relationship to User.
+17/10/2025
+Added method signatures to UML classes. For Booking: createBooking(), cancelBooking(), updateBooking(). For ParkingSpot: checkAvailability(), reserveSpot(), releaseSpot(). For User: register(), login(), updateProfile(). For Payment: processPayment(), refund(), verifyToken().
+18/10/2025
+Designed Repository pattern classes in UML. Created UserRepository, BookingRepository, ParkingSpotRepository, and PaymentRepository interfaces. Each includes standard CRUD methods: findById(), findAll(), save(), update(), delete(). Will implement these for database abstraction.
+19/10/2025
+Added TransportRoute class details to UML. Attributes: routeId, origin, destination, journeyTime, transportType (ENUM), isAccessible, disruptionStatus. Methods: calculateRoute(), getDisruptions(), filterStepFreeRoutes(). Planned integration point with TfL API service layer.
+20/10/2025
+Finalized UML class diagram with all relationships clearly marked. Used standard UML notation: filled diamond for composition, open diamond for aggregation, solid lines for associations, dashed arrows for dependencies, hollow triangle for inheritance. Documented diagram in project documentation folder.
