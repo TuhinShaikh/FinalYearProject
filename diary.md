@@ -38,3 +38,9 @@ Designed Repository pattern classes in UML. Created UserRepository, BookingRepos
 Added TransportRoute class details to UML. Attributes: routeId, origin, destination, journeyTime, transportType (ENUM), isAccessible, disruptionStatus. Methods: calculateRoute(), getDisruptions(), filterStepFreeRoutes(). Planned integration point with TfL API service layer.
 20/10/2025
 Finalized UML class diagram with all relationships clearly marked. Used standard UML notation: filled diamond for composition, open diamond for aggregation, solid lines for associations, dashed arrows for dependencies, hollow triangle for inheritance. Documented diagram in project documentation folder.
+21/10/2025
+Created sequence diagram for booking flow. Shows interaction: User → BookingController → BookingService → ParkingSpotRepository → Database → PaymentService → Square API. Identified all steps from availability check through payment confirmation. Useful for implementation planning.
+22/10/2025
+Developed sequence diagram for authentication flow. Mapped out: User → AuthController → AuthService → UserRepository → Database → JWT generation → Response. Included error handling paths for invalid credentials and expired tokens.
+23/10/2025
+Created use case diagrams for main system functions. Identified actors: Regular User, Disabled User, Admin, External Systems (TfL API, Square API). Defined use cases: Book Parking, Plan Journey, Make Payment, Manage Accessibility Preferences, View Analytics (admin).
