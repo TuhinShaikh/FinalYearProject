@@ -50,3 +50,7 @@ Drew component diagram showing system architecture layers. Presented tier: React
 Completed all UML documentation. Created deployment diagram showing production architecture: React app deployed to Vercel, Node.js API on Heroku, PostgreSQL database on Heroku Postgres, Redis on Redis Cloud. Documented all diagrams in project wiki. Ready to begin implementation.
 26/10/2025
 Started implementation phase! Installed PostgreSQL locally and configured development environment. Created database stadium_parking_db. Set up connection pooling with pg library. Created .env file for environment variables (DB credentials, JWT secret). Tested database connectivity successfully.
+27/10/2025
+Implemented database schema SQL scripts. Created Users table with constraints: email UNIQUE, password NOT NULL, created_at DEFAULT NOW(). Created ParkingSpots table with CHECK constraint on price (must be > 0). Set up migration scripts folder for version control of schema changes.
+28/10/2025
+Created Bookings table with foreign keys to Users and ParkingSpots. Added ON DELETE CASCADE for referential integrity. Implemented version_number column for optimistic locking to prevent double-booking conflicts. Created indexes on frequently queried columns: user_id, spot_id, booking_date, status. Seeded database with 50 test parking spots (30 standard, 15 accessible, 5 premium). Committed schema files to GitHub.
