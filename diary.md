@@ -44,3 +44,9 @@ Created sequence diagram for booking flow. Shows interaction: User → BookingCo
 Developed sequence diagram for authentication flow. Mapped out: User → AuthController → AuthService → UserRepository → Database → JWT generation → Response. Included error handling paths for invalid credentials and expired tokens.
 23/10/2025
 Created use case diagrams for main system functions. Identified actors: Regular User, Disabled User, Admin, External Systems (TfL API, Square API). Defined use cases: Book Parking, Plan Journey, Make Payment, Manage Accessibility Preferences, View Analytics (admin).
+24/10/2025
+Drew component diagram showing system architecture layers. Presented tier: React components (ParkingMap, BookingForm, TransportPlanner, AccessibilitySettings). Application tier: REST API controllers and service layer. Data tier: PostgreSQL, Redis cache, External APIs. Connected components with interfaces.
+25/10/2025
+Completed all UML documentation. Created deployment diagram showing production architecture: React app deployed to Vercel, Node.js API on Heroku, PostgreSQL database on Heroku Postgres, Redis on Redis Cloud. Documented all diagrams in project wiki. Ready to begin implementation.
+26/10/2025
+Started implementation phase! Installed PostgreSQL locally and configured development environment. Created database stadium_parking_db. Set up connection pooling with pg library. Created .env file for environment variables (DB credentials, JWT secret). Tested database connectivity successfully.
