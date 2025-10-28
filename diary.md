@@ -20,3 +20,7 @@ Initialized project repository structure. Set up Git repository and pushed initi
 Started database design. Created initial ER diagram for core entities: Users, ParkingSpots, Bookings, Payments, and TransportRoutes. Identified relationships and cardinality. Began normalization analysis to ensure 3NF compliance.
 11/10/2025
 Continued database design work. Refined ER diagram with additional entities for accessibility preferences and user profiles. Defined primary keys, foreign keys, and constraints. Documented data dictionary with field types and descriptions.
+12/10/2025
+Researched design patterns applicable to project. Studied MVC pattern for overall architecture, Repository pattern for data access abstraction, Observer pattern for WebSocket real-time updates, and Factory pattern for object creation. Documented pattern selection rationale.
+13/10/2025
+Drafted N-tier architecture diagram showing clear separation: Presentation Layer (React), Application Layer (Node.js/Express API), and Data Layer (PostgreSQL + Redis). Documented responsibilities and communication protocols between layers.
