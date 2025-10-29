@@ -151,6 +151,7 @@ BEGIN
     (booking2_id, 24.00, 'sq_' || gen_random_uuid(), 'completed', 'card', CURRENT_TIMESTAMP);
     
 END $$;
+
 -- ====================================
 -- VERIFICATION QUERIES
 -- ====================================
