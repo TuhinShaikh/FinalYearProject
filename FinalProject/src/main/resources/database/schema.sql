@@ -66,3 +66,66 @@ CREATE TABLE parking_spots (
 CREATE INDEX idx_parking_spots_type ON parking_spots(type);
 CREATE INDEX idx_parking_spots_available ON parking_spots(is_available);
 CREATE INDEX idx_parking_spots_type_available ON parking_spots(type, is_available);
+
+-- ====================================
+-- BOOKINGS TABLE
+-- ====================================
+CREATE TABLE bookings (
+    booking_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID NOT NULL,
+    spot_id UUID NOT NULL,
+    booking_date DATE NOT NULL,
+    start_time TIMESTAMP NOT NULL,
+    end_time TIMESTAMP NOT NULL,
+    total_amount DECIMAL(10, 2) NOT NULL,
+    status booking_status NOT NULL DEFAULT 'pending',
+    version_number INTEGER NOT NULL DEFAULT 0,
+    confirmation_code VARCHAR(20) UNIQUE,
+    special_requirements TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (spot_id) REFERENCES parking_spots(spot_id) ON DELETE RESTRICT,
+    
+    CONSTRAINT valid_times CHECK (end_time > start_time),
+    CONSTRAINT positive_amount CHECK (total_amount >= 0),
+    CONSTRAINT future_booking CHECK (start_time >= CURRENT_TIMESTAMP)
+);
+
+-- Create indexes for performance
+CREATE INDEX idx_bookings_user_id ON bookings(user_id);
+CREATE INDEX idx_bookings_spot_id ON bookings(spot_id);
+CREATE INDEX idx_bookings_date ON bookings(booking_date);
+CREATE INDEX idx_bookings_status ON bookings(status);
+CREATE INDEX idx_bookings_start_time ON bookings(start_time);
+CREATE INDEX idx_bookings_confirmation ON bookings(confirmation_code);
+
+-- ====================================
+-- PAYMENTS TABLE
+-- ====================================
+CREATE TABLE payments (
+    payment_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    booking_id UUID NOT NULL UNIQUE,
+    amount DECIMAL(10, 2) NOT NULL,
+    square_payment_id VARCHAR(255),
+    square_token VARCHAR(255),
+    payment_status payment_status NOT NULL DEFAULT 'pending',
+    payment_method VARCHAR(50),
+    currency VARCHAR(3) DEFAULT 'GBP',
+    processed_at TIMESTAMP,
+    refunded_at TIMESTAMP,
+    refund_amount DECIMAL(10, 2),
+    failure_reason TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    
+    FOREIGN KEY (booking_id) REFERENCES bookings(booking_id) ON DELETE CASCADE,
+    
+    CONSTRAINT positive_payment_amount CHECK (amount > 0),
+    CONSTRAINT valid_refund CHECK (refund_amount IS NULL OR refund_amount <= amount)
+);
+
+-- Create indexes
+CREATE INDEX idx_payments_booking_id ON payments(booking_id);
+CREATE INDEX idx_payments_status ON payments(payment_status);
+CREATE INDEX idx_payments_square_payment_id ON payments(square_payment_id);
