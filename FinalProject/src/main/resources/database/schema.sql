@@ -243,3 +243,19 @@ SELECT
 FROM parking_spots
 WHERE type = 'accessible'
 ORDER BY spot_number;
+
+-- ====================================
+-- COMMENTS FOR DOCUMENTATION
+-- ====================================
+
+COMMENT ON TABLE users IS 'Stores registered user accounts with authentication credentials';
+COMMENT ON TABLE parking_spots IS 'Represents individual parking spaces at Tottenham Hotspur Stadium';
+COMMENT ON TABLE bookings IS 'Records parking spot reservations made by users';
+COMMENT ON TABLE payments IS 'Tracks payment transactions processed through Square API';
+COMMENT ON TABLE accessibility_preferences IS 'Stores user-specific accessibility requirements and preferences';
+
+COMMENT ON COLUMN bookings.version_number IS 'Used for optimistic locking to prevent double-booking';
+COMMENT ON COLUMN bookings.confirmation_code IS 'Unique 8-character code for booking verification';
+COMMENT ON COLUMN payments.square_payment_id IS 'Reference ID from Square payment processor';
+COMMENT ON COLUMN payments.square_token IS 'Tokenized payment method from Square (never stores actual card details)';
+COMMENT ON COLUMN accessibility_preferences.blue_badge_number IS 'UK Blue Badge parking permit number';
