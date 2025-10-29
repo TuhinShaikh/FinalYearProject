@@ -129,3 +129,66 @@ CREATE TABLE payments (
 CREATE INDEX idx_payments_booking_id ON payments(booking_id);
 CREATE INDEX idx_payments_status ON payments(payment_status);
 CREATE INDEX idx_payments_square_payment_id ON payments(square_payment_id);
+
+-- ====================================
+-- ACCESSIBILITY PREFERENCES TABLE
+-- ====================================
+CREATE TABLE accessibility_preferences (
+    user_id UUID PRIMARY KEY,
+    needs_step_free BOOLEAN DEFAULT FALSE,
+    has_blue_badge BOOLEAN DEFAULT FALSE,
+    blue_badge_number VARCHAR(50),
+    needs_audio_navigation BOOLEAN DEFAULT FALSE,
+    high_contrast_mode BOOLEAN DEFAULT FALSE,
+    preferred_text_size text_size DEFAULT 'medium',
+    screen_reader_enabled BOOLEAN DEFAULT FALSE,
+    keyboard_navigation_only BOOLEAN DEFAULT FALSE,
+    additional_notes TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+);
+
+-- ====================================
+-- TRIGGER FUNCTIONS
+-- ====================================
+
+-- Function to update updated_at timestamp
+CREATE OR REPLACE FUNCTION update_updated_at_column()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = CURRENT_TIMESTAMP;
+    RETURN NEW;
+END;
+$$ language 'plpgsql';
+
+-- Create triggers for updated_at
+CREATE TRIGGER update_users_updated_at BEFORE UPDATE ON users
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_parking_spots_updated_at BEFORE UPDATE ON parking_spots
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_bookings_updated_at BEFORE UPDATE ON bookings
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_accessibility_updated_at BEFORE UPDATE ON accessibility_preferences
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+-- Function to generate confirmation code
+CREATE OR REPLACE FUNCTION generate_confirmation_code()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.confirmation_code = UPPER(SUBSTRING(MD5(RANDOM()::TEXT) FROM 1 FOR 8));
+    RETURN NEW;
+END;
+$$ language 'plpgsql';
+
+-- Create trigger for confirmation code
+CREATE TRIGGER generate_booking_confirmation BEFORE INSERT ON bookings
+    FOR EACH ROW EXECUTE FUNCTION generate_confirmation_code();
+
+-- ====================================
+-- VIEWS FOR COMMON QUERIES
+-- ====================================
