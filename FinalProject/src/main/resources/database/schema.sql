@@ -192,3 +192,54 @@ CREATE TRIGGER generate_booking_confirmation BEFORE INSERT ON bookings
 -- ====================================
 -- VIEWS FOR COMMON QUERIES
 -- ====================================
+
+-- View for available parking spots with details
+CREATE VIEW available_parking_spots AS
+SELECT 
+    spot_id,
+    spot_number,
+    type,
+    price_per_hour,
+    location_description,
+    floor_level,
+    is_covered
+FROM parking_spots
+WHERE is_available = TRUE
+ORDER BY type, spot_number;
+
+-- View for user booking history with spot details
+CREATE VIEW user_booking_history AS
+SELECT 
+    b.booking_id,
+    b.user_id,
+    u.email,
+    u.first_name,
+    u.last_name,
+    b.booking_date,
+    b.start_time,
+    b.end_time,
+    b.total_amount,
+    b.status,
+    b.confirmation_code,
+    ps.spot_number,
+    ps.type AS spot_type,
+    p.payment_status
+FROM bookings b
+JOIN users u ON b.user_id = u.user_id
+JOIN parking_spots ps ON b.spot_id = ps.spot_id
+LEFT JOIN payments p ON b.booking_id = p.booking_id
+ORDER BY b.created_at DESC;
+
+-- View for accessible parking availability
+CREATE VIEW accessible_parking_availability AS
+SELECT 
+    spot_id,
+    spot_number,
+    price_per_hour,
+    location_description,
+    floor_level,
+    is_covered,
+    is_available
+FROM parking_spots
+WHERE type = 'accessible'
+ORDER BY spot_number;
