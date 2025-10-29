@@ -67,3 +67,87 @@ INSERT INTO parking_spots (spot_number, type, price_per_hour, location_descripti
 -- ====================================
 -- SEED TEST USERS
 -- ====================================
+
+-- Password for all test users: "Password123!" (hashed with bcrypt)
+-- Note: In production, these would be properly hashed. This is a placeholder.
+INSERT INTO users (email, hashed_password, first_name, last_name, phone_number, is_disabled) VALUES
+('john.smith@example.com', '$2b$10$YourHashedPasswordHere', 'John', 'Smith', '+447700900001', FALSE),
+('sarah.jones@example.com', '$2b$10$YourHashedPasswordHere', 'Sarah', 'Jones', '+447700900002', FALSE),
+('mike.wilson@example.com', '$2b$10$YourHashedPasswordHere', 'Mike', 'Wilson', '+447700900003', FALSE),
+('emma.davis@example.com', '$2b$10$YourHashedPasswordHere', 'Emma', 'Davis', '+447700900004', TRUE),
+('james.brown@example.com', '$2b$10$YourHashedPasswordHere', 'James', 'Brown', '+447700900005', FALSE),
+('lisa.taylor@example.com', '$2b$10$YourHashedPasswordHere', 'Lisa', 'Taylor', '+447700900006', TRUE);
+
+-- ====================================
+-- SEED ACCESSIBILITY PREFERENCES
+-- ====================================
+
+-- Get user IDs for accessibility preferences
+DO $$
+DECLARE
+    emma_id UUID;
+    lisa_id UUID;
+BEGIN
+    SELECT user_id INTO emma_id FROM users WHERE email = 'emma.davis@example.com';
+    SELECT user_id INTO lisa_id FROM users WHERE email = 'lisa.taylor@example.com';
+    
+    INSERT INTO accessibility_preferences 
+    (user_id, needs_step_free, has_blue_badge, blue_badge_number, needs_audio_navigation, high_contrast_mode, preferred_text_size, screen_reader_enabled) 
+    VALUES
+    (emma_id, TRUE, TRUE, 'BB123456', TRUE, TRUE, 'large', TRUE),
+    (lisa_id, TRUE, TRUE, 'BB789012', FALSE, TRUE, 'extra-large', FALSE);
+END $$;
+
+-- ====================================
+-- SEED SAMPLE BOOKINGS (Past and Future)
+-- ====================================
+
+-- Create some historical bookings
+DO $$
+DECLARE
+    john_id UUID;
+    sarah_id UUID;
+    spot_a001_id UUID;
+    spot_aa01_id UUID;
+    booking1_id UUID;
+    booking2_id UUID;
+BEGIN
+    -- Get user and spot IDs
+    SELECT user_id INTO john_id FROM users WHERE email = 'john.smith@example.com';
+    SELECT user_id INTO sarah_id FROM users WHERE email = 'sarah.jones@example.com';
+    SELECT spot_id INTO spot_a001_id FROM parking_spots WHERE spot_number = 'A001';
+    SELECT spot_id INTO spot_aa01_id FROM parking_spots WHERE spot_number = 'AA01';
+    
+    -- Past completed booking
+    INSERT INTO bookings 
+    (user_id, spot_id, booking_date, start_time, end_time, total_amount, status)
+    VALUES
+    (john_id, spot_a001_id, CURRENT_DATE - INTERVAL '7 days', 
+     CURRENT_TIMESTAMP - INTERVAL '7 days' + INTERVAL '14 hours',
+     CURRENT_TIMESTAMP - INTERVAL '7 days' + INTERVAL '18 hours',
+     34.00, 'completed')
+    RETURNING booking_id INTO booking1_id;
+    
+    -- Add payment for past booking
+    INSERT INTO payments
+    (booking_id, amount, square_payment_id, payment_status, payment_method, processed_at)
+    VALUES
+    (booking1_id, 34.00, 'sq_' || gen_random_uuid(), 'completed', 'card', CURRENT_TIMESTAMP - INTERVAL '7 days');
+    
+    -- Future confirmed booking
+    INSERT INTO bookings 
+    (user_id, spot_id, booking_date, start_time, end_time, total_amount, status)
+    VALUES
+    (sarah_id, spot_aa01_id, CURRENT_DATE + INTERVAL '3 days',
+     CURRENT_TIMESTAMP + INTERVAL '3 days' + INTERVAL '15 hours',
+     CURRENT_TIMESTAMP + INTERVAL '3 days' + INTERVAL '19 hours',
+     24.00, 'confirmed')
+    RETURNING booking_id INTO booking2_id;
+    
+    -- Add payment for future booking
+    INSERT INTO payments
+    (booking_id, amount, square_payment_id, payment_status, payment_method, processed_at)
+    VALUES
+    (booking2_id, 24.00, 'sq_' || gen_random_uuid(), 'completed', 'card', CURRENT_TIMESTAMP);
+    
+END $$;
