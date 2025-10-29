@@ -151,3 +151,31 @@ BEGIN
     (booking2_id, 24.00, 'sq_' || gen_random_uuid(), 'completed', 'card', CURRENT_TIMESTAMP);
     
 END $$;
+-- ====================================
+-- VERIFICATION QUERIES
+-- ====================================
+
+-- Display summary of seeded data
+SELECT 'Parking Spots Created' AS summary, COUNT(*) AS count FROM parking_spots
+UNION ALL
+SELECT 'Users Created', COUNT(*) FROM users
+UNION ALL
+SELECT 'Accessibility Preferences', COUNT(*) FROM accessibility_preferences
+UNION ALL
+SELECT 'Bookings Created', COUNT(*) FROM bookings
+UNION ALL
+SELECT 'Payments Recorded', COUNT(*) FROM payments;
+
+-- Show parking spot distribution
+SELECT type, COUNT(*) as count, 
+       ROUND(AVG(price_per_hour), 2) as avg_price
+FROM parking_spots
+GROUP BY type
+ORDER BY type;
+
+-- Show available spots by type
+SELECT type, COUNT(*) as available_count
+FROM parking_spots
+WHERE is_available = TRUE
+GROUP BY type
+ORDER BY type;
