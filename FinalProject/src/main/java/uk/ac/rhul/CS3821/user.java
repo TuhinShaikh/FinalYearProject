@@ -12,3 +12,18 @@ import java.util.UUID;
         @UniqueConstraint(columnNames = "email")
 })
 public class User {
+
+    @Id
+    @GeneratedValue
+    @Column(name = "user_id", updatable = false, nullable = false)
+    private UUID userId;
+
+    @Column(name = "email", nullable = false, unique = true, length = 150)
+    private String email;
+
+    @Column(name = "hashed_password", nullable = false)
+    private String hashedPassword;
+
+    @Column(name = "first_name", nullable = false, length = 100)
+    private String firstName;
+
