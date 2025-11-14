@@ -102,6 +102,7 @@ public class Booking {
     public int getVersionNumber() { return versionNumber; }
     public void setVersionNumber(int versionNumber) { this.versionNumber = versionNumber; }
 
+    
     public String getConfirmationCode() { return confirmationCode; }
     public void setConfirmationCode(String confirmationCode) { this.confirmationCode = confirmationCode; }
 
