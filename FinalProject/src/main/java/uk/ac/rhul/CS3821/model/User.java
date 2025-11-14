@@ -71,4 +71,18 @@ public class User {
     public String getFirstName() { return firstName; }
     public void setFirstName(String firstName) { this.firstName = firstName; }
 
-    
+    public String getLastName() { return lastName; }
+    public void setLastName(String lastName) { this.lastName = lastName; }
+
+    public String getPhoneNumber() { return phoneNumber; }
+    public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
+
+    public boolean isDisabled() { return isDisabled; }
+    public void setDisabled(boolean disabled) { isDisabled = disabled; }
+
+    public Instant getCreatedAt() { return createdAt; }
+    public Instant getUpdatedAt() { return updatedAt; }
+
+    public Instant getLastLogin() { return lastLogin; }
+    public void setLastLogin(Instant lastLogin) { this.lastLogin = lastLogin; }
+}
