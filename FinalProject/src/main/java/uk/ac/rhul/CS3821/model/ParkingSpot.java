@@ -24,3 +24,20 @@ public class ParkingSpot {
 
     @Column(name = "is_reserved", nullable = false)
     private boolean isReserved;
+
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false, nullable = false)
+    private Instant createdAt;
+
+    @UpdateTimestamp
+    @Column(name = "updated_at")
+    private Instant updatedAt;
+
+    // Constructors
+    public ParkingSpot() {}
+
+    public ParkingSpot(String spotName, String spotDescription, boolean isReserved) {
+        this.spotName = spotName;
+        this.spotDescription = spotDescription;
+        this.isReserved = isReserved;
+    }
