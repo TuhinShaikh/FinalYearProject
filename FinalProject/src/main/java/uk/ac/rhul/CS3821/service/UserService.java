@@ -1,5 +1,14 @@
 package uk.ac.rhul.CS3821.service;
 
-public class UserService {
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import uk.ac.rhul.CS3821.model.User;
+import uk.ac.rhul.CS3821.repository.UserRepository;
 
-}
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+@Service
+@Transactional
+public class UserService {
