@@ -107,3 +107,7 @@ public class Booking {
 
     public String getSpecialRequirements() { return specialRequirements; }
     public void setSpecialRequirements(String specialRequirements) { this.specialRequirements = specialRequirements; }
+
+    public Instant getCreatedAt() { return createdAt; }
+    public Instant getUpdatedAt() { return updatedAt; }
+}
