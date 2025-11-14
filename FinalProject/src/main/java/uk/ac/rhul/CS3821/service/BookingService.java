@@ -12,3 +12,13 @@ import java.util.UUID;
 @Service
 @Transactional
 public class BookingService {
+
+    private final BookingRepository bookingRepository;
+
+    public BookingService(BookingRepository bookingRepository) {
+        this.bookingRepository = bookingRepository;
+    }
+
+    public Booking createBooking(Booking booking) {
+        return bookingRepository.save(booking);
+    }
