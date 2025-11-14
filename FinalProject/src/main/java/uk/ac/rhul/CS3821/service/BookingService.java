@@ -22,3 +22,15 @@ public class BookingService {
     public Booking createBooking(Booking booking) {
         return bookingRepository.save(booking);
     }
+
+    public Optional<Booking> getBookingById(UUID bookingId) {
+        return bookingRepository.findById(bookingId);
+    }
+
+    public List<Booking> getBookingsByUser(UUID userId) {
+        return bookingRepository.findByUser_UserId(userId);
+    }
+
+    public List<Booking> getBookingsBySpot(UUID spotId) {
+        return bookingRepository.findBySpot_SpotId(spotId);
+    }
