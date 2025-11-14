@@ -41,3 +41,20 @@ public class ParkingSpot {
         this.spotDescription = spotDescription;
         this.isReserved = isReserved;
     }
+
+    // Getters and Setters
+    public UUID getSpotId() { return spotId; }
+    public void setSpotId(UUID spotId) { this.spotId = spotId; }
+
+    public String getSpotName() { return spotName; }
+    public void setSpotName(String spotName) { this.spotName = spotName; }
+
+    public String getSpotDescription() { return spotDescription; }
+    public void setSpotDescription(String spotDescription) { this.spotDescription = spotDescription; }
+
+    public boolean isReserved() { return isReserved; }
+    public void setReserved(boolean reserved) { isReserved = reserved; }
+
+    public Instant getCreatedAt() { return createdAt; }
+    public Instant getUpdatedAt() { return updatedAt; }
+}
