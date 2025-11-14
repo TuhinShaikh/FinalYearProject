@@ -34,3 +34,12 @@ public class BookingService {
     public List<Booking> getBookingsBySpot(UUID spotId) {
         return bookingRepository.findBySpot_SpotId(spotId);
     }
+
+    public Booking updateBooking(Booking booking) {
+        return bookingRepository.save(booking);
+    }
+
+    public void cancelBooking(UUID bookingId) {
+        bookingRepository.deleteById(bookingId);
+    }
+}
