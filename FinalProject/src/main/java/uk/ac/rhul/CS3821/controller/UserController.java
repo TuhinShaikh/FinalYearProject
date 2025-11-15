@@ -12,6 +12,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/users")
 public class UserController {
+
     private final UserService userService;
 
     public UserController(UserService userService) {
@@ -27,4 +28,9 @@ public class UserController {
     public ResponseEntity<User> getUserById(@PathVariable UUID id) {
         Optional<User> user = userService.getUserById(id);
         return user.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping
+    public ResponseEntity<List<User>> getAllUsers() {
+        return ResponseEntity.ok(userService.getAllUsers());
     }
