@@ -30,3 +30,18 @@ public class BookingController {
         return ResponseEntity.ok(bookingService.createBooking(booking));
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<Booking> getBookingById(@PathVariable UUID id) {
+        Optional<Booking> booking = bookingService.getBookingById(id);
+        return booking.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<Booking>> getBookingsByUser(@PathVariable UUID userId) {
+        return ResponseEntity.ok(bookingService.getBookingsByUser(userId));
+    }
+
+    @GetMapping("/spot/{spotId}")
+    public ResponseEntity<List<Booking>> getBookingsBySpot(@PathVariable UUID spotId) {
+        return ResponseEntity.ok(bookingService.getBookingsBySpot(spotId));
+    }
