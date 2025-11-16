@@ -20,7 +20,8 @@ import java.util.UUID;
 @RequestMapping("/spots")
 public class ParkingSpotController {
 
-    private final ParkingSpotService parkingSpotService;
+
+	private final ParkingSpotService parkingSpotService;
 
     public ParkingSpotController(ParkingSpotService parkingSpotService) {
         this.parkingSpotService = parkingSpotService;
