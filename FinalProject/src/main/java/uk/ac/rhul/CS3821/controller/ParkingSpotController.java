@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+@RestController
 @RequestMapping("/spots")
 public class ParkingSpotController {
 
@@ -35,7 +36,7 @@ public class ParkingSpotController {
         Optional<ParkingSpot> spot = parkingSpotService.getSpotById(id);
         return spot.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
-    
+
     @GetMapping
     public ResponseEntity<List<ParkingSpot>> getAllSpots() {
         return ResponseEntity.ok(parkingSpotService.getAllSpots());
@@ -53,4 +54,3 @@ public class ParkingSpotController {
         return ResponseEntity.noContent().build();
     }
 }
-
