@@ -16,3 +16,17 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+@RestController
+@RequestMapping("/spots")
+public class ParkingSpotController {
+
+    private final ParkingSpotService parkingSpotService;
+
+    public ParkingSpotController(ParkingSpotService parkingSpotService) {
+        this.parkingSpotService = parkingSpotService;
+    }
+
+    @PostMapping
+    public ResponseEntity<ParkingSpot> createSpot(@RequestBody ParkingSpot spot) {
+        return ResponseEntity.ok(parkingSpotService.createSpot(spot));
+    }
