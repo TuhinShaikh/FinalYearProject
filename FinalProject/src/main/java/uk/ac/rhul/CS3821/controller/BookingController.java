@@ -15,6 +15,7 @@ import uk.ac.rhul.CS3821.service.BookingService;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+
 @RestController
 @RequestMapping("/bookings")
 public class BookingController {
@@ -45,3 +46,16 @@ public class BookingController {
     public ResponseEntity<List<Booking>> getBookingsBySpot(@PathVariable UUID spotId) {
         return ResponseEntity.ok(bookingService.getBookingsBySpot(spotId));
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Booking> updateBooking(@PathVariable UUID id, @RequestBody Booking updatedBooking) {
+        updatedBooking.setBookingId(id);
+        return ResponseEntity.ok(bookingService.updateBooking(updatedBooking));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> cancelBooking(@PathVariable UUID id) {
+        bookingService.cancelBooking(id);
+        return ResponseEntity.noContent().build();
+    }
+}
