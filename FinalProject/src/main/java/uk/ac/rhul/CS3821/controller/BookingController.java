@@ -15,3 +15,18 @@ import uk.ac.rhul.CS3821.service.BookingService;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+@RestController
+@RequestMapping("/bookings")
+public class BookingController {
+
+    private final BookingService bookingService;
+
+    public BookingController(BookingService bookingService) {
+        this.bookingService = bookingService;
+    }
+
+    @PostMapping
+    public ResponseEntity<Booking> createBooking(@RequestBody Booking booking) {
+        return ResponseEntity.ok(bookingService.createBooking(booking));
+    }
+
