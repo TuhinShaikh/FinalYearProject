@@ -35,3 +35,22 @@ public class ParkingSpotController {
         Optional<ParkingSpot> spot = parkingSpotService.getSpotById(id);
         return spot.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
+    
+    @GetMapping
+    public ResponseEntity<List<ParkingSpot>> getAllSpots() {
+        return ResponseEntity.ok(parkingSpotService.getAllSpots());
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ParkingSpot> updateSpot(@PathVariable UUID id, @RequestBody ParkingSpot updatedSpot) {
+        updatedSpot.setSpotId(id);
+        return ResponseEntity.ok(parkingSpotService.updateSpot(updatedSpot));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteSpot(@PathVariable UUID id) {
+        parkingSpotService.deleteSpot(id);
+        return ResponseEntity.noContent().build();
+    }
+}
+
