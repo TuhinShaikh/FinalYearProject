@@ -47,21 +47,21 @@
       <scope>test</scope>
     </dependency>
 
-    <!-- Spring Boot Starter (core) -->
+    <!-- Spring Boot Core -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter</artifactId>
       <version>${spring.boot.version}</version>
     </dependency>
 
-    <!-- Spring Boot Starter Web (REST controllers, ResponseEntity, etc.) -->
+    <!-- Spring Boot Web -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
       <version>${spring.boot.version}</version>
     </dependency>
 
-    <!-- Spring Boot Starter Data JPA -->
+    <!-- Spring Boot JPA -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -76,21 +76,42 @@
       <scope>runtime</scope>
     </dependency>
 
-    <!-- Hibernate Core (explicit, though comes transitively) -->
+    <!-- Hibernate Core -->
     <dependency>
       <groupId>org.hibernate.orm</groupId>
       <artifactId>hibernate-core</artifactId>
       <version>6.6.1.Final</version>
     </dependency>
 
-    <!-- Validation (for @NotNull, @Email, etc.) -->
+    <!-- Validation -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-validation</artifactId>
       <version>${spring.boot.version}</version>
     </dependency>
 
-    <!-- Spring Boot Starter Test (integration tests) -->
+    <!-- Spring Boot Security -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-security</artifactId>
+      <version>${spring.boot.version}</version>
+    </dependency>
+
+    <!-- Spring Security Crypto (BCrypt) -->
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-crypto</artifactId>
+      <version>6.3.0</version>
+    </dependency>
+
+    <!-- JWT (JJWT) -->
+    <dependency>
+      <groupId>io.jsonwebtoken</groupId>
+      <artifactId>jjwt</artifactId>
+      <version>0.9.1</version>
+    </dependency>
+
+    <!-- Spring Boot Test -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-test</artifactId>

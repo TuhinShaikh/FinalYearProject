@@ -3,11 +3,13 @@ package uk.ac.rhul.CS3821.model;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.UUID;
+
+// ✅ FIXED: Added missing import
+import uk.ac.rhul.CS3821.model.ParkingSpot;
 
 @Entity
 @Table(name = "bookings")
@@ -102,7 +104,6 @@ public class Booking {
     public int getVersionNumber() { return versionNumber; }
     public void setVersionNumber(int versionNumber) { this.versionNumber = versionNumber; }
 
-    
     public String getConfirmationCode() { return confirmationCode; }
     public void setConfirmationCode(String confirmationCode) { this.confirmationCode = confirmationCode; }
 

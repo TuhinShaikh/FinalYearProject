@@ -7,4 +7,4 @@ import java.util.UUID;
 
 public interface ParkingSpotRepository extends JpaRepository<ParkingSpot, UUID> {
     // Custom queries can be added here if needed
-}sss
+}

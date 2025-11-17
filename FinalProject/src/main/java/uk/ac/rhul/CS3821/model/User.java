@@ -22,7 +22,7 @@ public class User {
     private String email;
 
     @Column(name = "hashed_password", nullable = false)
-    private String hashedPassword;
+    private String password;
 
     @Column(name = "first_name", nullable = false, length = 100)
     private String firstName;
@@ -50,9 +50,9 @@ public class User {
     // Constructors
     public User() {}
 
-    public User(String email, String hashedPassword, String firstName, String lastName, String phoneNumber) {
+    public User(String email, String password, String firstName, String lastName, String phoneNumber) {
         this.email = email;
-        this.hashedPassword = hashedPassword;
+        this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
         this.phoneNumber = phoneNumber;
@@ -65,8 +65,8 @@ public class User {
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
 
-    public String getHashedPassword() { return hashedPassword; }
-    public void setHashedPassword(String hashedPassword) { this.hashedPassword = hashedPassword; }
+    public String getPassword() { return password; }
+    public void setPassword(String password) { this.password = password; }
 
     public String getFirstName() { return firstName; }
     public void setFirstName(String firstName) { this.firstName = firstName; }
