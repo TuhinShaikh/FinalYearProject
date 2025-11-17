@@ -8,7 +8,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.util.UUID;
 
-// ✅ FIXED: Added missing import
+// Added missing import
 import uk.ac.rhul.CS3821.model.ParkingSpot;
 
 @Entity
