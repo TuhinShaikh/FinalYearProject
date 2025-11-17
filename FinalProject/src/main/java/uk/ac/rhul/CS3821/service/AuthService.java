@@ -7,5 +7,18 @@ import uk.ac.rhul.CS3821.repository.UserRepository;
 
 import java.util.Optional;
 
+
 @Service
 public class AuthService {
+
+    private final UserRepository userRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
+
+    public AuthService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = new BCryptPasswordEncoder();
+    }
+
+    public void register(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        userRepository.save(user);
