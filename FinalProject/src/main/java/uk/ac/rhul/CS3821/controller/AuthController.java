@@ -5,7 +5,6 @@ import org.springframework.web.bind.annotation.*;
 import uk.ac.rhul.CS3821.model.User;
 import uk.ac.rhul.CS3821.service.AuthService;
 
-
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
@@ -21,3 +20,10 @@ public class AuthController {
         authService.register(user);
         return ResponseEntity.ok("User registered successfully");
     }
+
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@RequestBody User user) {
+        String token = authService.login(user.getEmail(), user.getPassword());
+        return ResponseEntity.ok(token);
+    }
+}
