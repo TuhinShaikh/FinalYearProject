@@ -7,7 +7,6 @@ import uk.ac.rhul.CS3821.repository.UserRepository;
 
 import java.util.Optional;
 
-
 @Service
 public class AuthService {
 
@@ -22,17 +21,20 @@ public class AuthService {
     public void register(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
-        public String login(String email, String rawPassword) {
-            Optional<User> userOpt = userRepository.findByEmail(email);
-            if (userOpt.isEmpty()) {
-                throw new RuntimeException("Invalid credentials");
-            }
+    }
 
-            User user = userOpt.get();
-            if (!passwordEncoder.matches(rawPassword, user.getPassword())) {
-                throw new RuntimeException("Invalid credentials");
-            }
-
-            // Placeholder token — replace with JWT later
-            return "mock-token-for-" + user.getUserId();
+    public String login(String email, String rawPassword) {
+        Optional<User> userOpt = userRepository.findByEmail(email);
+        if (userOpt.isEmpty()) {
+            throw new RuntimeException("Invalid credentials");
         }
+
+        User user = userOpt.get();
+        if (!passwordEncoder.matches(rawPassword, user.getPassword())) {
+            throw new RuntimeException("Invalid credentials");
+        }
+
+        // Placeholder token — replace with JWT later
+        return "mock-token-for-" + user.getUserId();
+    }
+}
