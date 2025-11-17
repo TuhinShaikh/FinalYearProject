@@ -12,7 +12,7 @@ import java.util.UUID;
 public class JwtUtil {
 
     private final String SECRET_KEY = "your-secret-key"; // Replace with env var in production
-    private final long EXPIRAssTION_MS = 86400000; // 24 hours
+    private final long EXPIRATION_MS = 86400000; // 24 hours
 
     public String generateToken(UUID userId) {
         return Jwts.builder()
@@ -21,16 +21,19 @@ public class JwtUtil {
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_MS))
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
                 .compact();
-        public boolean validateToken(String token) {
-            try {
-                Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token);
-                return true;
-            } catch (Exception e) {
-                return false;
-            }
-        }
+    }
 
-        public UUID extractUserId(String token) {
-            Claims claims = Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();
-            return UUID.fromString(claims.getSubject());
+    public boolean validateToken(String token) {
+        try {
+            Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token);
+            return true;
+        } catch (Exception e) {
+            return false;
         }
+    }
+
+    public UUID extractUserId(String token) {
+        Claims claims = Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();
+        return UUID.fromString(claims.getSubject());
+    }
+}
