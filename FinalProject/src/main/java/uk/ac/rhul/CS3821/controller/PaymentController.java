@@ -9,3 +9,13 @@ import uk.ac.rhul.CS3821.service.PaymentService;
 @RestController
 @RequestMapping("/payments")
 public class PaymentController {
+	@RestController
+	@RequestMapping("/payments")
+	public class PaymentController {
+
+	    private final PaymentService paymentService;
+
+	    public PaymentController(PaymentService paymentService) {
+	        this.paymentService = paymentService;
+	    }
+
