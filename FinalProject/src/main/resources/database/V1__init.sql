@@ -11,3 +11,10 @@ CREATE TABLE users (
 );
 
 
+
+CREATE TABLE parking_spots (
+    id UUID PRIMARY KEY,
+    location VARCHAR(255) NOT NULL,
+    available BOOLEAN DEFAULT TRUE
+);
+
