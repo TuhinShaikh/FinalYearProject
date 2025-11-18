@@ -9,24 +9,22 @@ import uk.ac.rhul.CS3821.service.PaymentService;
 @RestController
 @RequestMapping("/payments")
 public class PaymentController {
-	@RestController
-	@RequestMapping("/payments")
-	public class PaymentController {
 
-	    private final PaymentService paymentService;
+    private final PaymentService paymentService;
 
-	    public PaymentController(PaymentService paymentService) {
-	        this.paymentService = paymentService;
-	    }
+    public PaymentController(PaymentService paymentService) {
+        this.paymentService = paymentService;
+    }
 
-	    @PostMapping("/charge")
-	    public ResponseEntity<PaymentResponse> charge(@RequestBody PaymentRequest request) {
-	        PaymentResponse response = paymentService.processPayment(request);
-	        return ResponseEntity.ok(response);
-	    }
+    @PostMapping("/charge")
+    public ResponseEntity<PaymentResponse> charge(@RequestBody PaymentRequest request) {
+        PaymentResponse response = paymentService.processPayment(request);
+        return ResponseEntity.ok(response);
+    }
 
-	    @GetMapping("/{id}")
-	    public ResponseEntity<PaymentResponse> getStatus(@PathVariable String id) {
-	        PaymentResponse response = paymentService.getPaymentStatus(id);
-	        return ResponseEntity.ok(response);
-	    }
+    @GetMapping("/{id}")
+    public ResponseEntity<PaymentResponse> getStatus(@PathVariable String id) {
+        PaymentResponse response = paymentService.getPaymentStatus(id);
+        return ResponseEntity.ok(response);
+    }
+}
