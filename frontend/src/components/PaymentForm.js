@@ -21,3 +21,6 @@ function PaymentForm() {
       <button type="submit">Pay</button>
     </form>
   );
+}
+
+export default PaymentForm;
