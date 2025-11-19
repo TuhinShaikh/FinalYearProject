@@ -1,57 +1,127 @@
-01/10/2025
-Project officially begins. Reviewed project specification and requirements for Advanced Web Development module. Identified Tottenham Hotspur Stadium parking and transport management as project focus. Started preliminary research on similar applications.
-02/10/2025
-Researched React vs Angular vs Vue.js for frontend framework selection. Examined community support, performance benchmarks, and learning curves. Leaning towards React due to strong ecosystem and WebSocket support.
-03/10/2025
-Investigated backend technologies: Node.js/Express vs Django vs Ruby on Rails. Compared async capabilities, API development ease, and scalability. Node.js appears most suitable for real-time features required in this project.
-04/10/2025
-Studied TfL Unified API documentation. Reviewed available endpoints for journey planning, service disruptions, and station information. Noted rate limiting considerations (500 requests/minute). Registered for API key.
-05/10/2025
-Researched Square Payment API integration. Examined tokenization workflow and PCI compliance requirements. Reviewed sandbox environment setup procedures. Downloaded sample code for payment processing.
-06/10/2025
-Deep dive into WCAG 2.1 accessibility guidelines. Focused on Level AA compliance requirements: color contrast ratios, keyboard navigation, ARIA labels, and screen reader compatibility. Installed WAVE and axe DevTools for testing.
-07/10/2025
-Drafted project plan document. Wrote abstract outlining project goals, main/secondary objectives, and advanced features. Completed timeline breakdown for Term 1 with weekly milestones. Identified risks and mitigation strategies. Submitted project plan at 14:00.
-08/10/2025
-Finalized technology comparison matrix. Created detailed comparison table evaluating React, Angular, Vue.js against criteria: performance, learning curve, community support, WebSocket integration, and ecosystem maturity. React selected with justification.
-09/10/2025
-Initialized project repository structure. Set up Git repository and pushed initial commit to GitHub. Created .gitignore file and README with project overview. Configured Node.js project with package.json. Installed initial dependencies: Express, PostgreSQL driver, bcrypt, jsonwebtoken.
-10/10/2025
-Started database design. Created initial ER diagram for core entities: Users, ParkingSpots, Bookings, Payments, and TransportRoutes. Identified relationships and cardinality. Began normalization analysis to ensure 3NF compliance.
-11/10/2025
-Continued database design work. Refined ER diagram with additional entities for accessibility preferences and user profiles. Defined primary keys, foreign keys, and constraints. Documented data dictionary with field types and descriptions.
-12/10/2025
-Researched design patterns applicable to project. Studied MVC pattern for overall architecture, Repository pattern for data access abstraction, Observer pattern for WebSocket real-time updates, and Factory pattern for object creation. Documented pattern selection rationale.
-13/10/2025
-Drafted N-tier architecture diagram showing clear separation: Presentation Layer (React), Application Layer (Node.js/Express API), and Data Layer (PostgreSQL + Redis). Documented responsibilities and communication protocols between layers.
-14/10/2025
-Started creating UML class diagrams for system architecture. Designed Observer pattern implementation with Observer interface and ObserverManager singleton. Planned UserObserver and NotificationObserver as concrete implementations for real-time updates.
-15/10/2025
-Continued UML design work. Created class diagram for core domain models: User, Booking, ParkingSpot, Payment, and TransportRoute classes. Defined attributes with data types and visibility modifiers. Identified key methods for each class.
-16/10/2025
-Refined UML relationships between classes. Established composition relationship between Booking and Payment (booking owns payment). Set up association between User and Booking with multiplicity (* bookings per user). Added AccessibilityPreference class with one-to-one relationship to User.
-17/10/2025
-Added method signatures to UML classes. For Booking: createBooking(), cancelBooking(), updateBooking(). For ParkingSpot: checkAvailability(), reserveSpot(), releaseSpot(). For User: register(), login(), updateProfile(). For Payment: processPayment(), refund(), verifyToken().
-18/10/2025
-Designed Repository pattern classes in UML. Created UserRepository, BookingRepository, ParkingSpotRepository, and PaymentRepository interfaces. Each includes standard CRUD methods: findById(), findAll(), save(), update(), delete(). Will implement these for database abstraction.
-19/10/2025
-Added TransportRoute class details to UML. Attributes: routeId, origin, destination, journeyTime, transportType (ENUM), isAccessible, disruptionStatus. Methods: calculateRoute(), getDisruptions(), filterStepFreeRoutes(). Planned integration point with TfL API service layer.
-20/10/2025
-Finalized UML class diagram with all relationships clearly marked. Used standard UML notation: filled diamond for composition, open diamond for aggregation, solid lines for associations, dashed arrows for dependencies, hollow triangle for inheritance. Documented diagram in project documentation folder.
-21/10/2025
-Created sequence diagram for booking flow. Shows interaction: User → BookingController → BookingService → ParkingSpotRepository → Database → PaymentService → Square API. Identified all steps from availability check through payment confirmation. Useful for implementation planning.
-22/10/2025
-Developed sequence diagram for authentication flow. Mapped out: User → AuthController → AuthService → UserRepository → Database → JWT generation → Response. Included error handling paths for invalid credentials and expired tokens.
-23/10/2025
-Created use case diagrams for main system functions. Identified actors: Regular User, Disabled User, Admin, External Systems (TfL API, Square API). Defined use cases: Book Parking, Plan Journey, Make Payment, Manage Accessibility Preferences, View Analytics (admin).
-24/10/2025
-Drew component diagram showing system architecture layers. Presented tier: React components (ParkingMap, BookingForm, TransportPlanner, AccessibilitySettings). Application tier: REST API controllers and service layer. Data tier: PostgreSQL, Redis cache, External APIs. Connected components with interfaces.
-25/10/2025
-Completed all UML documentation. Created deployment diagram showing production architecture: React app deployed to Vercel, Node.js API on Heroku, PostgreSQL database on Heroku Postgres, Redis on Redis Cloud. Documented all diagrams in project wiki. Ready to begin implementation.
-26/10/2025
-Started implementation phase! Installed PostgreSQL locally and configured development environment. Created database stadium_parking_db. Set up connection pooling with pg library. Created .env file for environment variables (DB credentials, JWT secret). Tested database connectivity successfully.
-27/10/2025
-Implemented database schema SQL scripts. Created Users table with constraints: email UNIQUE, password NOT NULL, created_at DEFAULT NOW(). Created ParkingSpots table with CHECK constraint on price (must be > 0). Set up migration scripts folder for version control of schema changes.
+# Development Diary
 
-28/10/2025
-Created Bookings table with foreign keys to Users and ParkingSpots. Added ON DELETE CASCADE for referential integrity. Implemented version_number column for optimistic locking to prevent double-booking conflicts. Created indexes on frequently queried columns: user_id, spot_id, booking_date, status. Seeded database with 50 test parking spots (30 standard, 15 accessible, 5 premium). Committed schema files to GitHub.
+# 01/10/2025:  
+Defined system scope and drafted initial requirements for stadium parking management.
+
+# 02/10/2025:  
+Outlined ER diagram with User, Booking, ParkingSpot, and Payment entities.
+
+# 03/10/2025:  
+Sketched N-tier architecture and backend module boundaries.
+
+# 04/10/2025:  
+Set up Spring Boot project structure and base packages.
+
+# 05/10/2025:  
+Initialized Git repo with atomic commit workflow and README.
+
+# 07/10/2025:  
+Created User.java, Booking.java, ParkingSpot.java with UUIDs and JPA annotations.
+
+# 08/10/2025:  
+Added validation annotations and timestamp fields to entities.
+
+# 09/10/2025:  
+Implemented UserRepository, BookingRepository, ParkingSpotRepository.
+
+# 10/10/2025:  
+Configured PostgreSQL connection pooling and application.yml.
+
+# 11/10/2025:  
+Verified schema generation and UUID mapping in database.
+
+# 13/10/2025:  
+Started AuthController and AuthService scaffolding.
+
+# 14/10/2025:  
+Implemented register/login endpoints with DTOs and validation.
+
+# 15/10/2025:  
+Integrated BCrypt password hashing and email format checks.
+
+# 16/10/2025:  
+Built JwtUtil.java for token generation and parsing.
+
+# 17/10/2025:  
+Added SecurityConfig.java with JWT filter and protected route setup.
+
+# 19/10/2025:  
+Created UserDetailsServiceImpl to bridge Spring Security and User entity.
+
+# 20/10/2025:  
+Refactored User.java to expose getPassword() for Spring Security.
+
+# 21/10/2025:  
+Fixed pom.xml with Spring Security, JJWT, and BCrypt dependencies.
+
+# 22/10/2025:  
+Cleaned build path, resolved Booking.java and ParkingSpotRepository errors.
+
+# 23/10/2025:  
+Verified authentication flow with Postman and JWT headers.
+
+# 25/10/2025:  
+Added exception handling for invalid credentials and missing users.
+
+# 26/10/2025:  
+Prepared SQL migration script for initial schema (V1__init.sql).
+
+# 27/10/2025:  
+Wrote integration test stubs for AuthController and BookingController.
+
+# 28/10/2025:  
+Started frontend scaffolding with React and Vite.
+
+# 29/10/2025:  
+Created NavigationBar.js and App.js with routing.
+
+# 31/10/2025:  
+Designed CarParkMap.js layout and placeholder for real-time updates.
+
+# 01/11/2025:  
+Integrated Square payment sandbox keys in backend.
+
+# 02/11/2025:  
+Created PaymentController.java and PaymentService.java.
+
+# 03/11/2025:  
+Built React payment form and connected to backend endpoint.
+
+# 04/11/2025:  
+Added payment success/failure handling and transaction logging.
+
+# 05/11/2025:  
+Verified end-to-end payment flow with test card.
+
+# 07/11/2025:  
+Started JourneyController and JourneyService for TfL API integration.
+
+# 08/11/2025:  
+Parsed TfL journey results and mapped to DTOs.
+
+# 09/11/2025:  
+Extended JourneyService with Greater Anglia disruption alerts.
+
+# 10/11/2025:  
+Added WCAG 2.1 accessibility features to React components.
+
+# 11/11/2025:  
+Created RideController and RideService for Uber API integration.
+
+# 12/11/2025:  
+Built React ride-booking UI and connected to backend.
+
+# 13/11/2025:  
+Added error handling middleware for all backend routes.
+
+# 14/11/2025:  
+Wrote integration tests for UserController and ParkingSpotController.
+
+# 15/11/2025:  
+Finalized all controller/service layers for Week 4 deliverables.
+
+# 16/11/2025:  
+Cleaned up commit history and tagged milestone v0.4.
+
+# 17/11/2025:  
+Prepared interim report and presentation outline.
