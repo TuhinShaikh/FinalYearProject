@@ -8,7 +8,14 @@ public class PaymentRequest {
         return cardNumber;
     }
 
+    public String getCardNumber() {
+        return cardNumber;
+    }
+
     public void setCardNumber(String cardNumber) {
         this.cardNumber = cardNumber;
     }
 
+    public int getAmount() {
+        return amount;
+    }
