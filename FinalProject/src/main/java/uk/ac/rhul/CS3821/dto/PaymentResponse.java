@@ -12,6 +12,12 @@ public class PaymentResponse {
     public void setTransactionId(String transactionId) {
         this.transactionId = transactionId;
     }
+    
+    public PaymentResponse(String transactionId, String status, String message) {
+        this.transactionId = transactionId;
+        this.status = status;
+        this.message = message;
+    }
 
     public String getStatus() {
         return status;
