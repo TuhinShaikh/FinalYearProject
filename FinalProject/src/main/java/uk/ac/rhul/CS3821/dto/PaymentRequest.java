@@ -8,10 +8,6 @@ public class PaymentRequest {
         return cardNumber;
     }
 
-    public String getCardNumber() {
-        return cardNumber;
-    }
-
     public void setCardNumber(String cardNumber) {
         this.cardNumber = cardNumber;
     }
@@ -19,3 +15,8 @@ public class PaymentRequest {
     public int getAmount() {
         return amount;
     }
+
+    public void setAmount(int amount) {
+        this.amount = amount;
+    }
+}
