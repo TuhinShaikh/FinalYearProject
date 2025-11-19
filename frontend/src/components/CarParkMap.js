@@ -1,4 +1,5 @@
-x
+import React from 'react';
+
 function CarParkMap() {
   return (
     <div className="car-park-map">
@@ -7,3 +8,5 @@ function CarParkMap() {
     </div>
   );
 }
+
+export default CarParkMap;
