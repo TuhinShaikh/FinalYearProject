@@ -2,7 +2,6 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 function NavigationBar() {
-function NavigationBar() {
   return (
     <nav className="navbar">
       <ul className="nav-links">
@@ -12,3 +11,5 @@ function NavigationBar() {
     </nav>
   );
 }
+
+export default NavigationBar;
