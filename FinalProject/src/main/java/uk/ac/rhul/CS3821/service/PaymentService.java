@@ -8,14 +8,12 @@ import uk.ac.rhul.CS3821.dto.PaymentResponse;
 public class PaymentService {
 
     public PaymentResponse processPayment(PaymentRequest request) {
-        // TODO: Integrate with Square API sandbox
-        // For now, simulate a successful transaction
-        return new PaymentResponse("txn_12345", "SUCCESS", "Payment processed successfully");
+        // TODO: integrate Square API sandbox
+        return new PaymentResponse("txn123", "SUCCESS", "Payment processed");
     }
 
-    public PaymentResponse getPaymentStatus(String id) {
-        // TODO: Query Square API or transaction log
-        // For now, simulate a lookup
-        return new PaymentResponse(id, "SUCCESS", "Payment status retrieved");
+    public PaymentResponse getPaymentStatus(String transactionId) {
+        // TODO: query Square API or logs
+        return new PaymentResponse(transactionId, "SUCCESS", "Status retrieved");
     }
 }
