@@ -15,3 +15,14 @@ export default function RegisterUser(): JSX.Element {
       alert("Registration failed.");
     }
   };
+  return (
+    <div className="register-page" style={{ maxWidth: "400px", margin: "auto" }}>
+      <h2>Register</h2>
+      <form onSubmit={handleSubmit}>
+        <input
+          type="text"
+          placeholder="Name"
+          value={name}
+          onChange={e => setName(e.target.value)}
+          required
+        />
