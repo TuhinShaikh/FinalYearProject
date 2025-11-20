@@ -5,7 +5,6 @@ export default function RegisterUser(): JSX.Element {
   const [name, setName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
@@ -14,3 +13,5 @@ export default function RegisterUser(): JSX.Element {
       window.location.href = "/login";
     } catch {
       alert("Registration failed.");
+    }
+  };
