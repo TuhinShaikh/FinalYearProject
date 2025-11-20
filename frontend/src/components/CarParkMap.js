@@ -1,12 +1,34 @@
-import React from 'react';
+import React, { useEffect, useState } from "react";
+import ParkingSlotGrid from "./ParkingSlotGrid";
+import useSocket from "../hooks/useSocket";
 
-function CarParkMap() {
+export default function CarParkMap() {
+  const [slots, setSlots] = useState([]);
+  const socket = useSocket("/api/slots");
+
+  useEffect(() => {
+    fetch("/api/slots")
+      .then(res => res.json())
+      .then(data => setSlots(data));
+
+    socket.on("slotUpdate", updatedSlot => {
+      setSlots(prev =>
+        prev.map(slot => (slot.id === updatedSlot.id ? updatedSlot : slot))
+      );
+    });
+
+    return () => socket.disconnect();
+  }, [socket]);
+
+  const handleSelect = slot => {
+    alert(`Selected slot ${slot.id} — status: ${slot.status}`);
+    // TODO: trigger CheckoutForm.jsx
+  };
+
   return (
-    <div className="car-park-map">
+    <div>
       <h2>Car Park Map</h2>
-      {/* TODO: Integrate backend API for live parking spot data */}
+      <ParkingSlotGrid slots={slots} onSelect={handleSelect} />
     </div>
   );
 }
-
-export default CarParkMap;
