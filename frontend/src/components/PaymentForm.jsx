@@ -1,50 +1,21 @@
-import React, { useState } from 'react';
-import api from '../utils/api';
-import './PaymentForm.css';
+import React, { useState } from "react";
 
-function PaymentForm() {
-  const [cardNumber, setCardNumber] = useState('');
-  const [expiry, setExpiry] = useState('');
-  const [cvv, setCvv] = useState('');
+export default function PaymentForm() {
+  const [status, setStatus] = useState("");
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    try {
-      const payload = { cardNumber, expiry, cvv };
-      const response = await api.post('/payment', payload);
-      console.log('Payment successful:', response.data);
-    } catch (err) {
-      console.error('Payment failed:', err.response?.data || err.message);
-    }
+    setStatus("✅ Payment successful (demo)");
   };
 
   return (
-    <form className="payment-form" onSubmit={handleSubmit}>
-      <h2>Payment Details</h2>
-      <input
-        type="text"
-        placeholder="Card Number"
-        value={cardNumber}
-        onChange={(e) => setCardNumber(e.target.value)}
-        required
-      />
-      <input
-        type="text"
-        placeholder="Expiry (MM/YY)"
-        value={expiry}
-        onChange={(e) => setExpiry(e.target.value)}
-        required
-      />
-      <input
-        type="password"
-        placeholder="CVV"
-        value={cvv}
-        onChange={(e) => setCvv(e.target.value)}
-        required
-      />
-      <button type="submit">Pay Now</button>
+    <form onSubmit={handleSubmit} className="payment-form">
+      <h2>Payment</h2>
+      <input type="text" placeholder="Card Number" />
+      <input type="text" placeholder="Expiry Date" />
+      <input type="text" placeholder="CVV" />
+      <button type="submit">Pay</button>
+      <p>{status}</p>
     </form>
   );
 }
-
-export default PaymentForm;

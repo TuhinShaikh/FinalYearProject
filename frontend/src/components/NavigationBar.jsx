@@ -1,19 +1,19 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import './NavigationBar.css';
+import React from "react";
+import { Link } from "react-router-dom";
+import "./NavigationBar.css";
 
-function NavigationBar() {
+export default function NavigationBar() {
   return (
     <nav className="navbar">
-      <ul className="nav-list">
-        <li><Link to="/">Home</Link></li>
-        <li><Link to="/booking">Booking</Link></li>
-        <li><Link to="/payment">Payment</Link></li>
-        <li><Link to="/map">Car Park Map</Link></li>
-        <li><Link to="/accessibility">Accessibility</Link></li>
-      </ul>
+<div className="navbar-logo">Three Point Lane</div>
+      <div className="navbar-links">
+        <Link to="/login">Login</Link>
+        <Link to="/register">Register</Link>
+        <Link to="/booking">Booking</Link>
+        <Link to="/payment">Payment</Link>
+        <Link to="/map">Car Park Map</Link>
+        <Link to="/accessibility">Accessibility</Link>
+      </div>
     </nav>
   );
 }
-
-export default NavigationBar;
