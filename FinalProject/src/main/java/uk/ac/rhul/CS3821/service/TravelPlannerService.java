@@ -18,3 +18,23 @@ public class TravelPlannerService {
                 "cost", 3.50,
                 "recommended", !badWeather
         ));
+
+        options.add(Map.of(
+                "mode", "Train",
+                "provider", "Greater Anglia",
+                "estimatedTime", 40,
+                "cost", 7.20,
+                "recommended", accessibilityNeeded
+        ));
+
+        options.add(Map.of(
+                "mode", "Car",
+                "provider", "Uber",
+                "estimatedTime", 30,
+                "cost", 15.00,
+                "recommended", badWeather
+        ));
+
+        return options;
+    }
+}
