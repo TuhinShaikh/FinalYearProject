@@ -17,3 +17,16 @@ public class TravelController {
         this.travelPlannerService = travelPlannerService;
     }
 
+    @PostMapping("/recommend")
+    public ResponseEntity<List<Map<String, Object>>> recommend(
+            @RequestParam String origin,
+            @RequestParam String destination,
+            @RequestParam(defaultValue = "false") boolean accessibilityNeeded,
+            @RequestParam(defaultValue = "false") boolean badWeather) {
+
+        List<Map<String, Object>> recommendations =
+                travelPlannerService.getRecommendations(origin, destination, accessibilityNeeded, badWeather);
+
+        return ResponseEntity.ok(recommendations);
+    }
+}
