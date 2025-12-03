@@ -2,39 +2,38 @@ package uk.ac.rhul.CS3821.service;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import uk.ac.rhul.CS3821.dto.AccessTokenResponse;
 import uk.ac.rhul.CS3821.model.User;
 import uk.ac.rhul.CS3821.repository.UserRepository;
-
-import java.util.Optional;
+import uk.ac.rhul.CS3821.security.JwtUtil;
 
 @Service
 public class AuthService {
 
     private final UserRepository userRepository;
+    private final JwtUtil jwtUtil;
     private final BCryptPasswordEncoder passwordEncoder;
 
-    public AuthService(UserRepository userRepository) {
+    public AuthService(UserRepository userRepository, JwtUtil jwtUtil, BCryptPasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
-        this.passwordEncoder = new BCryptPasswordEncoder();
+        this.jwtUtil = jwtUtil;
+        this.passwordEncoder = passwordEncoder;
     }
 
-    public void register(User user) {
+    public AccessTokenResponse register(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userRepository.save(user);
+        User saved = userRepository.save(user);
+        String token = jwtUtil.generateToken(saved.getUserId().toString());
+        return new AccessTokenResponse(token);
     }
 
-    public String login(String email, String rawPassword) {
-        Optional<User> userOpt = userRepository.findByEmail(email);
-        if (userOpt.isEmpty()) {
+    public AccessTokenResponse login(User user) {
+        User existing = userRepository.findByUsername(user.getUsername())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        if (!passwordEncoder.matches(user.getPassword(), existing.getPassword())) {
             throw new RuntimeException("Invalid credentials");
         }
-
-        User user = userOpt.get();
-        if (!passwordEncoder.matches(rawPassword, user.getPassword())) {
-            throw new RuntimeException("Invalid credentials");
-        }
-
-        // Placeholder token — replace with JWT later
-        return "mock-token-for-" + user.getUserId();
+        String token = jwtUtil.generateToken(existing.getUserId().toString());
+        return new AccessTokenResponse(token);
     }
 }
