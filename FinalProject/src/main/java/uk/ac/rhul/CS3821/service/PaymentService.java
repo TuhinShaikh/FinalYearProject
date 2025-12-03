@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
+
 @Service
 public class PaymentService {
 
@@ -24,3 +25,28 @@ public class PaymentService {
                 .accessToken(accessToken)
                 .build();
     }
+
+    public CreatePaymentResponse createPayment(int amountCents, String sourceId) throws Exception {
+        Money money = new Money.Builder()
+                .amount(amountCents)
+                .currency("GBP")
+                .build();
+
+        CreatePaymentRequest request = new CreatePaymentRequest.Builder(sourceId, UUID.randomUUID().toString(), money)
+                .build();
+
+        return squareClient.getPaymentsApi().createPayment(request);
+    }
+
+    public RefundPaymentResponse refundPayment(String paymentId, int amountCents) throws Exception {
+        Money money = new Money.Builder()
+                .amount(amountCents)
+                .currency("GBP")
+                .build();
+
+        RefundPaymentRequest request = new RefundPaymentRequest.Builder(UUID.randomUUID().toString(), paymentId, money)
+                .build();
+
+        return squareClient.getRefundsApi().refundPayment(request);
+    }
+}
