@@ -2,7 +2,8 @@ package uk.ac.rhul.CS3821.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import uk.ac.rhul.CS3821.model.User;
+import uk.ac.rhul.CS3821.dto.AccessTokenResponse;
+import uk.ac.rhul.CS3821.dto.User;
 import uk.ac.rhul.CS3821.service.AuthService;
 
 @RestController
@@ -16,14 +17,14 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody User user) {
-        authService.register(user);
-        return ResponseEntity.ok("User registered successfully");
+    public ResponseEntity<AccessTokenResponse> register(@RequestBody User user) {
+        AccessTokenResponse token = authService.register(user);
+        return ResponseEntity.ok(token);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody User user) {
-        String token = authService.login(user.getEmail(), user.getPassword());
+    public ResponseEntity<AccessTokenResponse> login(@RequestBody User user) {
+        AccessTokenResponse token = authService.login(user);
         return ResponseEntity.ok(token);
     }
 }
