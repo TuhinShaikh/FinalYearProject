@@ -18,3 +18,12 @@ public AuthService(UserRepository userRepository, JwtUtil jwtUtil, BCryptPasswor
     this.jwtUtil = jwtUtil;
     this.passwordEncoder = passwordEncoder;
 }
+public AccessTokenResponse login(User user) {
+    User existing = userRepository.findByUsername(user.getUsername())
+            .orElseThrow(() -> new RuntimeException("User not found"));
+    if (!passwordEncoder.matches(user.getPassword(), existing.getPassword())) {
+        throw new RuntimeException("Invalid credentials");
+    }
+    String token = jwtUtil.generateToken(existing.getUserId().toString());
+    return new AccessTokenResponse(token);
+}
