@@ -16,3 +16,18 @@ public class ParkingAvailabilityPublisher {
     public SseEmitter subscribe() {
         SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);
         emitters.add(emitter);
+        emitter.onCompletion(() -> emitters.remove(emitter));
+        emitter.onTimeout(() -> emitters.remove(emitter));
+        return emitter;
+    }
+
+    public void publishUpdate(ParkingSpot spot) {
+        for (SseEmitter emitter : emitters) {
+            try {
+                emitter.send(spot);
+            } catch (IOException e) {
+                emitters.remove(emitter);
+            }
+        }
+    }
+}
