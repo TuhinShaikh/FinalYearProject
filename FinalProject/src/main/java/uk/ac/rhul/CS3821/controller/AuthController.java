@@ -11,7 +11,6 @@ import uk.ac.rhul.CS3821.service.AuthService;
 public class AuthController {
 
     private final AuthService authService;
-    private final AuthService authService;
 
     public AuthController(AuthService authService) {
         this.authService = authService;
@@ -23,3 +22,9 @@ public class AuthController {
         return ResponseEntity.ok(token);
     }
 
+    @PostMapping("/login")
+    public ResponseEntity<AccessTokenResponse> login(@RequestBody User user) {
+        AccessTokenResponse token = authService.login(user);
+        return ResponseEntity.ok(token);
+    }
+}
