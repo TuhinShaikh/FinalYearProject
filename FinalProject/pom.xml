@@ -111,6 +111,13 @@
       <version>0.9.1</version>
     </dependency>
 
+    <!-- Square SDK (for PaymentService) -->
+    <dependency>
+      <groupId>com.squareup</groupId>
+      <artifactId>square</artifactId>
+      <version>20.1.0</version>
+    </dependency>
+
     <!-- Spring Boot Test -->
     <dependency>
       <groupId>org.springframework.boot</groupId>

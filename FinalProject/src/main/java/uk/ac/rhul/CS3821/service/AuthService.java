@@ -27,7 +27,7 @@ public class AuthService {
         return new AccessTokenResponse(token);
     }
 
-    public AccessTokenResponse login(User user) {
+    public AccessTokenResponse login(uk.ac.rhul.CS3821.dto.User user) {
         User existing = userRepository.findByUsername(user.getUsername())
                 .orElseThrow(() -> new RuntimeException("User not found"));
         if (!passwordEncoder.matches(user.getPassword(), existing.getPassword())) {
@@ -36,4 +36,9 @@ public class AuthService {
         String token = jwtUtil.generateToken(existing.getUserId().toString());
         return new AccessTokenResponse(token);
     }
+
+	public AccessTokenResponse login(uk.ac.rhul.CS3821.dto.User user) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

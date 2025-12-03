@@ -6,6 +6,10 @@ import com.squareup.square.models.Money;
 import com.squareup.square.models.CreatePaymentResponse;
 import com.squareup.square.models.RefundPaymentRequest;
 import com.squareup.square.models.RefundPaymentResponse;
+
+import uk.ac.rhul.CS3821.dto.PaymentRequest;
+import uk.ac.rhul.CS3821.dto.PaymentResponse;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -49,4 +53,14 @@ public class PaymentService {
 
         return squareClient.getRefundsApi().refundPayment(request);
     }
+
+	public PaymentResponse processPayment(PaymentRequest request) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public PaymentResponse getPaymentStatus(String id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

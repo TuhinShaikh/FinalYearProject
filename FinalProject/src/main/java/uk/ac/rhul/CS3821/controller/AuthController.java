@@ -17,7 +17,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<AccessTokenResponse> register(@RequestBody User user) {
+    public ResponseEntity<AccessTokenResponse> register(@RequestBody uk.ac.rhul.CS3821.model.User user) {
         AccessTokenResponse token = authService.register(user);
         return ResponseEntity.ok(token);
     }
