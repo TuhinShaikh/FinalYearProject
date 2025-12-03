@@ -8,3 +8,13 @@ import uk.ac.rhul.CS3821.repository.UserRepository;
 import uk.ac.rhul.CS3821.security.JwtUtil;
 
 @Service
+
+private final UserRepository userRepository;
+private final JwtUtil jwtUtil;
+private final BCryptPasswordEncoder passwordEncoder;
+
+public AuthService(UserRepository userRepository, JwtUtil jwtUtil, BCryptPasswordEncoder passwordEncoder) {
+    this.userRepository = userRepository;
+    this.jwtUtil = jwtUtil;
+    this.passwordEncoder = passwordEncoder;
+}
