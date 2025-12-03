@@ -11,3 +11,15 @@ import uk.ac.rhul.CS3821.service.AuthService;
 public class AuthController {
 
     private final AuthService authService;
+    private final AuthService authService;
+
+    public AuthController(AuthService authService) {
+        this.authService = authService;
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<AccessTokenResponse> register(@RequestBody User user) {
+        AccessTokenResponse token = authService.register(user);
+        return ResponseEntity.ok(token);
+    }
+
