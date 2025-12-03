@@ -1,19 +1,27 @@
 package uk.ac.rhul.CS3821.service;
 
+import com.squareup.square.SquareClient;
+import com.squareup.square.models.CreatePaymentRequest;
+import com.squareup.square.models.Money;
+import com.squareup.square.models.CreatePaymentResponse;
+import com.squareup.square.models.RefundPaymentRequest;
+import com.squareup.square.models.RefundPaymentResponse;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import uk.ac.rhul.CS3821.dto.PaymentRequest;
-import uk.ac.rhul.CS3821.dto.PaymentResponse;
+
+import java.util.UUID;
 
 @Service
 public class PaymentService {
 
-    public PaymentResponse processPayment(PaymentRequest request) {
-        // TODO: integrate Square API sandbox
-        return new PaymentResponse("txn123", "SUCCESS", "Payment processed");
-    }
+    private final SquareClient squareClient;
 
-    public PaymentResponse getPaymentStatus(String transactionId) {
-        // TODO: query Square API or logs
-        return new PaymentResponse(transactionId, "SUCCESS", "Status retrieved");
+    public PaymentService(@Value("${square.accessToken}") String accessToken,
+                          @Value("${square.environment}") String environment) {
+        this.squareClient = new SquareClient.Builder()
+                .environment(environment.equalsIgnoreCase("sandbox") ?
+                        com.squareup.square.Environment.SANDBOX :
+                        com.squareup.square.Environment.PRODUCTION)
+                .accessToken(accessToken)
+                .build();
     }
-}
