@@ -33,11 +33,8 @@ public class PaymentService {
                 .build();
     }
 
-        public CreatePaymentResponse createPayment(int amountCents, String sourceId) throws ApiException, IOException {
-                Money money = new Money.Builder()
-                                .amount((long) amountCents)
-                                .currency("GBP")
-                                .build();
+    public CreatePaymentResponse createPayment(int amountCents, String sourceId) throws ApiException, IOException {
+        Money money = buildMoney(amountCents);
 
         CreatePaymentRequest request = new CreatePaymentRequest.Builder(sourceId, UUID.randomUUID().toString(), money)
                 .build();
@@ -45,11 +42,8 @@ public class PaymentService {
         return squareClient.getPaymentsApi().createPayment(request);
     }
 
-        public RefundPaymentResponse refundPayment(String paymentId, int amountCents) throws ApiException, IOException {
-                Money money = new Money.Builder()
-                                .amount((long) amountCents)
-                                .currency("GBP")
-                                .build();
+    public RefundPaymentResponse refundPayment(String paymentId, int amountCents) throws ApiException, IOException {
+        Money money = buildMoney(amountCents);
 
         RefundPaymentRequest request = new RefundPaymentRequest.Builder(UUID.randomUUID().toString(), paymentId, money)
                 .build();
@@ -57,37 +51,37 @@ public class PaymentService {
         return squareClient.getRefundsApi().refundPayment(request);
     }
 
-        public PaymentResponse processPayment(PaymentRequest request) {
-                try {
-                        CreatePaymentResponse response = createPayment(request.getAmount(), request.getCardNumber());
-                        if (response.getErrors() != null && !response.getErrors().isEmpty()) {
-                                return new PaymentResponse(null, "FAILED", response.getErrors().get(0).getDetail());
-                        }
-                        if (response.getPayment() == null) {
-                                return new PaymentResponse(null, "FAILED", "Payment gateway returned no payment data.");
-                        }
-                        return new PaymentResponse(response.getPayment().getId(),
-                                        response.getPayment().getStatus(),
-                                        "Payment processed successfully.");
-                } catch (ApiException | IOException ex) {
-                        return new PaymentResponse(null, "FAILED", ex.getMessage());
-                }
+    public PaymentResponse processPayment(PaymentRequest request) {
+        try {
+            CreatePaymentResponse response = createPayment(request.getAmount(), request.getCardNumber());
+            if (response.getErrors() != null && !response.getErrors().isEmpty()) {
+                return new PaymentResponse(null, "FAILED", response.getErrors().get(0).getDetail());
+            }
+            if (response.getPayment() == null) {
+                return new PaymentResponse(null, "FAILED", "Payment gateway returned no payment data.");
+            }
+            return new PaymentResponse(response.getPayment().getId(),
+                    response.getPayment().getStatus(),
+                    "Payment processed successfully.");
+        } catch (ApiException | IOException ex) {
+            return new PaymentResponse(null, "FAILED", ex.getMessage());
         }
+    }
 
-        public PaymentResponse getPaymentStatus(String id) {
-                try {
-                        GetPaymentResponse response = squareClient.getPaymentsApi().getPayment(id);
-                        if (response.getErrors() != null && !response.getErrors().isEmpty()) {
-                                return new PaymentResponse(id, "FAILED", response.getErrors().get(0).getDetail());
-                        }
-                        if (response.getPayment() == null) {
-                                return new PaymentResponse(id, "UNKNOWN", "Payment record was not found.");
-                        }
-                        return new PaymentResponse(response.getPayment().getId(),
-                                        response.getPayment().getStatus(),
-                                        "Payment status retrieved.");
-                } catch (ApiException | IOException ex) {
-                        return new PaymentResponse(id, "FAILED", ex.getMessage());
-                }
+    public PaymentResponse getPaymentStatus(String id) {
+        try {
+            GetPaymentResponse response = squareClient.getPaymentsApi().getPayment(id);
+            if (response.getErrors() != null && !response.getErrors().isEmpty()) {
+                return new PaymentResponse(id, "FAILED", response.getErrors().get(0).getDetail());
+            }
+            if (response.getPayment() == null) {
+                return new PaymentResponse(id, "UNKNOWN", "Payment record was not found.");
+            }
+            return new PaymentResponse(response.getPayment().getId(),
+                    response.getPayment().getStatus(),
+                    "Payment status retrieved.");
+        } catch (ApiException | IOException ex) {
+            return new PaymentResponse(id, "FAILED", ex.getMessage());
         }
+    }
 }
