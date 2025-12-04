@@ -6,3 +6,12 @@ public class JourneyPlanResponse {
     private String duration;
 
     public JourneyPlanResponse() {}
+
+    public JourneyPlanResponse(String origin, String destination, String duration) {
+        this.origin = origin;
+        this.destination = destination;
+        this.duration = duration;
+    }
+
+    // getters and setters
+}
