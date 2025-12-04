@@ -1,8 +1,8 @@
 package uk.ac.rhul.CS3821.service;
 
-public class GreaterAngliaService {
-
-}
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.http.ResponseEntity;
 
 @Service
 public class GreaterAngliaService {
@@ -16,3 +16,10 @@ public class GreaterAngliaService {
         ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
         return response.getBody();
     }
+
+    public String getDisruptions() {
+        String url = BASE_URL + "/disruptions";
+        ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+        return response.getBody();
+    }
+}
