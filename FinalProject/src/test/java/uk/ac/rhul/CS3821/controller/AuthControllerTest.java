@@ -20,11 +20,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest(
-    classes = FinalProjectApplication.class,
-    webEnvironment = SpringBootTest.WebEnvironment.MOCK
-)
-@AutoConfigureMockMvc(addFilters = false) // disables Spring Security filters
+@SpringBootTest(classes = FinalProjectApplication.class)
+@AutoConfigureMockMvc(addFilters = false) // disable Spring Security filters for tests
 public class AuthControllerTest {
 
     @Autowired
@@ -38,7 +35,8 @@ public class AuthControllerTest {
     @Test
     void testRegisterReturnsAccessToken() throws Exception {
         RegisterRequest request = new RegisterRequest("Test User", "test@example.com", "password");
-        when(authService.register(any(RegisterRequest.class))).thenReturn(new AccessTokenResponse("mockToken"));
+        when(authService.register(any(RegisterRequest.class)))
+                .thenReturn(new AccessTokenResponse("mockToken"));
 
         mockMvc.perform(post("/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -50,7 +48,8 @@ public class AuthControllerTest {
     @Test
     void testLoginReturnsAccessToken() throws Exception {
         LoginRequest request = new LoginRequest("test@example.com", "password");
-        when(authService.login(any(LoginRequest.class))).thenReturn(new AccessTokenResponse("mockToken"));
+        when(authService.login(any(LoginRequest.class)))
+                .thenReturn(new AccessTokenResponse("mockToken"));
 
         mockMvc.perform(post("/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
