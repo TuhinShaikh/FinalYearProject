@@ -8,6 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import uk.ac.rhul.CS3821.FinalProjectApplication;
 import uk.ac.rhul.CS3821.dto.AccessTokenResponse;
 import uk.ac.rhul.CS3821.dto.LoginRequest;
 import uk.ac.rhul.CS3821.dto.RegisterRequest;
@@ -19,8 +20,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
-@AutoConfigureMockMvc
+@SpringBootTest(
+    classes = FinalProjectApplication.class,
+    webEnvironment = SpringBootTest.WebEnvironment.MOCK
+)
+@AutoConfigureMockMvc(addFilters = false) // disables Spring Security filters
 public class AuthControllerTest {
 
     @Autowired
