@@ -1,40 +1,107 @@
-.form-container {
-  max-width: 400px;
-  margin: 100px auto;
-  padding: 30px;
-  background-color: white;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-}
-
-.form-container h2 {
-  text-align: center;
-  margin-bottom: 20px;
-  color: #001489; /* Spurs navy */
-}
-
-.form-container input {
+/* Reset */
+body, html, #root {
+  margin: 0;
+  padding: 0;
   width: 100%;
-  padding: 12px;
-  margin-bottom: 15px;
-  border: 1px solid #aaa;
-  border-radius: 4px;
-  font-size: 14px;
+  height: 100%;
+  font-family: Arial, sans-serif;
 }
 
-.form-container button {
-  width: 100%;
-  padding: 12px;
-  background-color: #001489;
+/* App container */
+.app {
+  width: 100vw;
+  overflow-x: hidden;
   color: white;
+}
+
+/* Hero section */
+.hero {
+  width: 100vw;
+  height: 100vh;
+  background-image: url('/background.jpg'); /* place image in public/ */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* Navbar at top */
+.navbar {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.navbar button {
+  background: rgba(255, 255, 255, 0.2);
   border: none;
-  border-radius: 4px;
-  font-size: 16px;
+  padding: 0.5rem 1rem;
+  color: white;
+  border-radius: 5px;
   cursor: pointer;
 }
 
-.form-container button:hover {
-  background-color: #0033a0;
+/* Centered welcome */
+.hero-overlay {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  z-index: 1;
+}
+
+.hero-overlay h1 {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.auth-buttons {
+  display: flex;
+  gap: 1rem;
+}
+
+.auth-buttons button {
+  padding: 0.8rem 1.5rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.login {
+  background-color: #4caf50;
+}
+
+.guest {
+  background-color: #2196f3;
+}
+
+/* Scrollable content */
+.content {
+  background-color: #121212;
+  padding: 2rem;
+  min-height: 100vh;
+  text-align: center;
+}
+
+.main-buttons h2 {
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+.main-buttons button {
+  margin: 0.5rem;
+  padding: 0.7rem 1.5rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white;
 }

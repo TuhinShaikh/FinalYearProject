@@ -1,9 +1,10 @@
 package uk.ac.rhul.CS3821.controller;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import uk.ac.rhul.CS3821.dto.PaymentRequest;
-import uk.ac.rhul.CS3821.dto.PaymentResponse;
 import uk.ac.rhul.CS3821.service.PaymentService;
 
 @RestController
@@ -16,15 +17,23 @@ public class PaymentController {
         this.paymentService = paymentService;
     }
 
-    @PostMapping("/charge")
-    public ResponseEntity<PaymentResponse> charge(@RequestBody PaymentRequest request) {
-        PaymentResponse response = paymentService.processPayment(request);
-        return ResponseEntity.ok(response);
+    @PostMapping
+    public ResponseEntity<?> createPayment(@RequestBody PaymentRequest request) {
+        try {
+            return ResponseEntity.ok(paymentService.createPayment(
+                request.getAmountCents(), request.getSourceId()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<PaymentResponse> getStatus(@PathVariable String id) {
-        PaymentResponse response = paymentService.getPaymentStatus(id);
-        return ResponseEntity.ok(response);
+    @PostMapping("/{id}/refund")
+    public ResponseEntity<?> refundPayment(@PathVariable String id,
+                                           @RequestParam int amountCents) {
+        try {
+            return ResponseEntity.ok(paymentService.refundPayment(id, amountCents));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 }

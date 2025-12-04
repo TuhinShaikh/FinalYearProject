@@ -1,40 +1,44 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-
-import NavigationBar from "./components/NavigationBar";
-import LoginPage from "./pages/LoginPage";
-import RegisterUser from "./pages/RegisterUser";
-import CheckoutForm from "./components/CheckoutForm";
-import CarParkMap from "./components/CarParkMap";
-import PaymentForm from "./components/PaymentForm";
+import "./App.css";
 
 function App() {
   return (
-    <Router>
-      <NavigationBar />
-      <div style={{ marginTop: "80px", padding: "20px" }}>
-        <Routes>
-          {/* Redirect root to login */}
-          <Route path="/" element={<Navigate to="/login" />} />
+    <div className="app">
+      {/* Hero Section */}
+      <div className="hero">
+        {/* Top Navbar */}
+        <nav className="navbar">
+          <button>Home</button>
+          <button>Dashboard</button>
+          <button>Profile</button>
+          <button>Great Anglia</button>
+          <button>TfL</button>
+        </nav>
 
-          {/* Auth pages */}
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterUser />} />
-
-          {/* Core features */}
-          <Route path="/checkout" element={<CheckoutForm />} />
-          <Route path="/map" element={<CarParkMap />} />
-          <Route path="/payment" element={<PaymentForm />} />
-
-          {/* Placeholder routes */}
-          <Route path="/booking" element={<div>Booking page coming soon</div>} />
-          <Route path="/accessibility" element={<div>Accessibility info coming soon</div>} />
-
-          {/* Fallback for unknown paths */}
-          <Route path="*" element={<Navigate to="/login" />} />
-        </Routes>
+        {/* Centered Welcome */}
+        <div className="hero-overlay">
+          <h1>Hi</h1>
+          <div className="auth-buttons">
+            <button className="login">Login</button>
+            <button className="guest">Continue as Guest</button>
+          </div>
+        </div>
       </div>
-    </Router>
+
+      {/* Scrollable Content */}
+      <div className="content">
+        <section className="main-buttons">
+          <h2>Parking</h2>
+          <button>Book Parking Spot</button>
+          <button>Cancel Booking</button>
+          <button>View My Bookings</button>
+
+          <h2>Payments</h2>
+          <button>Pay Now</button>
+          <button>Refund</button>
+        </section>
+      </div>
+    </div>
   );
 }
 

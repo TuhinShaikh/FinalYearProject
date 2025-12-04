@@ -1,22 +1,29 @@
 package uk.ac.rhul.CS3821.dto;
 
 public class PaymentRequest {
-    private String cardNumber;
-    private int amount;
+    private int amountCents;
+    private String sourceId;
 
-    public String getCardNumber() {
-        return cardNumber;
+    public PaymentRequest() {}
+
+    public PaymentRequest(int amountCents, String sourceId) {
+        this.amountCents = amountCents;
+        this.sourceId = sourceId;
     }
 
-    public void setCardNumber(String cardNumber) {
-        this.cardNumber = cardNumber;
+    public int getAmountCents() {
+        return amountCents;
     }
 
-    public int getAmount() {
-        return amount;
+    public void setAmountCents(int amountCents) {
+        this.amountCents = amountCents;
     }
 
-    public void setAmount(int amount) {
-        this.amount = amount;
+    public String getSourceId() {
+        return sourceId;
+    }
+
+    public void setSourceId(String sourceId) {
+        this.sourceId = sourceId;
     }
 }
