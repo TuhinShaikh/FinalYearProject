@@ -29,7 +29,7 @@ function App() {
             </nav>
 
             <div className="hero-overlay">
-              <h1>HT</h1>
+              <h1>Welcome</h1>
               <div className="auth-buttons">
                 <Link to="/login"><button className="login">Login</button></Link>
                 <Link to="/guest"><button className="guest">Continue as Guest</button></Link>
@@ -47,6 +47,26 @@ function App() {
               <h2>Payments</h2>
               <Link to="/payment"><button>Pay Now</button></Link>
               <Link to="/refund"><button>Refund</button></Link>
+
+              <h2>Events</h2>
+              <div className="event-list">
+                <div className="event-card">
+                  <p><strong>Tottenham vs Arsenal</strong> — 14 Dec 2025</p>
+                  <Link to="/buy-tickets"><button>Buy Tickets</button></Link>
+                </div>
+                <div className="event-card">
+                  <p><strong>Tottenham vs West Ham</strong> — 18 Dec 2025</p>
+                  <Link to="/buy-tickets"><button>Buy Tickets</button></Link>
+                </div>
+                <div className="event-card">
+                  <p><strong>50 Cent Concert</strong> — 22 Dec 2025</p>
+                  <Link to="/buy-tickets"><button>Buy Tickets</button></Link>
+                </div>
+                <div className="event-card">
+                  <p><strong>50 Cent Afterparty</strong> — 22 Dec 2025 (Late)</p>
+                  <Link to="/buy-tickets"><button>Buy Tickets</button></Link>
+                </div>
+              </div>
             </section>
           </div>
         </>
@@ -63,6 +83,7 @@ function App() {
           <Route path="/cancel" element={<h2 style={{ color: "white" }}>Cancel Booking</h2>} />
           <Route path="/my-bookings" element={<h2 style={{ color: "white" }}>My Bookings</h2>} />
           <Route path="/refund" element={<h2 style={{ color: "white" }}>Refund Page</h2>} />
+          <Route path="/buy-tickets" element={<h2 style={{ color: "white" }}>Buy Tickets Page</h2>} />
         </Routes>
       )}
     </div>

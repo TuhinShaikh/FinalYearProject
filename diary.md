@@ -125,3 +125,60 @@ Cleaned up commit history and tagged milestone v0.4.
 
 # 17/11/2025:  
 Prepared interim report and presentation outline.
+Here’s the continuation of your **Development Diary** entries in the same format, carrying on from **17/11/2025** up to **05/12/2025 (presentation submission)**:
+
+
+
+#**18/11/2025:**  
+Drafted slides covering aims, background, algorithms, and implementation progress.  
+
+#*19/11/2025:**  
+Added system overview diagram showing integration of controllers, APIs, database, and frontend.  
+
+*#*20/11/2025:**  
+Expanded theory slides to include architectural trade‑offs (JWT vs OAuth, PostgreSQL vs MySQL, Square vs Stripe).  
+
+**21/11/2025:**  
+Created design decisions slide to justify technology choices for security, scalability, and usability.  
+
+**22/11/2025:**  
+Refined algorithm slides with clearer rationale for Dijkstra (transport reliability) and A* (grid efficiency).  
+
+**23/11/2025:**  
+Cleaned placeholder slides and standardized monochrome theme across all presentation pages.  
+
+**24/11/2025:**  
+Added future steps slide: push notifications, season ticket management, admin dashboard with analytics.  
+
+**25/11/2025:**  
+Drafted summary slide highlighting workflow hygiene, UI polish, and integration achievements.  
+
+**26/11/2025:**  
+Prepared assessment criteria alignment slide to map presentation content to marking scheme.  
+
+**27/11/2025:**  
+Rehearsed presentation delivery, ensuring clear explanations and timing within allowed limits.  
+
+**28/11/2025:**  
+Finalized spoken script for each slide, focusing on clarity and defence of decisions.  
+
+**29/11/2025:**  
+Conducted mock Q&A session to practice defending architectural and algorithmic choices.  
+
+**30/11/2025:**  
+Reviewed accessibility compliance in slides and ensured diagrams were readable for all audiences.  
+
+**01/12/2025:**  
+Polished visuals, added subtle animations for transitions, and checked consistency of fonts and layout.  
+
+**02/12/2025:**  
+Integrated closing slide with impact statement and invitation for questions.  
+
+**03/12/2025:**  
+Ran through full presentation with stopwatch to confirm delivery within time limit.  
+
+**04/12/2025:**  
+Made final edits to slides based on supervisor feedback; ensured all criteria explicitly addressed.  
+
+**05/12/2025:**  
+Submitted completed presentation deck and development diary for assessment.  
