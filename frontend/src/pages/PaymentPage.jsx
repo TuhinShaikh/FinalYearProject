@@ -1,11 +1,10 @@
-import React from 'react';
-import CheckoutForm from '../components/CheckoutForm';
+import React from "react";
+import PaymentForm from "../components/PaymentForm";
 
 export default function PaymentPage() {
   return (
-    <main role="main" aria-label="Payment Page">
-      <h1>Secure Payment</h1>
-      <CheckoutForm />
-    </main>
+    <div style={{ padding: "2rem" }}>
+      <PaymentForm />
+    </div>
   );
 }
