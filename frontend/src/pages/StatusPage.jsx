@@ -1,58 +1,75 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 
 export default function StatusPage() {
-  const [status, setStatus] = useState({
-    trains: "Loading...",
-    tfl: "Loading...",
-    parking: "Loading...",
-    weather: "Loading...",
-    crowd: "Loading...",
-  });
+  const [gaStatus, setGaStatus] = useState([]);
+  const [tflStatus, setTflStatus] = useState([]);
+  const [uberSurge, setUberSurge] = useState(null);
 
   useEffect(() => {
-    // ✅ Mock live data (looks real for demo)
-    const timer = setTimeout(() => {
-      setStatus({
-        trains: "Greater Anglia running normally ✅",
-        tfl: "Victoria Line delays ❗ (signal failure at Seven Sisters)",
-        parking: "32 / 100 spaces available 🅿️",
-        weather: "Light rain 🌧️ — minor delays expected",
-        crowd: "Moderate congestion near South Stand 🚶‍♂️🚶‍♀️",
-      });
-    }, 800);
-
-    return () => clearTimeout(timer);
+    fetchGreaterAnglia();
+    fetchTfL();
+    fetchUber();
   }, []);
+
+  // ✅ Greater Anglia (your backend)
+  const fetchGreaterAnglia = async () => {
+    try {
+      const res = await axios.get("http://localhost:8080/api/trains/greater-anglia");
+      setGaStatus(res.data.trainServices || []);
+    } catch (err) {
+      console.error("GA error", err);
+    }
+  };
+
+  // ✅ TfL Line Status
+  const fetchTfL = async () => {
+    try {
+      const res = await axios.get("https://api.tfl.gov.uk/Line/Mode/tube/Status");
+      setTflStatus(res.data);
+    } catch (err) {
+      console.error("TfL error", err);
+    }
+  };
+
+  // ✅ Uber surge (mocked)
+  const fetchUber = () => {
+    setUberSurge((Math.random() * 2 + 1).toFixed(2)); // 1.0x – 3.0x
+  };
 
   return (
     <main style={{ padding: "2rem", color: "white" }}>
-      <h1>Live Stadium Status</h1>
-      <p>Real‑time updates for travel, parking, and crowd flow.</p>
+      <h1>Live Status Dashboard</h1>
 
-      <div style={{ marginTop: "2rem" }}>
-        <StatusCard title="Greater Anglia" value={status.trains} />
-        <StatusCard title="TfL Underground" value={status.tfl} />
-        <StatusCard title="Parking Availability" value={status.parking} />
-        <StatusCard title="Weather Impact" value={status.weather} />
-        <StatusCard title="Crowd Congestion" value={status.crowd} />
-      </div>
+      {/* ✅ Greater Anglia */}
+      <section style={{ marginTop: "2rem" }}>
+        <h2>Greater Anglia Status</h2>
+        {gaStatus.length === 0 && <p>No live data.</p>}
+        {gaStatus.map((t, i) => (
+          <div key={i} style={{ background: "#222", padding: "1rem", marginBottom: "1rem" }}>
+            <strong>{t.destination[0].locationName}</strong>
+            <p>Scheduled: {t.std}</p>
+            <p>Expected: {t.etd}</p>
+          </div>
+        ))}
+      </section>
+
+      {/* ✅ TfL */}
+      <section style={{ marginTop: "2rem" }}>
+        <h2>TfL Tube Status</h2>
+        {tflStatus.map((line, i) => (
+          <div key={i} style={{ background: "#222", padding: "1rem", marginBottom: "1rem" }}>
+            <strong>{line.name}</strong>
+            <p>{line.lineStatuses[0].statusSeverityDescription}</p>
+          </div>
+        ))}
+      </section>
+
+      {/* ✅ Uber */}
+      <section style={{ marginTop: "2rem" }}>
+        <h2>Uber Surge Pricing</h2>
+        <p>Current surge: <strong>{uberSurge}x</strong></p>
+      </section>
     </main>
-  );
-}
-
-function StatusCard({ title, value }) {
-  return (
-    <div
-      style={{
-        backgroundColor: "#222",
-        padding: "1rem",
-        marginBottom: "1rem",
-        borderRadius: "8px",
-        border: "1px solid #444",
-      }}
-    >
-      <h2 style={{ margin: 0 }}>{title}</h2>
-      <p style={{ marginTop: "0.5rem" }}>{value}</p>
-    </div>
   );
 }

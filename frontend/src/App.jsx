@@ -7,7 +7,8 @@ import BookingAndPaymentPage from "./pages/BookingAndPaymentPage";
 import JourneyPlannerPage from "./pages/JourneyPlannerPage";
 import RideOptionsPage from "./pages/RideOptionsPage";
 import AccessibilityPage from "./pages/AccessibilityPage";
-import TravelPlanner from "./pages/TravelPlanner"; // optional if you use it
+import TravelPlanner from "./pages/TravelPlanner"; 
+import StatusPage from "./pages/StatusPage";   // ✅ NEW REAL LIVE STATUS PAGE
 
 export default function App() {
   const location = useLocation();
@@ -41,6 +42,7 @@ export default function App() {
 
           {/* ✅ ROUTES */}
           <Routes>
+
             {/* ✅ MAIN DASHBOARD */}
             <Route
               path="/home"
@@ -67,14 +69,12 @@ export default function App() {
             <Route path="/rides" element={<RideOptionsPage />} />
             <Route path="/accessibility" element={<AccessibilityPage />} />
 
-            {/* ✅ OPTIONAL: TravelPlanner if you want it */}
+            {/* ✅ OPTIONAL: TravelPlanner */}
             <Route path="/travel" element={<TravelPlanner />} />
 
-            {/* ✅ Placeholder Live Status */}
-            <Route
-              path="/status"
-              element={<h2 style={{ color: "white", padding: "2rem" }}>Live Status Coming Soon</h2>}
-            />
+            {/* ✅ REAL LIVE STATUS PAGE */}
+            <Route path="/status" element={<StatusPage />} />
+
           </Routes>
         </>
       )}
