@@ -2,7 +2,6 @@ package uk.ac.rhul.CS3821.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.*;
 
 @RestController
@@ -20,7 +19,6 @@ public class TravelController {
     }
     static class Route { List<String> path; double cost; Route(List<String> p,double c){path=p;cost=c;} }
 
-    // --- Dijkstra only ---
     static Route dijkstra(Graph g,String start,String goal){
         Map<String,Double> dist=new HashMap<>();
         Map<String,String> prev=new HashMap<>();
@@ -40,6 +38,7 @@ public class TravelController {
         }
         return new Route(List.of(),Double.POSITIVE_INFINITY);
     }
+
     static Route reconstruct(Map<String,String> prev,String goal,double cost){
         List<String> path=new ArrayList<>(); String cur=goal;
         while(cur!=null){path.add(cur);cur=prev.get(cur);} Collections.reverse(path);

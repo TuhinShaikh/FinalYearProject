@@ -9,9 +9,6 @@ import com.squareup.square.models.Money;
 import com.squareup.square.models.RefundPaymentRequest;
 import com.squareup.square.models.RefundPaymentResponse;
 
-import uk.ac.rhul.CS3821.dto.PaymentRequest;
-import uk.ac.rhul.CS3821.dto.PaymentResponse;
-
 import com.squareup.square.api.PaymentsApi;
 import com.squareup.square.api.RefundsApi;
 
@@ -38,7 +35,6 @@ public class PaymentService {
                 .build();
     }
 
-    /** Create a payment using Square API */
     public CreatePaymentResponse createPayment(int amountCents, String sourceId)
             throws ApiException, IOException {
 
@@ -50,13 +46,13 @@ public class PaymentService {
         CreatePaymentRequest request = new CreatePaymentRequest.Builder(
                 sourceId,
                 UUID.randomUUID().toString())
+                .amountMoney(money)
                 .build();
 
         PaymentsApi paymentsApi = squareClient.getPaymentsApi();
         return paymentsApi.createPayment(request);
     }
 
-    /** Refund a payment using Square API */
     public RefundPaymentResponse refundPayment(String paymentId, int amountCents)
             throws ApiException, IOException {
 
@@ -68,19 +64,10 @@ public class PaymentService {
         RefundPaymentRequest request = new RefundPaymentRequest.Builder(
                 UUID.randomUUID().toString(),
                 money)
+                .paymentId(paymentId)
                 .build();
 
         RefundsApi refundsApi = squareClient.getRefundsApi();
         return refundsApi.refundPayment(request);
     }
-
-	public PaymentResponse processPayment(PaymentRequest request) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public PaymentResponse getPaymentStatus(String id) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }
