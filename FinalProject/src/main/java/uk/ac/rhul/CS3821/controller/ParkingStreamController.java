@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import uk.ac.rhul.CS3821.service.ParkingAvailabilityPublisher;
 
+// Streams real-time parking availability updates to subscriber clients
 @RestController
 public class ParkingStreamController {
 
@@ -14,6 +15,7 @@ public class ParkingStreamController {
         this.publisher = publisher;
     }
 
+    // Subscribe the browser to Server-Sent Events for spot updates
     @GetMapping("/spots/stream")
     public SseEmitter streamSpots() {
         return publisher.subscribe();

@@ -1,5 +1,6 @@
 package uk.ac.rhul.CS3821.dto;
 
+// Response that mirrors what Square returns so the UI can show transaction results
 public class PaymentResponse {
     private String transactionId;
     private String status;

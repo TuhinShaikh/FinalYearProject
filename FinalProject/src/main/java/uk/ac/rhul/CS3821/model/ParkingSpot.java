@@ -9,6 +9,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "parking_spots")
+// Catalog of parking positions that guests can reserve through the UI
 public class ParkingSpot {
 
     @Id
@@ -17,12 +18,14 @@ public class ParkingSpot {
     private UUID spotId;
 
     @Column(name = "spot_name", nullable = false, length = 100)
+    // Display name shown on the booking grid
     private String spotName;
 
     @Column(name = "spot_description")
     private String spotDescription;
 
     @Column(name = "is_reserved", nullable = false)
+    // Tells the frontend whether a spot is currently held for a booking
     private boolean isReserved;
 
     @CreationTimestamp

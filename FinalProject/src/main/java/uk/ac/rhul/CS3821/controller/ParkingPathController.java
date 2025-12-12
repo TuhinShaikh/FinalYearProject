@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.*;
 import java.util.function.ToDoubleBiFunction;
 
+// Offers a simple A* planner so we can trace the best path through the parking grid
 @RestController
 @RequestMapping("/api/parking")
 public class ParkingPathController {
@@ -22,6 +23,7 @@ public class ParkingPathController {
     static class Route { List<String> path; double cost; Route(List<String> p,double c){path=p;cost=c;} }
 
     // --- A* only ---
+    // Navigate from start to goal using A* and the provided heuristic
     static Route aStar(Graph g,String start,String goal,ToDoubleBiFunction<Node,Node> h){
         Map<String,Double> gScore=new HashMap<>(),fScore=new HashMap<>();
         Map<String,String> came=new HashMap<>();
@@ -50,19 +52,21 @@ public class ParkingPathController {
     }
 
     // Manhattan heuristic for grid
+    // Manhattan distance assumes grid-based slots for the estimator
     static ToDoubleBiFunction<Node,Node> manhattan = (n,g)->Math.abs(n.x-g.x)+Math.abs(n.y-g.y);
 
+    // Expose the computed node path and step cost so the frontend can animate a route
     @GetMapping("/path")
     public ResponseEntity<?> path(@RequestParam String start,@RequestParam String goal){
         Graph g=new Graph();
-        // Build a 3x3 parking grid
+        // Build a small 3x3 parking grid for the demo
         for(int i=0;i<3;i++){
             for(int j=0;j<3;j++){
                 String id="S"+i+j;
                 g.addNode(new Node(id,i,j));
             }
         }
-        // Connect adjacent slots
+        // Wire the grid so neighbors are reachable from each other
         for(int i=0;i<3;i++){
             for(int j=0;j<3;j++){
                 String id="S"+i+j;

@@ -4,12 +4,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.*;
 
+// Supplies mocked Greater Anglia departures for the journey planner and status page
 @RestController
 @RequestMapping("/api/trains")
 public class TrainController {
 
-    @GetMapping("/greater-anglia")
-    public ResponseEntity<?> getGreaterAnglia(@RequestParam String station) {
+        // Return simple fake departures keyed by the CRS code so the frontend can show data immediately
+        @GetMapping("/greater-anglia")
+        public ResponseEntity<?> getGreaterAnglia(@RequestParam String station) {
 
         Map<String, Object> train1 = Map.of(
                 "destination", List.of(Map.of("locationName", "Seven Sisters")),

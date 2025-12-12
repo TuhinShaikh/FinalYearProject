@@ -8,7 +8,7 @@ import JourneyPlannerPage from "./pages/JourneyPlannerPage";
 import RideOptionsPage from "./pages/RideOptionsPage";
 import AccessibilityPage from "./pages/AccessibilityPage";
 import TravelPlanner from "./pages/TravelPlanner";
-import StatusPage from "./pages/StatusPage";   // ✅ NEW REAL LIVE STATUS PAGE
+import StatusPage from "./pages/StatusPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterUser from "./pages/RegisterUser";
 
@@ -19,7 +19,7 @@ export default function App() {
   return (
     <div className="app">
 
-      {/* ✅ FIRST PAGE: LOGIN OR GUEST */}
+      {/* Landing options for login/register/guest */}
       {isLoginPage ? (
         <div className="hero">
           <div className="hero-overlay">
@@ -33,7 +33,7 @@ export default function App() {
         </div>
       ) : (
         <>
-          {/* ✅ NAVBAR AFTER LOGIN */}
+          {/* Primary navigation exposed once authenticated */}
           <nav className="navbar">
             <Link to="/home"><button>Home</button></Link>
             <Link to="/journey"><button>Greater Anglia</button></Link>
@@ -43,10 +43,10 @@ export default function App() {
             <Link to="/accessibility"><button>Accessibility</button></Link>
           </nav>
 
-          {/* ✅ ROUTES */}
+          {/* Application routes */}
           <Routes>
 
-            {/* ✅ MAIN DASHBOARD */}
+                  {/* Primary dashboard shortcuts grouped by category */}
             <Route
               path="/home"
               element={
@@ -66,7 +66,7 @@ export default function App() {
               }
             />
 
-            {/* ✅ INDIVIDUAL PAGES */}
+              {/* Individual page components */}
             <Route path="/booking" element={<BookingAndPaymentPage />} />
             <Route path="/journey" element={<JourneyPlannerPage />} />
             <Route path="/rides" element={<RideOptionsPage />} />
@@ -75,10 +75,10 @@ export default function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterUser />} />
 
-            {/* ✅ OPTIONAL: TravelPlanner */}
+              {/* Optional travel-planner feature */}
             <Route path="/travel" element={<TravelPlanner />} />
 
-            {/* ✅ REAL LIVE STATUS PAGE */}
+            {/* Real TfL status dashboard */}
             <Route path="/status" element={<StatusPage />} />
 
           </Routes>

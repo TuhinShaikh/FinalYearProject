@@ -9,38 +9,50 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * CRUD operations for users; transactions ensure replace/save happens within a consistent boundary.
+ */
 @Service
 @Transactional
 public class UserService {
 
     private final UserRepository userRepository;
 
-    // Constructor injection
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
-    // Create a new user
+    /**
+     * Persists a new user entity into the database and returns the managed instance.
+     */
     public User createUser(User user) {
         return userRepository.save(user);
     }
 
-    // Find user by UUID
+    /**
+     * Fetches a user by their identifier, using Optional to signal absence.
+     */
     public Optional<User> getUserById(UUID userId) {
         return userRepository.findById(userId);
     }
 
-    // Retrieve all users
+    /**
+     * Lists every registered user; useful for admin views or diagnostics.
+     */
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
-    // Update existing user
+    /**
+     * Updates an existing record by reusing save semantics with an attached entity.
+     */
     public User updateUser(User user) {
         return userRepository.save(user);
     }
 
-    // Delete user by UUID
+    /**
+     * Removes a user by id; throws if the id is unknown.
+     */
     public void deleteUser(UUID userId) {
         userRepository.deleteById(userId);
     }

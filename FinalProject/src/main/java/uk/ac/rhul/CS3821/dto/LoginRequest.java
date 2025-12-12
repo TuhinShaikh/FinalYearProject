@@ -1,5 +1,6 @@
 package uk.ac.rhul.CS3821.dto;
 
+// Carries the email and password payload from the frontend when a user tries to log in
 public class LoginRequest {
     private String email;
     private String password;

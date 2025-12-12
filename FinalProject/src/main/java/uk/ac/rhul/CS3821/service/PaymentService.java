@@ -18,12 +18,18 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.util.UUID;
 
+/**
+ * Wraps the Square SDK so our backend can create payments and refunds with consistent config.
+ */
 @Service
 public class PaymentService {
 
     private final SquareClient squareClient;
 
-    public PaymentService(
+        /**
+         * Configures the Square client from application properties and locks in the chosen environment.
+         */
+        public PaymentService(
             @Value("${square.accessToken}") String accessToken,
             @Value("${square.environment}") String environment) {
 
@@ -35,6 +41,9 @@ public class PaymentService {
                 .build();
     }
 
+    /**
+     * Builds a payment request for the supplied amount and source token.
+     */
     public CreatePaymentResponse createPayment(int amountCents, String sourceId)
             throws ApiException, IOException {
 
@@ -53,6 +62,9 @@ public class PaymentService {
         return paymentsApi.createPayment(request);
     }
 
+    /**
+     * Issues a refund for a completed payment, keeping amounts in cents to match Square's schema.
+     */
     public RefundPaymentResponse refundPayment(String paymentId, int amountCents)
             throws ApiException, IOException {
 

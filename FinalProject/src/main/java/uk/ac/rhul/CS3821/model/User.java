@@ -9,8 +9,9 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "users", uniqueConstraints = {
-        @UniqueConstraint(columnNames = "email")
+    @UniqueConstraint(columnNames = "email")
 })
+// Stores accounts for fans and guests so bookings/payments can be attributed
 public class User {
 
     @Id
@@ -19,9 +20,11 @@ public class User {
     private UUID userId;
 
     @Column(name = "email", nullable = false, unique = true, length = 255)
+    // Email acts as the login identifier for the user
     private String email;
 
     @Column(name = "hashed_password", nullable = false)
+    // The hashed credential we never expose on the front end
     private String password;
 
     @Column(name = "first_name", nullable = false, length = 100)
@@ -31,9 +34,11 @@ public class User {
     private String lastName;
 
     @Column(name = "phone_number", length = 20)
+    // Optional phone so we can surface contact info on bookings
     private String phoneNumber;
 
     @Column(name = "is_disabled", nullable = false)
+    // Guard flag in case the account needs to be locked down
     private boolean isDisabled = false;
 
     @CreationTimestamp

@@ -51,7 +51,7 @@ export default function BookingAndPaymentPage() {
 
   const cardRef = useRef(null);
 
-  // ✅ Generate slots
+  // Generate a broad range of slots with tiered pricing for the demo grid
   useEffect(() => {
     const generated = Array.from({ length: 100 }, (_, i) => {
       const id = i + 1;
@@ -69,7 +69,7 @@ export default function BookingAndPaymentPage() {
     setSlots(generated);
   }, []);
 
-  // ✅ Initialize Square ONLY after selectedSlot is set AND DOM is rendered
+  // Initialize Square only once a slot is chosen so we can attach to the DOM
   useEffect(() => {
     if (!selectedSlot) {
       cardRef.current = null;
@@ -167,7 +167,7 @@ export default function BookingAndPaymentPage() {
       <h1>Book Parking & Pay</h1>
       <p>Select a parking slot to continue.</p>
 
-      {/* ✅ Parking Grid */}
+      {/* Parking grid that highlights selection */}
       <div
         style={{
           display: "grid",
@@ -202,7 +202,7 @@ export default function BookingAndPaymentPage() {
         ))}
       </div>
 
-      {/* ✅ Payment Section */}
+      {/* Payment section is hidden until a slot is selected */}
       {selectedSlot && (
         <div className="payment-form" style={{ marginTop: "3rem" }}>
           <img
@@ -216,7 +216,6 @@ export default function BookingAndPaymentPage() {
             Amount: <strong>£{selectedSlot.price}</strong>
           </p>
 
-          {/* ✅ This now ALWAYS exists before Square attaches */}
           <div id="card-container"></div>
 
           <button

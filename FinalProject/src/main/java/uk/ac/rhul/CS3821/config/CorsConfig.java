@@ -5,9 +5,15 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+/**
+ * Opens CORS to the React dev server so front-end calls succeed without browser blocks.
+ */
 @Configuration
 public class CorsConfig {
 
+    /**
+     * Permits the dev server origin for all methods and headers.
+     */
     @Bean
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurer() {

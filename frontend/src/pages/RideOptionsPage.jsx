@@ -4,7 +4,7 @@ export default function RideOptionsPage() {
   const [rides, setRides] = useState([]);
 
   const fetchRides = () => {
-    // ✅ Mock realistic ride data (Uber, Lyft, Bolt)
+    // Provide mocked ride-hailing results so users can preview service choices
     const mockData = [
       {
         provider: "UberX",

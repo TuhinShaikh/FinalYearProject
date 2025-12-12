@@ -74,7 +74,7 @@ export default function PaymentForm({ amountCents = 2000 }) {
       <h2>Pay for Slot 66</h2>
       <p>Amount: £{amountCents / 100}</p>
 
-      {/* ✅ This MUST exist before Square initializes */}
+      {/* Container where the Square Card input will mount */}
       <div id="card-container" style={{ marginBottom: "20px" }}></div>
 
       {error && <p style={{ color: "red" }}>{error}</p>}

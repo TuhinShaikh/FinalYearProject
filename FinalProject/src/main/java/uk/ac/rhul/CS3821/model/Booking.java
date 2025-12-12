@@ -15,6 +15,8 @@ import uk.ac.rhul.CS3821.model.ParkingSpot;
 @Table(name = "bookings")
 public class Booking {
 
+    // Represents a parking session booked by a user, including payment and timing data
+
     @Id
     @GeneratedValue
     @Column(name = "booking_id", updatable = false, nullable = false)
@@ -22,10 +24,12 @@ public class Booking {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "user_id", nullable = false)
+    // Points back to the user that created this booking record
     private User user;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "spot_id", nullable = false)
+    // References the parking spot that is being held for the session
     private ParkingSpot spot;
 
     @Column(name = "booking_date", nullable = false)
@@ -41,13 +45,16 @@ public class Booking {
     private BigDecimal totalAmount;
 
     @Column(name = "status", nullable = false, length = 20)
+    // Tracks whether the booking is pending, confirmed, or cancelled
     private String status;
 
     @Version
     @Column(name = "version_number", nullable = false)
+    // Optimistic locking counter to prevent double-bookings
     private int versionNumber;
 
     @Column(name = "confirmation_code", unique = true, length = 20)
+    // Optional alphanumeric reference sent to the guest for this booking
     private String confirmationCode;
 
     @Column(name = "special_requirements")

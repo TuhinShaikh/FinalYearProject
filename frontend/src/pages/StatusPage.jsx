@@ -13,7 +13,7 @@ export default function StatusPage() {
     fetchUber();
   }, []);
 
-  // ✅ Greater Anglia (your backend)
+  // Fetch the Greater Anglia departures published by our backend endpoint
   const fetchGreaterAnglia = async () => {
     try {
       const res = await axios.get("http://localhost:8080/api/trains/greater-anglia");
@@ -23,7 +23,7 @@ export default function StatusPage() {
     }
   };
 
-  // ✅ TfL Line Status
+  // Pull the live TfL tube status feed directly from TfL
   const fetchTfL = async () => {
     try {
       const res = await axios.get("https://api.tfl.gov.uk/Line/Mode/tube/Status");
@@ -33,7 +33,7 @@ export default function StatusPage() {
     }
   };
 
-  // ✅ Uber surge (mocked)
+  // Create a mock Uber surge multiplier for interest
   const fetchUber = () => {
     setUberSurge((Math.random() * 2 + 1).toFixed(2)); // 1.0x – 3.0x
   };
@@ -83,7 +83,7 @@ export default function StatusPage() {
         </Link>
       </section>
 
-      {/* ✅ Greater Anglia */}
+      {/* Greater Anglia train status data */}
       <section style={{ marginTop: "2rem" }}>
         <h2>Greater Anglia Status</h2>
         {gaStatus.length === 0 && <p>No live data.</p>}
@@ -96,7 +96,7 @@ export default function StatusPage() {
         ))}
       </section>
 
-      {/* ✅ TfL */}
+      {/* TfL tube status panels */}
       <section style={{ marginTop: "2rem" }}>
         <h2>TfL Tube Status</h2>
         {tflStatus.map((line, i) => (
@@ -117,7 +117,7 @@ export default function StatusPage() {
         ))}
       </section>
 
-      {/* ✅ Uber */}
+      {/* Mock Uber surge information */}
       <section
         style={{
           marginTop: "2rem",

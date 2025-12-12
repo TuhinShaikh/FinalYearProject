@@ -11,6 +11,9 @@ import uk.ac.rhul.CS3821.security.JwtUtil;
 
 import java.time.Instant;
 
+/**
+ * Handles authentication flows: user registration, credential verification, and token creation.
+ */
 @Service
 public class AuthService {
 
@@ -24,6 +27,9 @@ public class AuthService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    /**
+     * Creates a new user record if the email is unused and returns a JWT for the new account.
+     */
     public AccessTokenResponse register(RegisterRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new RuntimeException("A user with this email already exists.");
@@ -43,6 +49,9 @@ public class AuthService {
         return new AccessTokenResponse(token);
     }
 
+    /**
+     * Validates login credentials, updates the last login timestamp, and issues a token.
+     */
     public AccessTokenResponse login(LoginRequest request) {
         User existing = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -58,6 +67,9 @@ public class AuthService {
         return new AccessTokenResponse(token);
     }
 
+    /**
+     * Splits the provided display name into a first/last pair, guarding against blank input.
+     */
     private static String[] splitName(String fullName) {
         if (fullName == null || fullName.isBlank()) {
             return new String[]{"", ""};

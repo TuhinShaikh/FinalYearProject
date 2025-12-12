@@ -1,5 +1,6 @@
 package uk.ac.rhul.CS3821.dto;
 
+// Models a disruption that might be shown alongside the TfL status UI
 public class Disruption {
     private String line;
     private String status;

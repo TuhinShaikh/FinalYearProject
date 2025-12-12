@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+// CRUD controller that lets us manage parking spot inventory from the UI
 @RestController
 @RequestMapping("/spots")
 public class ParkingSpotController {
@@ -26,28 +27,33 @@ public class ParkingSpotController {
         this.parkingSpotService = parkingSpotService;
     }
 
+    // Create and return a new parking spot entry
     @PostMapping
     public ResponseEntity<ParkingSpot> createSpot(@RequestBody ParkingSpot spot) {
         return ResponseEntity.ok(parkingSpotService.createSpot(spot));
     }
 
+    // Retrieve a single spot by its UUID
     @GetMapping("/{id}")
     public ResponseEntity<ParkingSpot> getSpotById(@PathVariable UUID id) {
         Optional<ParkingSpot> spot = parkingSpotService.getSpotById(id);
         return spot.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
+    // List every spot so the map grid can render availability
     @GetMapping
     public ResponseEntity<List<ParkingSpot>> getAllSpots() {
         return ResponseEntity.ok(parkingSpotService.getAllSpots());
     }
 
+    // Update spot metadata while keeping the same ID
     @PutMapping("/{id}")
     public ResponseEntity<ParkingSpot> updateSpot(@PathVariable UUID id, @RequestBody ParkingSpot updatedSpot) {
         updatedSpot.setSpotId(id);
         return ResponseEntity.ok(parkingSpotService.updateSpot(updatedSpot));
     }
 
+    // Remove a spot and return no content
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteSpot(@PathVariable UUID id) {
         parkingSpotService.deleteSpot(id);
