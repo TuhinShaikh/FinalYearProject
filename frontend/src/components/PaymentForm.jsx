@@ -36,6 +36,10 @@ export default function PaymentForm({ amountCents = 2000 }) {
 
   async function handlePayment() {
     try {
+      if (!card) {
+        setError("Card input is still initializing. Please wait a moment.");
+        return;
+      }
       const result = await card.tokenize();
       if (result.status !== "OK") {
         setError("Card tokenization failed");
@@ -60,7 +64,13 @@ export default function PaymentForm({ amountCents = 2000 }) {
   }
 
   return (
-    <div style={{ maxWidth: "400px", margin: "40px auto" }}>
+    <div
+      style={{
+        maxWidth: "400px",
+        margin: "40px auto",
+        color: "#0a1f3d",
+      }}
+    >
       <h2>Pay for Slot 66</h2>
       <p>Amount: £{amountCents / 100}</p>
 
@@ -74,9 +84,9 @@ export default function PaymentForm({ amountCents = 2000 }) {
         disabled={loading}
         style={{
           padding: "12px 20px",
-          background: "#006aff",
-          color: "white",
-          border: "none",
+          background: "#c2e0ff",
+          color: "#0a1f3d",
+          border: "1px solid #3b9bff",
           borderRadius: "6px",
           cursor: "pointer",
           width: "100%",

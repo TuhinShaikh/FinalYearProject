@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import axios from "axios";
 
 export default function StatusPage() {
@@ -38,8 +39,49 @@ export default function StatusPage() {
   };
 
   return (
-    <main style={{ padding: "2rem", color: "white" }}>
-      <h1>Live Status Dashboard</h1>
+    <main
+      style={{
+        padding: "2rem",
+        color: "#0a1f3d",
+        minHeight: "100vh",
+        background: "linear-gradient(180deg, #e7f4ff 0%, #ffffff 70%)",
+      }}
+    >
+      <h1>TfL Status Dashboard</h1>
+
+      <section
+        aria-label="Plan a journey"
+        style={{
+          marginTop: "1.5rem",
+          padding: "1.5rem",
+          borderRadius: "16px",
+          border: "1px solid rgba(10, 31, 61, 0.15)",
+          background: "linear-gradient(180deg, #f4fbff 0%, #dcebff 100%)",
+          boxShadow: "0 20px 40px rgba(10, 31, 61, 0.08)",
+        }}
+      >
+        <h2>Plan Journey</h2>
+        <p style={{ margin: "0.5rem 0" }}>
+          Start with a tailored route plan before you check live services so you
+          know where to go when your upgrade arrives.
+        </p>
+        <Link to="/journey">
+          <button
+            style={{
+              marginTop: "0.5rem",
+              padding: "0.75rem 1.5rem",
+              border: "none",
+              borderRadius: "999px",
+              background: "#0a1f3d",
+              color: "#f4f8ff",
+              fontWeight: 600,
+              cursor: "pointer",
+            }}
+          >
+            Open Journey Planner
+          </button>
+        </Link>
+      </section>
 
       {/* ✅ Greater Anglia */}
       <section style={{ marginTop: "2rem" }}>
@@ -58,7 +100,17 @@ export default function StatusPage() {
       <section style={{ marginTop: "2rem" }}>
         <h2>TfL Tube Status</h2>
         {tflStatus.map((line, i) => (
-          <div key={i} style={{ background: "#222", padding: "1rem", marginBottom: "1rem" }}>
+          <div
+            key={i}
+            style={{
+              background: "#f8fbff",
+              padding: "1rem",
+              marginBottom: "1rem",
+              borderRadius: "8px",
+              border: "1px solid #d4e9ff",
+              boxShadow: "0 15px 30px rgba(10, 31, 61, 0.08)",
+            }}
+          >
             <strong>{line.name}</strong>
             <p>{line.lineStatuses[0].statusSeverityDescription}</p>
           </div>
@@ -66,9 +118,20 @@ export default function StatusPage() {
       </section>
 
       {/* ✅ Uber */}
-      <section style={{ marginTop: "2rem" }}>
+      <section
+        style={{
+          marginTop: "2rem",
+          background: "#f8fbff",
+          padding: "1rem",
+          borderRadius: "8px",
+          border: "1px solid #d4e9ff",
+          boxShadow: "0 15px 30px rgba(10, 31, 61, 0.08)",
+        }}
+      >
         <h2>Uber Surge Pricing</h2>
-        <p>Current surge: <strong>{uberSurge}x</strong></p>
+        <p>
+          Current surge: <strong>{uberSurge}x</strong>
+        </p>
       </section>
     </main>
   );

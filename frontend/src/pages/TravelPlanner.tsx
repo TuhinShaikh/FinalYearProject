@@ -30,7 +30,12 @@ export default function TravelPlanner() {
     <main
       role="main"
       aria-label="Travel Planner"
-      style={{ padding: "2rem", color: "white" }}
+      style={{
+        padding: "2rem",
+        color: "#0a1f3d",
+        minHeight: "100vh",
+        background: "linear-gradient(180deg, #e7f4ff 0%, #ffffff 60%)",
+      }}
     >
       <h1>Travel Planner</h1>
       <p>Get recommended routes based on accessibility and weather conditions.</p>
@@ -39,11 +44,12 @@ export default function TravelPlanner() {
         onClick={fetchRecommendations}
         style={{
           padding: "0.7rem 1.5rem",
-          backgroundColor: "#00bfa5",
+          backgroundColor: "#3b9bff",
           border: "none",
           borderRadius: "6px",
           cursor: "pointer",
           marginTop: "1rem",
+          color: "white",
         }}
       >
         {loading ? "Loading..." : "Get Recommendations"}
@@ -58,11 +64,12 @@ export default function TravelPlanner() {
           <div
             key={idx}
             style={{
-              backgroundColor: "#222",
+              backgroundColor: "#f8fbff",
               padding: "1rem",
               marginBottom: "1rem",
               borderRadius: "8px",
-              border: "1px solid #444",
+              border: "1px solid #d4e9ff",
+              boxShadow: "0 18px 30px rgba(10, 31, 61, 0.08)",
             }}
           >
             <h2 style={{ margin: 0 }}>{opt.mode}</h2>

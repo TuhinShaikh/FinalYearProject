@@ -45,35 +45,42 @@ export default function RideOptionsPage() {
     <main
       role="main"
       aria-label="Ride Options"
-      style={{ padding: "2rem", color: "white" }}
+      style={{
+        padding: "2rem",
+        color: "#0a1f3d",
+        minHeight: "100vh",
+        background: "linear-gradient(180deg, #e7f4ff 0%, #ffffff 60%)",
+      }}
     >
       <h1>Ride‑Hailing Options</h1>
       <p>Find the fastest and cheapest rides near Tottenham Hotspur Stadium.</p>
 
-      <button
-        onClick={fetchRides}
-        style={{
-          padding: "0.7rem 1.5rem",
-          backgroundColor: "#00bfa5",
-          border: "none",
-          borderRadius: "6px",
-          cursor: "pointer",
-          marginTop: "1rem",
-        }}
-      >
-        Show Available Rides
-      </button>
+        <button
+          onClick={fetchRides}
+          style={{
+            padding: "0.7rem 1.5rem",
+            backgroundColor: "#3b9bff",
+            border: "none",
+            borderRadius: "6px",
+            cursor: "pointer",
+            marginTop: "1rem",
+            color: "white",
+          }}
+        >
+          Show Available Rides
+        </button>
 
       <div style={{ marginTop: "2rem" }}>
         {rides.map((ride, index) => (
           <div
             key={index}
             style={{
-              backgroundColor: "#222",
+              backgroundColor: "#f8fbff",
               padding: "1rem",
               marginBottom: "1rem",
               borderRadius: "8px",
-              border: "1px solid #444",
+              border: "1px solid #d4e9ff",
+              boxShadow: "0 20px 40px rgba(10, 31, 61, 0.08)",
             }}
           >
             <h2 style={{ margin: 0 }}>{ride.provider}</h2>

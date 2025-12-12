@@ -2,10 +2,52 @@ import React, { useState, useEffect, useRef } from "react";
 import "../App.css";
 import logo from "../assets/image.jpg";
 
+let squareSdkPromise;
+
+function loadSquareSdk() {
+  if (squareSdkPromise) {
+    return squareSdkPromise;
+  }
+
+  squareSdkPromise = new Promise((resolve, reject) => {
+    if (window.Square) {
+      resolve();
+      return;
+    }
+
+    const existingScript = document.getElementById("square-sdk");
+    if (existingScript) {
+      existingScript.addEventListener("load", resolve, { once: true });
+      existingScript.addEventListener(
+        "error",
+        () => {
+          squareSdkPromise = null;
+          reject(new Error("Square SDK failed to load"));
+        },
+        { once: true }
+      );
+      return;
+    }
+
+    const script = document.createElement("script");
+    script.id = "square-sdk";
+    script.src = "https://sandbox.web.squarecdn.com/v1/square.js";
+    script.onload = () => resolve();
+    script.onerror = () => {
+      squareSdkPromise = null;
+      reject(new Error("Square SDK failed to load"));
+    };
+    document.head.appendChild(script);
+  });
+
+  return squareSdkPromise;
+}
+
 export default function BookingAndPaymentPage() {
   const [slots, setSlots] = useState([]);
   const [selectedSlot, setSelectedSlot] = useState(null);
   const [status, setStatus] = useState("");
+  const [cardLoading, setCardLoading] = useState(false);
 
   const cardRef = useRef(null);
 
@@ -29,33 +71,46 @@ export default function BookingAndPaymentPage() {
 
   // ✅ Initialize Square ONLY after selectedSlot is set AND DOM is rendered
   useEffect(() => {
-    if (!selectedSlot) return;
+    if (!selectedSlot) {
+      cardRef.current = null;
+      return;
+    }
+
+    let cancelled = false;
+    cardRef.current = null;
+    setStatus("");
+    setCardLoading(true);
 
     async function initSquare() {
       try {
-        // Load script if not already loaded
-        if (!window.Square) {
-          const script = document.createElement("script");
-          script.src = "https://sandbox.web.squarecdn.com/v1/square.js";
-          script.onload = initSquare;
-          document.body.appendChild(script);
-          return;
-        }
+        await loadSquareSdk();
+        if (cancelled || !window.Square) return;
 
         const payments = window.Square.payments(
           "sandbox-sq0idb-I-lZ-tkY-jzemSkWMfBn-A"
         );
 
         const card = await payments.card();
-        await card.attach("#card-container"); // ✅ Now DOM exists
-        cardRef.current = card;
+        await card.attach("#card-container");
+        if (cancelled) return;
 
+        cardRef.current = card;
       } catch (err) {
-        setStatus("❌ Error initializing Square: " + err.message);
+        if (!cancelled) {
+          setStatus("❌ Error initializing Square: " + err.message);
+        }
+      } finally {
+        if (!cancelled) {
+          setCardLoading(false);
+        }
       }
     }
 
     initSquare();
+
+    return () => {
+      cancelled = true;
+    };
   }, [selectedSlot]);
 
   async function handlePayment(e) {
@@ -66,11 +121,19 @@ export default function BookingAndPaymentPage() {
       return;
     }
 
+    if (!cardRef.current) {
+      setStatus("❌ Square card input is still loading; try again shortly.");
+      return;
+    }
+
     try {
       const result = await cardRef.current.tokenize();
 
       if (result.status !== "OK") {
-        setStatus("❌ Payment failed: " + result.errors[0].message);
+        setStatus(
+          "❌ Payment failed: " +
+            (result.errors?.[0]?.message ?? "tokenization declined")
+        );
         return;
       }
 
@@ -93,7 +156,14 @@ export default function BookingAndPaymentPage() {
   }
 
   return (
-    <main style={{ padding: "2rem", color: "white" }}>
+    <main
+      style={{
+        padding: "2rem",
+        color: "#0a1f3d",
+        minHeight: "100vh",
+        background: "linear-gradient(180deg, #e7f4ff 0%, #ffffff 70%)",
+      }}
+    >
       <h1>Book Parking & Pay</h1>
       <p>Select a parking slot to continue.</p>
 
@@ -112,12 +182,17 @@ export default function BookingAndPaymentPage() {
             onClick={() => setSelectedSlot(slot)}
             style={{
               padding: "15px",
-              backgroundColor:
-                selectedSlot?.id === slot.id ? "#00bfa5" : "#333",
+              backgroundColor: selectedSlot?.id === slot.id ? "#8bc8ff" : "#ffffff",
               borderRadius: "6px",
               cursor: "pointer",
               textAlign: "center",
-              border: "1px solid #555",
+              border:
+                selectedSlot?.id === slot.id ? "2px solid #3b9bff" : "1px solid #cfdaf0",
+              boxShadow:
+                selectedSlot?.id === slot.id
+                  ? "0 0 20px rgba(59, 139, 255, 0.35)"
+                  : "0 0 10px rgba(10, 31, 61, 0.05)",
+              color: "#0a1f3d",
             }}
           >
             <strong>Slot {slot.id}</strong>
@@ -144,11 +219,32 @@ export default function BookingAndPaymentPage() {
           {/* ✅ This now ALWAYS exists before Square attaches */}
           <div id="card-container"></div>
 
-          <button id="pay-button" onClick={handlePayment}>
-            Pay Now
+          <button
+            id="pay-button"
+            onClick={handlePayment}
+            disabled={cardLoading || !cardRef.current}
+            style={{
+              padding: "12px 20px",
+              background: "#c2e0ff",
+              color: "#0a1f3d",
+              border: "1px solid #3b9bff",
+              borderRadius: "6px",
+              cursor: cardLoading || !cardRef.current ? "not-allowed" : "pointer",
+              width: "100%",
+              opacity: cardLoading || !cardRef.current ? 0.6 : 1,
+            }}
+          >
+            {cardLoading ? "Loading payment fields..." : "Pay Now"}
           </button>
 
-          <p>{status}</p>
+          <p
+            style={{
+              color: status.startsWith("❌") ? "#b00020" : "#0a1f3d",
+              marginTop: "1rem",
+            }}
+          >
+            {status}
+          </p>
         </div>
       )}
     </main>
