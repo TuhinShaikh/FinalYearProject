@@ -15,40 +15,37 @@ import java.nio.charset.StandardCharsets;
 public class JwtUtil {
 
     private final Key key;
-    private final long accessTokenValidityMs;
-    private final long refreshTokenValidityMs;
+    private final long accessTokenExpiration;
+    private final long refreshTokenExpiration;
 
     public JwtUtil(
             @Value("${jwt.secret}") String secret,
-            @Value("${jwt.accessTokenValidityMs:900000}") long accessTokenValidityMs,   // default 15 min
-            @Value("${jwt.refreshTokenValidityMs:604800000}") long refreshTokenValidityMs // default 7 days
+            @Value("${jwt.accessToken.expiration}") long accessTokenExpiration,
+            @Value("${jwt.refreshToken.expiration}") long refreshTokenExpiration
     ) {
         this.key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
-        this.accessTokenValidityMs = accessTokenValidityMs;
-        this.refreshTokenValidityMs = refreshTokenValidityMs;
+        this.accessTokenExpiration = accessTokenExpiration;
+        this.refreshTokenExpiration = refreshTokenExpiration;
     }
 
-    /** Generate an access token for a given subject (username or userId). */
     public String generateAccessToken(String subject) {
         return Jwts.builder()
                 .setSubject(subject)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + accessTokenValidityMs))
+                .setExpiration(new Date(System.currentTimeMillis() + accessTokenExpiration))
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    /** Generate a refresh token for a given subject. */
     public String generateRefreshToken(String subject) {
         return Jwts.builder()
                 .setSubject(subject)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + refreshTokenValidityMs))
+                .setExpiration(new Date(System.currentTimeMillis() + refreshTokenExpiration))
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    /** Extract claims from a token. */
     public Claims extractClaims(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(key)
@@ -57,10 +54,10 @@ public class JwtUtil {
                 .getBody();
     }
 
-    /** Validate token against subject and expiry. */
     public boolean validateToken(String token, String subject) {
         Claims claims = extractClaims(token);
-        return claims.getSubject().equals(subject) && claims.getExpiration().after(new Date());
+        return claims.getSubject().equals(subject)
+                && claims.getExpiration().after(new Date());
     }
 
     public String generateToken(String subject) {

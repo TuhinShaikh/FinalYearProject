@@ -1,26 +1,33 @@
 package uk.ac.rhul.CS3821.controller;
 
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/trains")
-@CrossOrigin(origins = "http://localhost:5173")
 public class TrainController {
 
-    private final String API_KEY = "89d8e325-a26c-457c-bd90-8eb8fd9ffee6";
-
     @GetMapping("/greater-anglia")
-    public ResponseEntity<Object> getDepartures(@RequestParam(defaultValue = "LST") String station) {
+    public ResponseEntity<?> getGreaterAnglia(@RequestParam String station) {
 
-        String url = "https://huxley2.azurewebsites.net/departures/"
-                + station
-                + "?accessToken="
-                + API_KEY;
+        Map<String, Object> train1 = Map.of(
+                "destination", List.of(Map.of("locationName", "Seven Sisters")),
+                "std", "12:30",
+                "etd", "On time",
+                "operator", "Greater Anglia"
+        );
 
-        RestTemplate rest = new RestTemplate();
-        Object response = rest.getForObject(url, Object.class);
+        Map<String, Object> train2 = Map.of(
+                "destination", List.of(Map.of("locationName", "Ipswich")),
+                "std", "12:45",
+                "etd", "Delayed",
+                "operator", "Greater Anglia"
+        );
+
+        Map<String, Object> response = Map.of(
+                "trainServices", List.of(train1, train2)
+        );
 
         return ResponseEntity.ok(response);
     }
