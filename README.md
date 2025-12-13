@@ -50,10 +50,9 @@
 
 ---
 
-# ✅ **🌍 Accessing the App**
+# ** Accessing the App**
 - Visit **http://localhost:5173**  
 - Frontend automatically proxies API requests to **http://localhost:8080**
 
 ---
 
-If you want, I can format this into a polished **FYP‑ready PDF‑style section** or integrate it into your report structure.
