@@ -1,65 +1,59 @@
-# Final Year Project
-How to Run the Application
 
-This project is a mono-repo containing two distinct parts:
 
-Backend: Spring Boot (Java 17) located in the FinalProject/ folder.
+# **How to Run the Application**
 
-Frontend: React (Vite) located in the frontend/ folder.
+### ** Project Structure**
+- **Backend:** Spring Boot (Java 17) → `FinalProject/`
+- **Frontend:** React (Vite) → `frontend/`
+- **Both must run at the same time**
 
-You must run both terminals simultaneously for the application to work.
+---
 
- Prerequisites
-Ensure you have the following installed:
+#  **Prerequisites**
+- Java 17 (JDK)  
+- Maven  
+- Node.js v18+ & npm  
+- PostgreSQL (running on **port 5432**)  
 
-Java 17 (JDK)
+---
 
-Maven (Apache Maven)
+#  **1. Run the Backend (Spring Boot)**
+- Open a terminal  
+- Navigate to backend:  
+  ```bash
+  cd FinalProject
+  ```
+- Start server:  
+  ```bash
+  mvn spring-boot:run
+  ```
+- Backend runs at: **http://localhost:8080**  
+- Ensure correct DB credentials in `application.properties`
 
-Node.js (v18 or higher) & npm
+---
 
-PostgreSQL (Running on port 5432)
+#  **2. Run the Frontend (React + Vite)**
+- Open a second terminal  
+- Navigate to frontend:  
+  ```bash
+  cd frontend
+  ```
+- Install dependencies (first time only):  
+  ```bash
+  npm install
+  ```
+- Start dev server:  
+  ```bash
+  npm run dev
+  ```
+- Frontend runs at: **http://localhost:5173**
 
-1. Run the Backend (Spring Boot)
-Open a terminal.
+---
 
-Navigate to the backend directory:
+# ✅ **🌍 Accessing the App**
+- Visit **http://localhost:5173**  
+- Frontend automatically proxies API requests to **http://localhost:8080**
 
-Bash
+---
 
-cd FinalProject
-Install dependencies and run the server:
-
-Bash
-
-mvn spring-boot:run
-The server will start on: http://localhost:8080
-
-(Note: Ensure your application.properties file has the correct PostgreSQL username/password).
-
-2. Run the Frontend (React + Vite)
-Open a second terminal.
-
-Navigate to the frontend directory:
-
-Bash
-
-cd frontend
-Install the JavaScript dependencies (first time only):
-
-Bash
-
-npm install
-Start the development server:
-
-Bash
-
-npm run dev
-The application will run on: http://localhost:5173
-
-🌍 Accessing the App
-Once both servers are running:
-
-Open your browser and go to http://localhost:5173 to use the application.
-
-The frontend will automatically proxy requests to the backend at port 8080.
+If you want, I can format this into a polished **FYP‑ready PDF‑style section** or integrate it into your report structure.
