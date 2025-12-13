@@ -68,15 +68,27 @@ INSERT INTO parking_spots (spot_number, type, price_per_hour, location_descripti
 -- SEED TEST USERS
 -- ====================================
 
--- Password for all test users: "Password123!" (hashed with bcrypt)
--- Note: In production, these would be properly hashed. This is a placeholder.
+-- TEST LOGIN CREDENTIALS
+-- Password for all test users: "Password123!" (BCrypt hashed)
+-- Hash: $2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcg7b3XeKeUxWdeS86E36P4/8qK
+-- 
+-- Use these credentials to login:
+--  Email: john.smith@example.com | Password: Password123!
+--  Email: sarah.jones@example.com | Password: Password123!
+--  Email: mike.wilson@example.com | Password: Password123!
+--  Email: emma.davis@example.com | Password: Password123! (Disabled user)
+--  Email: james.brown@example.com | Password: Password123!
+--  Email: lisa.taylor@example.com | Password: Password123! (Disabled user)
+--  Email: tuhin@gmail.com | Password: Tuhin@123
+
 INSERT INTO users (email, hashed_password, first_name, last_name, phone_number, is_disabled) VALUES
-('john.smith@example.com', '$2b$10$YourHashedPasswordHere', 'John', 'Smith', '+447700900001', FALSE),
-('sarah.jones@example.com', '$2b$10$YourHashedPasswordHere', 'Sarah', 'Jones', '+447700900002', FALSE),
-('mike.wilson@example.com', '$2b$10$YourHashedPasswordHere', 'Mike', 'Wilson', '+447700900003', FALSE),
-('emma.davis@example.com', '$2b$10$YourHashedPasswordHere', 'Emma', 'Davis', '+447700900004', TRUE),
-('james.brown@example.com', '$2b$10$YourHashedPasswordHere', 'James', 'Brown', '+447700900005', FALSE),
-('lisa.taylor@example.com', '$2b$10$YourHashedPasswordHere', 'Lisa', 'Taylor', '+447700900006', TRUE);
+('john.smith@example.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcg7b3XeKeUxWdeS86E36P4/8qK', 'John', 'Smith', '+447700900001', FALSE),
+('sarah.jones@example.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcg7b3XeKeUxWdeS86E36P4/8qK', 'Sarah', 'Jones', '+447700900002', FALSE),
+('mike.wilson@example.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcg7b3XeKeUxWdeS86E36P4/8qK', 'Mike', 'Wilson', '+447700900003', FALSE),
+('emma.davis@example.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcg7b3XeKeUxWdeS86E36P4/8qK', 'Emma', 'Davis', '+447700900004', TRUE),
+('james.brown@example.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcg7b3XeKeUxWdeS86E36P4/8qK', 'James', 'Brown', '+447700900005', FALSE),
+('lisa.taylor@example.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcg7b3XeKeUxWdeS86E36P4/8qK', 'Lisa', 'Taylor', '+447700900006', TRUE),
+('tuhin@gmail.com', '$2b$12$wtBVZExE6ZNnqtwJU5t2nOP8WwOfbX3TZuqAHNz0XBPqschUPfk1q', 'Tuhin', 'Rahman', '+447700900007', FALSE);
 
 -- ====================================
 -- SEED ACCESSIBILITY PREFERENCES

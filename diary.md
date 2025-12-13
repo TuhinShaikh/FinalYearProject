@@ -1,5 +1,3 @@
-Here is your final Development Diary (diary.md), rewritten in the first person. I have explicitly linked specific activities to the Marking Grid criteria (Software Engineering, Background Theory, Structure, Project Diary, etc.) to demonstrate how you have "fixed" or addressed each requirement throughout the term.
-
 Development Diary
 ***** 01/10/2025 ***** Project Initialization & Scope Definition I defined the primary scope for the "Stadium Transport & Parking Planner" and identified the core problem of congestion at Tottenham Hotspur Stadium. I drafted the high-level functional requirements to ensure I had a clear baseline for development. This addressed the 'Software Engineering' requirement for clear requirement analysis.
 
