@@ -1,6 +1,28 @@
 import React, { useState, useEffect, useRef } from "react";
 import "../App.css";
 import logo from "../assets/image.jpg";
+import CarParkMap from "../components/CarParkMap";
+
+const levelDefinitions = [
+  {
+    id: 1,
+    label: "Level 1 • Arena",
+    price: 95,
+    description: "Pitch-side, premium parking for the closest possible arrival.",
+  },
+  {
+    id: 2,
+    label: "Level 2 • Club",
+    price: 68,
+    description: "Balanced walk / price with easy access to trams and taxis.",
+  },
+  {
+    id: 3,
+    label: "Level 3 • Skyline",
+    price: 45,
+    description: "Highest tier—cheaper, more reflective, ideal for early arrivals.",
+  },
+];
 
 let squareSdkPromise;
 
@@ -46,22 +68,29 @@ export default function BookingAndPaymentPage() {
   const [selectedSlot, setSelectedSlot] = useState(null);
   const [status, setStatus] = useState("");
   const [cardLoading, setCardLoading] = useState(false);
+  const [activeLevel, setActiveLevel] = useState(levelDefinitions[0].id);
 
   const cardRef = useRef(null);
 
   // Generate a broad range of slots with tiered pricing for the demo grid
   useEffect(() => {
-    const generated = Array.from({ length: 100 }, (_, i) => {
-      const id = i + 1;
-      let price = 0;
+    const areaOrder = ["top", "right", "bottom", "left"];
+    const generated = [];
+    let counter = 1;
 
-      if (id === 1) price = 100;
-      else if (id <= 20) price = 50;
-      else if (id <= 60) price = 40;
-      else if (id <= 80) price = 20;
-      else price = 15;
-
-      return { id, price };
+    levelDefinitions.forEach((level) => {
+      areaOrder.forEach((area) => {
+        for (let index = 0; index < 3; index += 1) {
+          generated.push({
+            id: counter,
+            label: `Slot ${counter}`,
+            area,
+            level: level.id,
+            price: Math.max(level.price - index * 2, 20),
+          });
+          counter += 1;
+        }
+      });
     });
 
     setSlots(generated);
