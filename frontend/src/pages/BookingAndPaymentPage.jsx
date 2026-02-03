@@ -64,7 +64,6 @@ function loadSquareSdk() {
 }
 
 export default function BookingAndPaymentPage() {
-  const [slots, setSlots] = useState([]);
   const [selectedSlot, setSelectedSlot] = useState(null);
   const [status, setStatus] = useState("");
   const [cardLoading, setCardLoading] = useState(false);
@@ -77,31 +76,17 @@ export default function BookingAndPaymentPage() {
     }
   };
 
+  const getSlotPrice = (slotNumber, levelId) => {
+    const level = levelDefinitions.find((l) => l.id === levelId) ?? levelDefinitions[0];
+    const tier = Math.floor((slotNumber - 1) / 6);
+    return Math.max(level.price - tier * 2, 20);
+  };
+
+  const handleSlotSelect = (slotNumber, price) => {
+    setSelectedSlot({ level: activeLevel, number: slotNumber, price, label: `Slot ${slotNumber}` });
+  };
+
   const cardRef = useRef(null);
-
-  // Generate stadium-tiered slots grouped by area so the map rings can draw them
-  useEffect(() => {
-    const areaOrder = ["top", "right", "bottom", "left"];
-    const generated = [];
-    let counter = 1;
-
-    levelDefinitions.forEach((level) => {
-      areaOrder.forEach((area) => {
-        for (let index = 0; index < 3; index += 1) {
-          generated.push({
-            id: counter,
-            label: `Slot ${counter}`,
-            area,
-            level: level.id,
-            price: Math.max(level.price - index * 2, 20),
-          });
-          counter += 1;
-        }
-      });
-    });
-
-    setSlots(generated);
-  }, []);
 
   // --- IMPORTANT: cleanly destroy/detach old card on every slot change ---
   useEffect(() => {
