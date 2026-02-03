@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import TfLMap from "../components/TfLMap";
 
 export default function StatusPage() {
   const [gaStatus, setGaStatus] = useState([]);
   const [tflStatus, setTflStatus] = useState([]);
   const [uberSurge, setUberSurge] = useState(null);
+  const [showMap, setShowMap] = useState(false);
 
   useEffect(() => {
     fetchGreaterAnglia();
