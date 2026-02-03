@@ -12,3 +12,16 @@ function loadSquareSdk() {
       resolve();
       return;
     }
+        const existingScript = document.getElementById("square-sdk");
+    if (existingScript) {
+      existingScript.addEventListener("load", resolve, { once: true });
+      existingScript.addEventListener(
+        "error",
+        () => {
+          squareSdkPromise = null;
+          reject(new Error("Square SDK failed to load"));
+        },
+        { once: true }
+      );
+      return;
+    }
