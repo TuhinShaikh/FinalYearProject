@@ -69,10 +69,17 @@ export default function BookingAndPaymentPage() {
   const [status, setStatus] = useState("");
   const [cardLoading, setCardLoading] = useState(false);
   const [activeLevel, setActiveLevel] = useState(levelDefinitions[0].id);
+  
+  const handleLevelChange = (levelId) => {
+    setActiveLevel(levelId);
+    if (selectedSlot?.level !== levelId) {
+      setSelectedSlot(null);
+    }
+  };
 
   const cardRef = useRef(null);
 
-  // Generate a broad range of slots with tiered pricing for the demo grid
+  // Generate stadium-tiered slots grouped by area so the map rings can draw them
   useEffect(() => {
     const areaOrder = ["top", "right", "bottom", "left"];
     const generated = [];
@@ -220,44 +227,14 @@ export default function BookingAndPaymentPage() {
       <h1>Book Parking & Pay</h1>
       <p>Select a parking slot to continue.</p>
 
-      {/* Parking grid that highlights selection */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(10, 1fr)",
-          gap: "10px",
-          marginTop: "2rem",
-        }}
-      >
-        {slots.map((slot) => (
-          <div
-            key={slot.id}
-            onClick={() => setSelectedSlot(slot)}
-            style={{
-              padding: "15px",
-              backgroundColor:
-                selectedSlot?.id === slot.id ? "#8bc8ff" : "#ffffff",
-              borderRadius: "6px",
-              cursor: "pointer",
-              textAlign: "center",
-              border:
-                selectedSlot?.id === slot.id
-                  ? "2px solid #3b9bff"
-                  : "1px solid #cfdaf0",
-              boxShadow:
-                selectedSlot?.id === slot.id
-                  ? "0 0 20px rgba(59, 139, 255, 0.35)"
-                  : "0 0 10px rgba(10, 31, 61, 0.05)",
-              color: "#0a1f3d",
-              userSelect: "none",
-            }}
-          >
-            <strong>Slot {slot.id}</strong>
-            <br />
-            £{slot.price}
-          </div>
-        ))}
-      </div>
+      <CarParkMap
+        slots={slots}
+        selectedSlot={selectedSlot}
+        onSelect={setSelectedSlot}
+        activeLevel={activeLevel}
+        levels={levelDefinitions}
+        onLevelChange={handleLevelChange}
+      />
 
       {/* Payment section is hidden until a slot is selected */}
       {selectedSlot && (
