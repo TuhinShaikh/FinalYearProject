@@ -160,7 +160,7 @@ export default function TfLMap({ tflStatus }) {
         </div>
         <div style={{ textAlign: "right" }}>
           <p style={{ margin: 0, fontWeight: 600 }}>{stopPoints.length} stations plotted</p>
-          <p style={{ margin: 0 }}>{loading ? "Loading…” : "Data refreshed live"}</p>
+          <p style={{ margin: 0 }}>{loading ? "Loading..." : "Data refreshed live"}</p>
         </div>
       </div>
 

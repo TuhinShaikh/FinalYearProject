@@ -85,6 +85,51 @@ export default function StatusPage() {
         </Link>
       </section>
 
+      <section
+        aria-label="Live TfL map"
+        style={{
+          marginTop: "1.5rem",
+          padding: "1.5rem",
+          borderRadius: "16px",
+          border: "1px solid rgba(10, 31, 61, 0.15)",
+          background: "linear-gradient(180deg, #fff8f3 0%, #eef2ff 100%)",
+          boxShadow: "0 20px 40px rgba(10, 31, 61, 0.08)",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            gap: "1rem",
+            flexWrap: "wrap",
+            alignItems: "center",
+            marginBottom: "1rem",
+          }}
+        >
+          <div style={{ flex: "1 1 220px" }}>
+            <h2 style={{ margin: 0 }}>TfL Tube Map + Stadiums</h2>
+            <p style={{ margin: "0.4rem 0 0" }}>
+              Click the button to load the London tube network, see live line status, and highlight every Premier League stadium.
+            </p>
+          </div>
+          <button
+            onClick={() => setShowMap((prev) => !prev)}
+            style={{
+              padding: "0.9rem 1.6rem",
+              borderRadius: "999px",
+              border: "none",
+              fontWeight: 600,
+              background: "#0a1f3d",
+              color: "#f4f8ff",
+              cursor: "pointer",
+              boxShadow: "0 10px 20px rgba(10, 31, 61, 0.2)",
+            }}
+          >
+            {showMap ? "Hide live map" : "Open interactive map"}
+          </button>
+        </div>
+        {showMap && <TfLMap tflStatus={tflStatus} />}
+      </section>
+
       {/* Greater Anglia train status data */}
       <section style={{ marginTop: "2rem" }}>
         <h2>Greater Anglia Status</h2>
