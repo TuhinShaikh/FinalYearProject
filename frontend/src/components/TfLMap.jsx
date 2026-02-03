@@ -55,7 +55,7 @@ const premierStadiums = [
   { club: "West Ham United", stadium: "London Stadium", lat: 51.5387, lon: -0.0165 },
   { club: "Wolverhampton Wanderers", stadium: "Molineux", lat: 52.5897, lon: -2.1354 },
   { club: "Sheffield United", stadium: "Bramall Lane", lat: 53.3759, lon: -1.4705 },
-  { club: "Crystal Palace", stadium: "Selhurst Park", lat: 51.3984, lon: -0.0852 },
+  { club: "Leicester City", stadium: "King Power Stadium", lat: 52.6203, lon: -1.1420 },
 ];
 
 const londonCenter = [51.5074, -0.1278];
