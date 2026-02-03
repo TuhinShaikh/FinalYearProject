@@ -83,7 +83,13 @@ export default function BookingAndPaymentPage() {
   };
 
   const handleSlotSelect = (slotNumber, price) => {
-    setSelectedSlot({ level: activeLevel, number: slotNumber, price, label: `Slot ${slotNumber}` });
+    setSelectedSlot({
+      id: `${activeLevel}-${slotNumber}`,
+      level: activeLevel,
+      number: slotNumber,
+      price,
+      label: `Slot ${slotNumber}`,
+    });
   };
 
   const cardRef = useRef(null);
@@ -230,7 +236,7 @@ export default function BookingAndPaymentPage() {
             style={{ width: "120px", marginBottom: "1rem" }}
           />
 
-          <h2>Pay for Slot {selectedSlot.id}</h2>
+          <h2>Pay for {selectedSlot.label}</h2>
           <p>
             Amount: <strong>£{selectedSlot.price}</strong>
           </p>
