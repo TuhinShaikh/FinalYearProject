@@ -213,12 +213,12 @@ export default function BookingAndPaymentPage() {
       <p>Select a parking slot to continue.</p>
 
       <CarParkMap
-        slots={slots}
         selectedSlot={selectedSlot}
-        onSelect={setSelectedSlot}
+        onSelect={handleSlotSelect}
         activeLevel={activeLevel}
         levels={levelDefinitions}
         onLevelChange={handleLevelChange}
+        getSlotPrice={getSlotPrice}
       />
 
       {/* Payment section is hidden until a slot is selected */}
