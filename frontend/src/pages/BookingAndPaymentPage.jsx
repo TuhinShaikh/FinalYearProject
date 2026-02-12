@@ -154,8 +154,8 @@ export default function BookingAndPaymentPage() {
     setCardLoading(true);
 
     const createCardWithRetry = async (payments) => {
-      const MAX_CARD_INIT_ATTEMPTS = 3;
-      const CARD_RETRY_DELAY_MS = 700;
+      const MAX_CARD_INIT_ATTEMPTS = 5;
+      const CARD_RETRY_DELAY_MS = 1500;
 
       for (
         let attempt = 1;
