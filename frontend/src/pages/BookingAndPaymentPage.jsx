@@ -301,7 +301,7 @@ export default function BookingAndPaymentPage() {
 
     // cleanup on slot change/unmount (also fixes React 18 StrictMode double-invoke)
     return cleanup;
-  }, [selectedSlot?.id, appId, locationId, initToken]); // depend on id, not the whole object
+  }, [selectedSlot?.id, appId, locationId, initToken, backendLocationId]); // depend on id, not the whole object
 
   async function handlePayment(e) {
     e.preventDefault();
