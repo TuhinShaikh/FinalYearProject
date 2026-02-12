@@ -97,6 +97,10 @@ export default function BookingAndPaymentPage() {
 
   const cardRef = useRef(null);
 
+  useEffect(() => {
+    loadSquareSdk().catch(() => {});
+  }, []);
+
   // --- IMPORTANT: cleanly destroy/detach old card on every slot change ---
   useEffect(() => {
     // helper: remove any previously attached card + clear DOM container
