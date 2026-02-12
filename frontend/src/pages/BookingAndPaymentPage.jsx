@@ -24,6 +24,9 @@ const levelDefinitions = [
   },
 ];
 
+const appId = import.meta.env.VITE_SQUARE_APP_ID;
+const locationId = import.meta.env.VITE_SQUARE_LOCATION_ID;
+
 let squareSdkPromise;
 
 function loadSquareSdk() {
@@ -116,10 +119,25 @@ export default function BookingAndPaymentPage() {
     }
 
     let cancelled = false;
+    const cleanup = () => {
+      cancelled = true;
+      teardown();
+    };
 
     // reset before attaching a new one
     teardown();
     setStatus("");
+
+    const normalizedAppId = appId?.trim();
+    const normalizedLocationId = locationId?.trim();
+
+    if (!normalizedAppId) {
+      setStatus(
+        "❌ Square App ID is missing. Set VITE_SQUARE_APP_ID in your .env."
+      );
+      return cleanup;
+    }
+
     setCardLoading(true);
 
     (async () => {
@@ -127,11 +145,9 @@ export default function BookingAndPaymentPage() {
         await loadSquareSdk();
         if (cancelled || !window.Square) return;
 
-        // NOTE: if you have a Location ID, Square usually expects:
-        // window.Square.payments(appId, locationId)
-        const payments = window.Square.payments(
-          "sandbox-sq0idb-I-lZ-tkY-jzemSkWMfBn-A"
-        );
+        const payments = normalizedLocationId
+          ? window.Square.payments(normalizedAppId, normalizedLocationId)
+          : window.Square.payments(normalizedAppId);
 
         const card = await payments.card();
 
@@ -159,11 +175,8 @@ export default function BookingAndPaymentPage() {
     })();
 
     // cleanup on slot change/unmount (also fixes React 18 StrictMode double-invoke)
-    return () => {
-      cancelled = true;
-      teardown();
-    };
-  }, [selectedSlot?.id]); // depend on id, not the whole object
+    return cleanup;
+  }, [selectedSlot?.id, appId, locationId]); // depend on id, not the whole object
 
   async function handlePayment(e) {
     e.preventDefault();
