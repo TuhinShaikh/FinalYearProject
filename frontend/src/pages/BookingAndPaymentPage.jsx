@@ -144,6 +144,51 @@ export default function BookingAndPaymentPage() {
 
     setCardLoading(true);
 
+    const createCardWithRetry = async (payments) => {
+      const MAX_CARD_INIT_ATTEMPTS = 3;
+      const CARD_RETRY_DELAY_MS = 700;
+
+      for (
+        let attempt = 1;
+        attempt <= MAX_CARD_INIT_ATTEMPTS && !cancelled;
+        attempt++
+      ) {
+        let card;
+        try {
+          card = await payments.card();
+
+          if (cancelled) {
+            if (card?.destroy) card.destroy();
+            return;
+          }
+
+          await card.attach("#card-container");
+
+          if (cancelled) {
+            if (card?.destroy) card.destroy();
+            return;
+          }
+
+          cardRef.current = card;
+          return;
+        } catch (err) {
+          if (card?.destroy) card.destroy();
+
+          const isTimeout =
+            err?.message?.includes("Web Payments SDK was unable to be initialized in time");
+
+          if (isTimeout && attempt < MAX_CARD_INIT_ATTEMPTS && !cancelled) {
+            await new Promise((resolve) =>
+              setTimeout(resolve, CARD_RETRY_DELAY_MS)
+            );
+            continue;
+          }
+
+          throw err;
+        }
+      }
+    };
+
     (async () => {
       try {
         await loadSquareSdk();
@@ -153,22 +198,7 @@ export default function BookingAndPaymentPage() {
           ? window.Square.payments(normalizedAppId, normalizedLocationId)
           : window.Square.payments(normalizedAppId);
 
-        const card = await payments.card();
-
-        // if we got cancelled mid-flight, destroy immediately
-        if (cancelled) {
-          if (card?.destroy) card.destroy();
-          return;
-        }
-
-        await card.attach("#card-container");
-
-        if (cancelled) {
-          if (card?.destroy) card.destroy();
-          return;
-        }
-
-        cardRef.current = card;
+        await createCardWithRetry(payments);
       } catch (err) {
         if (!cancelled) {
           setStatus("❌ Error initializing Square: " + (err?.message ?? err));
