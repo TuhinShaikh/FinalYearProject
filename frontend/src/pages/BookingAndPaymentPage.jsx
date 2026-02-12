@@ -71,6 +71,7 @@ export default function BookingAndPaymentPage() {
   const [status, setStatus] = useState("");
   const [cardLoading, setCardLoading] = useState(false);
   const [activeLevel, setActiveLevel] = useState(levelDefinitions[0].id);
+  const [initToken, setInitToken] = useState(0);
   
   const handleLevelChange = (levelId) => {
     setActiveLevel(levelId);
@@ -96,6 +97,7 @@ export default function BookingAndPaymentPage() {
   };
 
   const cardRef = useRef(null);
+  const retryTimeoutRef = useRef(null);
 
   useEffect(() => {
     loadSquareSdk().catch(() => {});
@@ -125,7 +127,19 @@ export default function BookingAndPaymentPage() {
     let cancelled = false;
     const cleanup = () => {
       cancelled = true;
+      if (retryTimeoutRef.current) {
+        clearTimeout(retryTimeoutRef.current);
+        retryTimeoutRef.current = null;
+      }
       teardown();
+    };
+
+    const scheduleInitRetry = () => {
+      if (!window || retryTimeoutRef.current) return;
+      retryTimeoutRef.current = window.setTimeout(() => {
+        retryTimeoutRef.current = null;
+        setInitToken((prev) => prev + 1);
+      }, 2200);
     };
 
     // reset before attaching a new one
@@ -219,7 +233,7 @@ export default function BookingAndPaymentPage() {
 
     // cleanup on slot change/unmount (also fixes React 18 StrictMode double-invoke)
     return cleanup;
-  }, [selectedSlot?.id, appId, locationId]); // depend on id, not the whole object
+  }, [selectedSlot?.id, appId, locationId, initToken]); // depend on id, not the whole object
 
   async function handlePayment(e) {
     e.preventDefault();
