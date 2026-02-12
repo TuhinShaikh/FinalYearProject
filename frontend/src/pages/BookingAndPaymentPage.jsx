@@ -134,13 +134,22 @@ export default function BookingAndPaymentPage() {
 
     const normalizedAppId = appId?.trim();
     const normalizedLocationId = locationId?.trim();
+    const placeholderAppId = "sandbox-sq0idb-xxxxxxxx";
+    const placeholderLocationId = "sandbox-location-id";
+    const isPlaceholderAppId =
+      !normalizedAppId || normalizedAppId === placeholderAppId;
 
-    if (!normalizedAppId) {
+    if (isPlaceholderAppId) {
       setStatus(
         "❌ Square App ID is missing. Set VITE_SQUARE_APP_ID in your .env."
       );
       return cleanup;
     }
+
+    const finalLocationId =
+      normalizedLocationId && normalizedLocationId !== placeholderLocationId
+        ? normalizedLocationId
+        : undefined;
 
     setCardLoading(true);
 
@@ -194,8 +203,8 @@ export default function BookingAndPaymentPage() {
         await loadSquareSdk();
         if (cancelled || !window.Square) return;
 
-        const payments = normalizedLocationId
-          ? window.Square.payments(normalizedAppId, normalizedLocationId)
+        const payments = finalLocationId
+          ? window.Square.payments(normalizedAppId, finalLocationId)
           : window.Square.payments(normalizedAppId);
 
         await createCardWithRetry(payments);
