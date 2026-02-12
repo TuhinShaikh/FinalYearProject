@@ -119,6 +119,31 @@ export default function BookingAndPaymentPage() {
       if (el) el.innerHTML = "";
     };
 
+          {status?.includes("Error initializing Square") && (
+            <button
+              type="button"
+              onClick={() => {
+                setStatus("⚙️ Retrying Square payment fields...");
+                setCardLoading(true);
+                setInitToken((prev) => prev + 1);
+              }}
+              disabled={cardLoading}
+              style={{
+                marginTop: "0.75rem",
+                padding: "10px",
+                background: "#0a1f3d",
+                color: "#ffffff",
+                border: "none",
+                borderRadius: "6px",
+                cursor: cardLoading ? "not-allowed" : "pointer",
+                fontWeight: 600,
+                width: "100%",
+              }}
+            >
+              Retry loading payment fields
+            </button>
+          )}
+
     if (!selectedSlot) {
       teardown();
       return;
