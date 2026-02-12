@@ -72,6 +72,7 @@ export default function BookingAndPaymentPage() {
   const [cardLoading, setCardLoading] = useState(false);
   const [activeLevel, setActiveLevel] = useState(levelDefinitions[0].id);
   const [initToken, setInitToken] = useState(0);
+  const [backendLocationId, setBackendLocationId] = useState(undefined);
   
   const handleLevelChange = (levelId) => {
     setActiveLevel(levelId);
@@ -101,6 +102,34 @@ export default function BookingAndPaymentPage() {
 
   useEffect(() => {
     loadSquareSdk().catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function fetchSquareConfig() {
+      try {
+        const response = await fetch("/api/payments/config");
+        if (!response.ok) {
+          throw new Error(`Square config fetch failed: ${response.status}`);
+        }
+
+        const data = await response.json();
+        if (!cancelled) {
+          setBackendLocationId(data?.locationId ?? null);
+        }
+      } catch (err) {
+        console.error("Unable to load Square configuration", err);
+        if (!cancelled) {
+          setBackendLocationId(null);
+        }
+      }
+    }
+
+    fetchSquareConfig();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   // --- IMPORTANT: cleanly destroy/detach old card on every slot change ---
@@ -185,10 +214,11 @@ export default function BookingAndPaymentPage() {
       return cleanup;
     }
 
-    const finalLocationId =
+    const envLocationId =
       normalizedLocationId && normalizedLocationId !== placeholderLocationId
         ? normalizedLocationId
         : undefined;
+    const finalLocationId = backendLocationId ?? envLocationId;
 
     setCardLoading(true);
 
