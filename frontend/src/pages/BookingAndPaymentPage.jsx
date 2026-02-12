@@ -135,7 +135,7 @@ export default function BookingAndPaymentPage() {
     };
 
     const scheduleInitRetry = () => {
-      if (!window || retryTimeoutRef.current) return;
+      if (typeof window === "undefined" || retryTimeoutRef.current) return;
       retryTimeoutRef.current = window.setTimeout(() => {
         retryTimeoutRef.current = null;
         setInitToken((prev) => prev + 1);
@@ -224,7 +224,20 @@ export default function BookingAndPaymentPage() {
         await createCardWithRetry(payments);
       } catch (err) {
         if (!cancelled) {
-          setStatus("❌ Error initializing Square: " + (err?.message ?? err));
+          const message = err?.message ?? err;
+          const isTimeoutError =
+            typeof message === "string" &&
+            message.includes("Web Payments SDK was unable to be initialized in time");
+
+          setStatus(
+            `❌ Error initializing Square: ${message ?? "unknown"}${
+              isTimeoutError ? " (retrying shortly)" : ""
+            }`
+          );
+
+          if (isTimeoutError) {
+            scheduleInitRetry();
+          }
         }
       } finally {
         if (!cancelled) setCardLoading(false);
