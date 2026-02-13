@@ -1,31 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import "../App.css";
 import logo from "../assets/image.jpg";
-import CarParkMap from "../components/CarParkMap";
-
-const levelDefinitions = [
-  {
-    id: 1,
-    label: "Level 1 • Arena",
-    price: 95,
-    description: "Pitch-side, premium parking for the closest possible arrival.",
-  },
-  {
-    id: 2,
-    label: "Level 2 • Club",
-    price: 68,
-    description: "Balanced walk / price with easy access to trams and taxis.",
-  },
-  {
-    id: 3,
-    label: "Level 3 • Skyline",
-    price: 45,
-    description: "Highest tier—cheaper, more reflective, ideal for early arrivals.",
-  },
-];
-
-const appId = import.meta.env.VITE_SQUARE_APP_ID;
-const locationId = import.meta.env.VITE_SQUARE_LOCATION_ID;
 
 let squareSdkPromise;
 
@@ -67,69 +42,29 @@ function loadSquareSdk() {
 }
 
 export default function BookingAndPaymentPage() {
+  const [slots, setSlots] = useState([]);
   const [selectedSlot, setSelectedSlot] = useState(null);
   const [status, setStatus] = useState("");
   const [cardLoading, setCardLoading] = useState(false);
-  const [activeLevel, setActiveLevel] = useState(levelDefinitions[0].id);
-  const [initToken, setInitToken] = useState(0);
-  const [backendLocationId, setBackendLocationId] = useState(undefined);
-  
-  const handleLevelChange = (levelId) => {
-    setActiveLevel(levelId);
-    if (selectedSlot?.level !== levelId) {
-      setSelectedSlot(null);
-    }
-  };
-
-  const getSlotPrice = (slotNumber, levelId) => {
-    const level = levelDefinitions.find((l) => l.id === levelId) ?? levelDefinitions[0];
-    const tier = Math.floor((slotNumber - 1) / 6);
-    return Math.max(level.price - tier * 2, 20);
-  };
-
-  const handleSlotSelect = (slotNumber, price) => {
-    setSelectedSlot({
-      id: `${activeLevel}-${slotNumber}`,
-      level: activeLevel,
-      number: slotNumber,
-      price,
-      label: `Slot ${slotNumber}`,
-    });
-  };
 
   const cardRef = useRef(null);
-  const retryTimeoutRef = useRef(null);
 
+  // Generate a broad range of slots with tiered pricing for the demo grid
   useEffect(() => {
-    loadSquareSdk().catch(() => {});
-  }, []);
+    const generated = Array.from({ length: 100 }, (_, i) => {
+      const id = i + 1;
+      let price = 0;
 
-  useEffect(() => {
-    let cancelled = false;
+      if (id === 1) price = 100;
+      else if (id <= 20) price = 50;
+      else if (id <= 60) price = 40;
+      else if (id <= 80) price = 20;
+      else price = 15;
 
-    async function fetchSquareConfig() {
-      try {
-        const response = await fetch("/api/payments/config");
-        if (!response.ok) {
-          throw new Error(`Square config fetch failed: ${response.status}`);
-        }
+      return { id, price };
+    });
 
-        const data = await response.json();
-        if (!cancelled) {
-          setBackendLocationId(data?.locationId ?? null);
-        }
-      } catch (err) {
-        console.error("Unable to load Square configuration", err);
-        if (!cancelled) {
-          setBackendLocationId(null);
-        }
-      }
-    }
-
-    fetchSquareConfig();
-    return () => {
-      cancelled = true;
-    };
+    setSlots(generated);
   }, []);
 
   // --- IMPORTANT: cleanly destroy/detach old card on every slot change ---
@@ -148,151 +83,48 @@ export default function BookingAndPaymentPage() {
       if (el) el.innerHTML = "";
     };
 
-          {status?.includes("Error initializing Square") && (
-            <button
-              type="button"
-              onClick={() => {
-                setStatus("⚙️ Retrying Square payment fields...");
-                setCardLoading(true);
-                setInitToken((prev) => prev + 1);
-              }}
-              disabled={cardLoading}
-              style={{
-                marginTop: "0.75rem",
-                padding: "10px",
-                background: "#0a1f3d",
-                color: "#ffffff",
-                border: "none",
-                borderRadius: "6px",
-                cursor: cardLoading ? "not-allowed" : "pointer",
-                fontWeight: 600,
-                width: "100%",
-              }}
-            >
-              Retry loading payment fields
-            </button>
-          )}
-
     if (!selectedSlot) {
       teardown();
       return;
     }
 
     let cancelled = false;
-    const cleanup = () => {
-      cancelled = true;
-      if (retryTimeoutRef.current) {
-        clearTimeout(retryTimeoutRef.current);
-        retryTimeoutRef.current = null;
-      }
-      teardown();
-    };
-
-    const scheduleInitRetry = () => {
-      if (typeof window === "undefined" || retryTimeoutRef.current) return;
-      retryTimeoutRef.current = window.setTimeout(() => {
-        retryTimeoutRef.current = null;
-        setInitToken((prev) => prev + 1);
-      }, 2200);
-    };
 
     // reset before attaching a new one
     teardown();
     setStatus("");
-
-    const normalizedAppId = appId?.trim();
-    const normalizedLocationId = locationId?.trim();
-    const placeholderAppId = "sandbox-sq0idb-xxxxxxxx";
-    const placeholderLocationId = "sandbox-location-id";
-    const isPlaceholderAppId =
-      !normalizedAppId || normalizedAppId === placeholderAppId;
-
-    if (isPlaceholderAppId) {
-      setStatus(
-        "❌ Square App ID is missing. Set VITE_SQUARE_APP_ID in your .env."
-      );
-      return cleanup;
-    }
-
-    const envLocationId =
-      normalizedLocationId && normalizedLocationId !== placeholderLocationId
-        ? normalizedLocationId
-        : undefined;
-    const finalLocationId = backendLocationId ?? envLocationId;
-
     setCardLoading(true);
-
-    const createCardWithRetry = async (payments) => {
-      const MAX_CARD_INIT_ATTEMPTS = 5;
-      const CARD_RETRY_DELAY_MS = 1500;
-
-      for (
-        let attempt = 1;
-        attempt <= MAX_CARD_INIT_ATTEMPTS && !cancelled;
-        attempt++
-      ) {
-        let card;
-        try {
-          card = await payments.card();
-
-          if (cancelled) {
-            if (card?.destroy) card.destroy();
-            return;
-          }
-
-          await card.attach("#card-container");
-
-          if (cancelled) {
-            if (card?.destroy) card.destroy();
-            return;
-          }
-
-          cardRef.current = card;
-          return;
-        } catch (err) {
-          if (card?.destroy) card.destroy();
-
-          const isTimeout =
-            err?.message?.includes("Web Payments SDK was unable to be initialized in time");
-
-          if (isTimeout && attempt < MAX_CARD_INIT_ATTEMPTS && !cancelled) {
-            await new Promise((resolve) =>
-              setTimeout(resolve, CARD_RETRY_DELAY_MS)
-            );
-            continue;
-          }
-
-          throw err;
-        }
-      }
-    };
 
     (async () => {
       try {
         await loadSquareSdk();
         if (cancelled || !window.Square) return;
 
-        const payments = finalLocationId
-          ? window.Square.payments(normalizedAppId, finalLocationId)
-          : window.Square.payments(normalizedAppId);
+        // NOTE: if you have a Location ID, Square usually expects:
+        // window.Square.payments(appId, locationId)
+        const payments = window.Square.payments(
+          "sandbox-sq0idb-I-lZ-tkY-jzemSkWMfBn-A"
+        );
 
-        await createCardWithRetry(payments);
+        const card = await payments.card();
+
+        // if we got cancelled mid-flight, destroy immediately
+        if (cancelled) {
+          if (card?.destroy) card.destroy();
+          return;
+        }
+
+        await card.attach("#card-container");
+
+        if (cancelled) {
+          if (card?.destroy) card.destroy();
+          return;
+        }
+
+        cardRef.current = card;
       } catch (err) {
         if (!cancelled) {
-          const message = err?.message ?? err;
-          const isTimeoutError =
-            typeof message === "string" &&
-            message.includes("Web Payments SDK was unable to be initialized in time");
-
-          setStatus(
-            `❌ Error initializing Square: ${message ?? "unknown"}${
-              isTimeoutError ? " (retrying shortly)" : ""
-            }`
-          );
-
-          if (isTimeoutError) {
-            scheduleInitRetry();
-          }
+          setStatus("❌ Error initializing Square: " + (err?.message ?? err));
         }
       } finally {
         if (!cancelled) setCardLoading(false);
@@ -300,8 +132,11 @@ export default function BookingAndPaymentPage() {
     })();
 
     // cleanup on slot change/unmount (also fixes React 18 StrictMode double-invoke)
-    return cleanup;
-  }, [selectedSlot?.id, appId, locationId, initToken, backendLocationId]); // depend on id, not the whole object
+    return () => {
+      cancelled = true;
+      teardown();
+    };
+  }, [selectedSlot?.id]); // depend on id, not the whole object
 
   async function handlePayment(e) {
     e.preventDefault();
@@ -356,14 +191,44 @@ export default function BookingAndPaymentPage() {
       <h1>Book Parking & Pay</h1>
       <p>Select a parking slot to continue.</p>
 
-      <CarParkMap
-        selectedSlot={selectedSlot}
-        onSelect={handleSlotSelect}
-        activeLevel={activeLevel}
-        levels={levelDefinitions}
-        onLevelChange={handleLevelChange}
-        getSlotPrice={getSlotPrice}
-      />
+      {/* Parking grid that highlights selection */}
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(10, 1fr)",
+          gap: "10px",
+          marginTop: "2rem",
+        }}
+      >
+        {slots.map((slot) => (
+          <div
+            key={slot.id}
+            onClick={() => setSelectedSlot(slot)}
+            style={{
+              padding: "15px",
+              backgroundColor:
+                selectedSlot?.id === slot.id ? "#8bc8ff" : "#ffffff",
+              borderRadius: "6px",
+              cursor: "pointer",
+              textAlign: "center",
+              border:
+                selectedSlot?.id === slot.id
+                  ? "2px solid #3b9bff"
+                  : "1px solid #cfdaf0",
+              boxShadow:
+                selectedSlot?.id === slot.id
+                  ? "0 0 20px rgba(59, 139, 255, 0.35)"
+                  : "0 0 10px rgba(10, 31, 61, 0.05)",
+              color: "#0a1f3d",
+              userSelect: "none",
+            }}
+          >
+            <strong>Slot {slot.id}</strong>
+            <br />
+            £{slot.price}
+          </div>
+        ))}
+      </div>
 
       {/* Payment section is hidden until a slot is selected */}
       {selectedSlot && (
@@ -374,7 +239,7 @@ export default function BookingAndPaymentPage() {
             style={{ width: "120px", marginBottom: "1rem" }}
           />
 
-          <h2>Pay for {selectedSlot.label}</h2>
+          <h2>Pay for Slot {selectedSlot.id}</h2>
           <p>
             Amount: <strong>£{selectedSlot.price}</strong>
           </p>
