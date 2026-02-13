@@ -41,6 +41,32 @@ function loadSquareSdk() {
   return squareSdkPromise;
 }
 
+function SlotCard({ slot, selectedSlot, setSelectedSlot }) {
+  const selected = selectedSlot?.id === slot.id;
+
+  return (
+    <div
+      onClick={() => setSelectedSlot(slot)}
+      style={{
+        padding: "15px",
+        backgroundColor: selected ? "#8bc8ff" : "#ffffff",
+        borderRadius: "6px",
+        cursor: "pointer",
+        textAlign: "center",
+        border: selected ? "2px solid #3b9bff" : "1px solid #cfdaf0",
+        boxShadow: selected
+          ? "0 0 20px rgba(59, 139, 255, 0.35)"
+          : "0 0 10px rgba(10, 31, 61, 0.05)",
+        color: "#0a1f3d",
+        userSelect: "none",
+      }}
+    >
+      <strong>Slot {slot.id}</strong>
+      <br />£{slot.price}
+    </div>
+  );
+}
+
 export default function BookingAndPaymentPage() {
   const [slots, setSlots] = useState([]);
   const [selectedSlot, setSelectedSlot] = useState(null);
@@ -49,7 +75,7 @@ export default function BookingAndPaymentPage() {
 
   const cardRef = useRef(null);
 
-  // Generate a broad range of slots with tiered pricing for the demo grid
+  // Generate slots with tiered pricing
   useEffect(() => {
     const generated = Array.from({ length: 100 }, (_, i) => {
       const id = i + 1;
@@ -67,17 +93,13 @@ export default function BookingAndPaymentPage() {
     setSlots(generated);
   }, []);
 
-  // --- IMPORTANT: cleanly destroy/detach old card on every slot change ---
+  // Square card lifecycle
   useEffect(() => {
-    // helper: remove any previously attached card + clear DOM container
     const teardown = () => {
       try {
         if (cardRef.current?.destroy) cardRef.current.destroy();
-      } catch {
-        // ignore
-      } finally {
-        cardRef.current = null;
-      }
+      } catch {}
+      cardRef.current = null;
 
       const el = document.getElementById("card-container");
       if (el) el.innerHTML = "";
@@ -89,8 +111,6 @@ export default function BookingAndPaymentPage() {
     }
 
     let cancelled = false;
-
-    // reset before attaching a new one
     teardown();
     setStatus("");
     setCardLoading(true);
@@ -100,15 +120,12 @@ export default function BookingAndPaymentPage() {
         await loadSquareSdk();
         if (cancelled || !window.Square) return;
 
-        // NOTE: if you have a Location ID, Square usually expects:
-        // window.Square.payments(appId, locationId)
         const payments = window.Square.payments(
           "sandbox-sq0idb-I-lZ-tkY-jzemSkWMfBn-A"
         );
 
         const card = await payments.card();
 
-        // if we got cancelled mid-flight, destroy immediately
         if (cancelled) {
           if (card?.destroy) card.destroy();
           return;
@@ -131,12 +148,11 @@ export default function BookingAndPaymentPage() {
       }
     })();
 
-    // cleanup on slot change/unmount (also fixes React 18 StrictMode double-invoke)
     return () => {
       cancelled = true;
       teardown();
     };
-  }, [selectedSlot?.id]); // depend on id, not the whole object
+  }, [selectedSlot?.id]);
 
   async function handlePayment(e) {
     e.preventDefault();
@@ -179,6 +195,9 @@ export default function BookingAndPaymentPage() {
     }
   }
 
+  const leftSlots = slots.slice(0, 50);
+  const rightSlots = slots.slice(50);
+
   return (
     <main
       style={{
@@ -191,46 +210,85 @@ export default function BookingAndPaymentPage() {
       <h1>Book Parking & Pay</h1>
       <p>Select a parking slot to continue.</p>
 
-      {/* Parking grid that highlights selection */}
+      {/* 3-column layout with big center square */}
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(10, 1fr)",
-          gap: "10px",
+          gridTemplateColumns: "1fr 340px 1fr",
+          gap: "20px",
           marginTop: "2rem",
+          alignItems: "start",
         }}
       >
-        {slots.map((slot) => (
-          <div
-            key={slot.id}
-            onClick={() => setSelectedSlot(slot)}
-            style={{
-              padding: "15px",
-              backgroundColor:
-                selectedSlot?.id === slot.id ? "#8bc8ff" : "#ffffff",
-              borderRadius: "6px",
-              cursor: "pointer",
-              textAlign: "center",
-              border:
-                selectedSlot?.id === slot.id
-                  ? "2px solid #3b9bff"
-                  : "1px solid #cfdaf0",
-              boxShadow:
-                selectedSlot?.id === slot.id
-                  ? "0 0 20px rgba(59, 139, 255, 0.35)"
-                  : "0 0 10px rgba(10, 31, 61, 0.05)",
-              color: "#0a1f3d",
-              userSelect: "none",
-            }}
-          >
-            <strong>Slot {slot.id}</strong>
-            <br />
-            £{slot.price}
-          </div>
-        ))}
+        {/* LEFT GRID */}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(5, 1fr)",
+            gap: "10px",
+          }}
+        >
+          {leftSlots.map((slot) => (
+            <SlotCard
+              key={slot.id}
+              slot={slot}
+              selectedSlot={selectedSlot}
+              setSelectedSlot={setSelectedSlot}
+            />
+          ))}
+        </div>
+
+        {/* BIG CENTER SQUARE */}
+        <div
+          style={{
+            position: "sticky",
+            top: "120px",
+            height: "340px",
+            borderRadius: "12px",
+            border: "2px solid #3b9bff",
+            background: selectedSlot ? "#e7f4ff" : "#f5f7fb",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            boxShadow: "0 10px 30px rgba(0,0,0,0.08)",
+            textAlign: "center",
+            padding: "20px",
+          }}
+        >
+          {selectedSlot ? (
+            <>
+              <h2>Slot {selectedSlot.id}</h2>
+              <p style={{ fontSize: "2rem", fontWeight: "bold", margin: 0 }}>
+                £{selectedSlot.price}
+              </p>
+              <p style={{ marginTop: "8px" }}>Selected Parking Slot</p>
+            </>
+          ) : (
+            <p>Select a slot</p>
+          )}
+        </div>
+
+        {/* RIGHT GRID */}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(5, 1fr)",
+            gap: "10px",
+          }}
+        >
+          {rightSlots.map((slot) => (
+            <SlotCard
+              key={slot.id}
+              slot={slot}
+              selectedSlot={selectedSlot}
+              setSelectedSlot={setSelectedSlot}
+            />
+          ))}
+        </div>
       </div>
 
-      {/* Payment section is hidden until a slot is selected */}
+      {/* Payment section */}
       {selectedSlot && (
         <div className="payment-form" style={{ marginTop: "3rem" }}>
           <img
@@ -244,8 +302,6 @@ export default function BookingAndPaymentPage() {
             Amount: <strong>£{selectedSlot.price}</strong>
           </p>
 
-          {/* Key ensures a fresh DOM node if you ever want it; not strictly required with teardown,
-              but it helps avoid edge cases */}
           <div id="card-container" key={selectedSlot.id}></div>
 
           <button
@@ -258,7 +314,8 @@ export default function BookingAndPaymentPage() {
               color: "#0a1f3d",
               border: "1px solid #3b9bff",
               borderRadius: "6px",
-              cursor: cardLoading || !cardRef.current ? "not-allowed" : "pointer",
+              cursor:
+                cardLoading || !cardRef.current ? "not-allowed" : "pointer",
               width: "100%",
               opacity: cardLoading || !cardRef.current ? 0.6 : 1,
             }}
