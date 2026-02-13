@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import "../App.css";
 import logo from "../assets/image.jpg";
+import stadium from "../assets/stadium.jpg"; // add your stadium image here
 
 let squareSdkPromise;
 
@@ -48,16 +49,16 @@ function SlotCard({ slot, selectedSlot, setSelectedSlot }) {
     <div
       onClick={() => setSelectedSlot(slot)}
       style={{
-        padding: "15px",
+        padding: "10px",
         backgroundColor: selected ? "#8bc8ff" : "#ffffff",
         borderRadius: "6px",
         cursor: "pointer",
         textAlign: "center",
         border: selected ? "2px solid #3b9bff" : "1px solid #cfdaf0",
         boxShadow: selected
-          ? "0 0 20px rgba(59, 139, 255, 0.35)"
-          : "0 0 10px rgba(10, 31, 61, 0.05)",
-        color: "#0a1f3d",
+          ? "0 0 15px rgba(59, 139, 255, 0.35)"
+          : "0 0 6px rgba(10, 31, 61, 0.05)",
+        fontSize: "12px",
         userSelect: "none",
       }}
     >
@@ -75,7 +76,6 @@ export default function BookingAndPaymentPage() {
 
   const cardRef = useRef(null);
 
-  // Generate slots with tiered pricing
   useEffect(() => {
     const generated = Array.from({ length: 100 }, (_, i) => {
       const id = i + 1;
@@ -93,14 +93,12 @@ export default function BookingAndPaymentPage() {
     setSlots(generated);
   }, []);
 
-  // Square card lifecycle
   useEffect(() => {
     const teardown = () => {
       try {
         if (cardRef.current?.destroy) cardRef.current.destroy();
       } catch {}
       cardRef.current = null;
-
       const el = document.getElementById("card-container");
       if (el) el.innerHTML = "";
     };
@@ -125,16 +123,14 @@ export default function BookingAndPaymentPage() {
         );
 
         const card = await payments.card();
-
         if (cancelled) {
-          if (card?.destroy) card.destroy();
+          card.destroy?.();
           return;
         }
 
         await card.attach("#card-container");
-
         if (cancelled) {
-          if (card?.destroy) card.destroy();
+          card.destroy?.();
           return;
         }
 
@@ -163,13 +159,12 @@ export default function BookingAndPaymentPage() {
     }
 
     if (!cardRef.current) {
-      setStatus("❌ Square card input is still loading; try again shortly.");
+      setStatus("❌ Square card input is still loading.");
       return;
     }
 
     try {
       const result = await cardRef.current.tokenize();
-
       if (result.status !== "OK") {
         setStatus(
           "❌ Payment failed: " +
@@ -195,37 +190,67 @@ export default function BookingAndPaymentPage() {
     }
   }
 
-  const leftSlots = slots.slice(0, 50);
-  const rightSlots = slots.slice(50);
+  // Layout mapping: slots around stadium, leaving corners empty (roads)
+  const topSlots = slots.slice(0, 20);
+  const leftSlots = slots.slice(20, 40);
+  const rightSlots = slots.slice(40, 60);
+  const bottomSlots = slots.slice(60, 80);
 
   return (
     <main
       style={{
         padding: "2rem",
-        color: "#0a1f3d",
         minHeight: "100vh",
         background: "linear-gradient(180deg, #e7f4ff 0%, #ffffff 70%)",
       }}
     >
       <h1>Book Parking & Pay</h1>
-      <p>Select a parking slot to continue.</p>
+      <p>Select a parking slot around the stadium.</p>
 
-      {/* 3-column layout with big center square */}
+      {/* Stadium + Parking Layout */}
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "1fr 340px 1fr",
+          gridTemplateColumns: "100px 1fr 100px",
+          gridTemplateRows: "100px 400px 100px",
           gap: "20px",
           marginTop: "2rem",
-          alignItems: "start",
+          alignItems: "center",
+          justifyItems: "center",
         }}
       >
-        {/* LEFT GRID */}
+        {/* Top road corner (empty) */}
+        <div />
+
+        {/* Top slots */}
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(5, 1fr)",
+            gridTemplateColumns: "repeat(10, 1fr)",
             gap: "10px",
+            width: "100%",
+          }}
+        >
+          {topSlots.map((slot) => (
+            <SlotCard
+              key={slot.id}
+              slot={slot}
+              selectedSlot={selectedSlot}
+              setSelectedSlot={setSelectedSlot}
+            />
+          ))}
+        </div>
+
+        {/* Top right road corner */}
+        <div />
+
+        {/* Left slots */}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateRows: "repeat(10, 1fr)",
+            gap: "10px",
+            height: "100%",
           }}
         >
           {leftSlots.map((slot) => (
@@ -238,43 +263,31 @@ export default function BookingAndPaymentPage() {
           ))}
         </div>
 
-        {/* BIG CENTER SQUARE */}
+        {/* Stadium (CENTER RECTANGLE) */}
         <div
           style={{
-            position: "sticky",
-            top: "120px",
-            height: "340px",
-            borderRadius: "12px",
-            border: "2px solid #3b9bff",
-            background: selectedSlot ? "#e7f4ff" : "#f5f7fb",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            boxShadow: "0 10px 30px rgba(0,0,0,0.08)",
-            textAlign: "center",
-            padding: "20px",
+            width: "100%",
+            height: "100%",
+            borderRadius: "16px",
+            overflow: "hidden",
+            border: "4px solid #3b9bff",
+            boxShadow: "0 20px 40px rgba(0,0,0,0.15)",
           }}
         >
-          {selectedSlot ? (
-            <>
-              <h2>Slot {selectedSlot.id}</h2>
-              <p style={{ fontSize: "2rem", fontWeight: "bold", margin: 0 }}>
-                £{selectedSlot.price}
-              </p>
-              <p style={{ marginTop: "8px" }}>Selected Parking Slot</p>
-            </>
-          ) : (
-            <p>Select a slot</p>
-          )}
+          <img
+            src={stadium}
+            alt="Stadium"
+            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+          />
         </div>
 
-        {/* RIGHT GRID */}
+        {/* Right slots */}
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(5, 1fr)",
+            gridTemplateRows: "repeat(10, 1fr)",
             gap: "10px",
+            height: "100%",
           }}
         >
           {rightSlots.map((slot) => (
@@ -286,52 +299,64 @@ export default function BookingAndPaymentPage() {
             />
           ))}
         </div>
+
+        {/* Bottom left road corner */}
+        <div />
+
+        {/* Bottom slots */}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(10, 1fr)",
+            gap: "10px",
+            width: "100%",
+          }}
+        >
+          {bottomSlots.map((slot) => (
+            <SlotCard
+              key={slot.id}
+              slot={slot}
+              selectedSlot={selectedSlot}
+              setSelectedSlot={setSelectedSlot}
+            />
+          ))}
+        </div>
+
+        {/* Bottom right road corner */}
+        <div />
       </div>
 
-      {/* Payment section */}
+      {/* Payment Section */}
       {selectedSlot && (
-        <div className="payment-form" style={{ marginTop: "3rem" }}>
-          <img
-            src={logo}
-            alt="Square Logo"
-            style={{ width: "120px", marginBottom: "1rem" }}
-          />
+        <div style={{ marginTop: "3rem" }}>
+          <img src={logo} alt="Square Logo" style={{ width: "120px" }} />
 
           <h2>Pay for Slot {selectedSlot.id}</h2>
           <p>
             Amount: <strong>£{selectedSlot.price}</strong>
           </p>
 
-          <div id="card-container" key={selectedSlot.id}></div>
+          <div id="card-container"></div>
 
           <button
-            id="pay-button"
             onClick={handlePayment}
             disabled={cardLoading || !cardRef.current}
             style={{
               padding: "12px 20px",
               background: "#c2e0ff",
-              color: "#0a1f3d",
               border: "1px solid #3b9bff",
               borderRadius: "6px",
+              width: "100%",
+              marginTop: "1rem",
               cursor:
                 cardLoading || !cardRef.current ? "not-allowed" : "pointer",
-              width: "100%",
               opacity: cardLoading || !cardRef.current ? 0.6 : 1,
             }}
           >
-            {cardLoading ? "Loading payment fields..." : "Pay Now"}
+            {cardLoading ? "Loading payment..." : "Pay Now"}
           </button>
 
-          <p
-            style={{
-              color: status.startsWith("❌") ? "#b00020" : "#0a1f3d",
-              marginTop: "1rem",
-              wordBreak: "break-word",
-            }}
-          >
-            {status}
-          </p>
+          <p style={{ marginTop: "1rem" }}>{status}</p>
         </div>
       )}
     </main>
