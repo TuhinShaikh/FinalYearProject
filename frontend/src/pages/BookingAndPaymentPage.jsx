@@ -222,7 +222,7 @@ export default function BookingAndPaymentPage() {
         {/* Top road corner (empty) */}
         <div />
 
-        {/* Top slots */}
+        {/* Top slotss */}
         <div
           style={{
             display: "grid",
