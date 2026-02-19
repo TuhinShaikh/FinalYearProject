@@ -2,18 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import "../App.css";
 import logo from "../assets/image.jpg";
 import stadium from "../assets/stadium.jpg"; // add your stadium image here
-
-let squareSdkPromise;
-
-function loadSquareSdk() {
-  if (squareSdkPromise) return squareSdkPromise;
-
-  squareSdkPromise = new Promise((resolve, reject) => {
-    if (window.Square) {
-      resolve();
-      return;
-    }
-
+        {/* Top road corner (empty) */}
     const existingScript = document.getElementById("square-sdk");
     if (existingScript) {
       existingScript.addEventListener("load", resolve, { once: true });
@@ -197,17 +186,17 @@ export default function BookingAndPaymentPage() {
   const bottomSlots = slots.slice(60, 80);
 
   return (
-    <main
-      style={{
-        padding: "2rem",
-        minHeight: "100vh",
-        background: "linear-gradient(180deg, #e7f4ff 0%, #ffffff 70%)",
-      }}
-    >
-      <h1>Book Parking & Pay</h1>
-      <p>Select a parking slot around the stadium.</p>
-
-      {/* Stadium + Parking Layout */}
+      <div
+        style={
+          display: "grid",
+          gridTemplateColumns: "100px 1fr 100px",
+          gridTemplateRows: "120px 320px 120px",
+          gap: "20px",
+          marginTop: "2rem",
+          alignItems: "center",
+          justifyItems: "center",
+        }
+      >
       <div
         style={{
           display: "grid",
@@ -265,19 +254,19 @@ export default function BookingAndPaymentPage() {
 
         {/* Stadium (CENTER RECTANGLE) */}
         <div
-          style={{
+          style={
             width: "100%",
             height: "100%",
             borderRadius: "16px",
             overflow: "hidden",
             border: "4px solid #3b9bff",
             boxShadow: "0 20px 40px rgba(0,0,0,0.15)",
-          }}
+          }
         >
           <img
             src={stadium}
             alt="Stadium"
-            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+            style={{ width: "100%", height: "100%", objectFit: "cover", maxHeight: "320px" }}
           />
         </div>
 
