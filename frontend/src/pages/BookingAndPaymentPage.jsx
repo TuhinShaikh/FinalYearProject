@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import "../App.css";
 import logo from "../assets/image.jpg";
-import stadium from "../assets/stadium.jpg"; // add your stadium image here
 
 let squareSdkPromise;
 
@@ -42,32 +41,6 @@ function loadSquareSdk() {
   return squareSdkPromise;
 }
 
-function SlotCard({ slot, selectedSlot, setSelectedSlot }) {
-  const selected = selectedSlot?.id === slot.id;
-
-  return (
-    <div
-      onClick={() => setSelectedSlot(slot)}
-      style={{
-        padding: "10px",
-        backgroundColor: selected ? "#8bc8ff" : "#ffffff",
-        borderRadius: "6px",
-        cursor: "pointer",
-        textAlign: "center",
-        border: selected ? "2px solid #3b9bff" : "1px solid #cfdaf0",
-        boxShadow: selected
-          ? "0 0 15px rgba(59, 139, 255, 0.35)"
-          : "0 0 6px rgba(10, 31, 61, 0.05)",
-        fontSize: "12px",
-        userSelect: "none",
-      }}
-    >
-      <strong>Slot {slot.id}</strong>
-      <br />£{slot.price}
-    </div>
-  );
-}
-
 export default function BookingAndPaymentPage() {
   const [slots, setSlots] = useState([]);
   const [selectedSlot, setSelectedSlot] = useState(null);
@@ -76,6 +49,7 @@ export default function BookingAndPaymentPage() {
 
   const cardRef = useRef(null);
 
+  // Generate a broad range of slots with tiered pricing for the demo grid
   useEffect(() => {
     const generated = Array.from({ length: 100 }, (_, i) => {
       const id = i + 1;
@@ -93,12 +67,18 @@ export default function BookingAndPaymentPage() {
     setSlots(generated);
   }, []);
 
+  // --- IMPORTANT: cleanly destroy/detach old card on every slot change ---
   useEffect(() => {
+    // helper: remove any previously attached card + clear DOM container
     const teardown = () => {
       try {
         if (cardRef.current?.destroy) cardRef.current.destroy();
-      } catch {}
-      cardRef.current = null;
+      } catch {
+        // ignore
+      } finally {
+        cardRef.current = null;
+      }
+
       const el = document.getElementById("card-container");
       if (el) el.innerHTML = "";
     };
@@ -109,6 +89,8 @@ export default function BookingAndPaymentPage() {
     }
 
     let cancelled = false;
+
+    // reset before attaching a new one
     teardown();
     setStatus("");
     setCardLoading(true);
@@ -118,19 +100,24 @@ export default function BookingAndPaymentPage() {
         await loadSquareSdk();
         if (cancelled || !window.Square) return;
 
+        // NOTE: if you have a Location ID, Square usually expects:
+        // window.Square.payments(appId, locationId)
         const payments = window.Square.payments(
           "sandbox-sq0idb-I-lZ-tkY-jzemSkWMfBn-A"
         );
 
         const card = await payments.card();
+
+        // if we got cancelled mid-flight, destroy immediately
         if (cancelled) {
-          card.destroy?.();
+          if (card?.destroy) card.destroy();
           return;
         }
 
         await card.attach("#card-container");
+
         if (cancelled) {
-          card.destroy?.();
+          if (card?.destroy) card.destroy();
           return;
         }
 
@@ -144,11 +131,12 @@ export default function BookingAndPaymentPage() {
       }
     })();
 
+    // cleanup on slot change/unmount (also fixes React 18 StrictMode double-invoke)
     return () => {
       cancelled = true;
       teardown();
     };
-  }, [selectedSlot?.id]);
+  }, [selectedSlot?.id]); // depend on id, not the whole object
 
   async function handlePayment(e) {
     e.preventDefault();
@@ -159,12 +147,13 @@ export default function BookingAndPaymentPage() {
     }
 
     if (!cardRef.current) {
-      setStatus("❌ Square card input is still loading.");
+      setStatus("❌ Square card input is still loading; try again shortly.");
       return;
     }
 
     try {
       const result = await cardRef.current.tokenize();
+
       if (result.status !== "OK") {
         setStatus(
           "❌ Payment failed: " +
@@ -190,173 +179,102 @@ export default function BookingAndPaymentPage() {
     }
   }
 
-  const topSlots = slots.slice(0, 20);
-  const leftSlots = slots.slice(20, 40);
-  const rightSlots = slots.slice(40, 60);
-  const bottomSlots = slots.slice(60, 80);
-
   return (
     <main
       style={{
         padding: "2rem",
+        color: "#0a1f3d",
         minHeight: "100vh",
         background: "linear-gradient(180deg, #e7f4ff 0%, #ffffff 70%)",
       }}
     >
       <h1>Book Parking & Pay</h1>
-      <p>Select a parking slot around the stadium.</p>
+      <p>Select a parking slot to continue.</p>
 
+      {/* Parking grid that highlights selection */}
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "100px 1fr 100px",
-          gridTemplateRows: "80px 180px 80px",
-          gap: "20px",
+          gridTemplateColumns: "repeat(10, 1fr)",
+          gap: "10px",
           marginTop: "2rem",
-          alignItems: "center",
-          justifyItems: "center",
         }}
       >
-        {/* Top road corner (empty) */}
-        <div />
-
-        {/* Top slots */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(10, 1fr)",
-            gap: "10px",
-            width: "100%",
-          }}
-        >
-          {topSlots.map((slot) => (
-            <SlotCard
-              key={slot.id}
-              slot={slot}
-              selectedSlot={selectedSlot}
-              setSelectedSlot={setSelectedSlot}
-            />
-          ))}
-        </div>
-
-        {/* Top right road corner */}
-        <div />
-
-        {/* Left slots */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateRows: "repeat(10, 1fr)",
-            gap: "10px",
-            height: "100%",
-          }}
-        >
-          {leftSlots.map((slot) => (
-            <SlotCard
-              key={slot.id}
-              slot={slot}
-              selectedSlot={selectedSlot}
-              setSelectedSlot={setSelectedSlot}
-            />
-          ))}
-        </div>
-
-        {/* Stadium (CENTER RECTANGLE) */}
-        <div
-          style={{
-            width: "100%",
-            height: "100%",
-            borderRadius: "16px",
-            overflow: "hidden",
-            border: "4px solid #3b9bff",
-            boxShadow: "0 20px 40px rgba(0,0,0,0.15)",
-          }}
-        >
-          <img
-            src={stadium}
-            alt="Stadium"
-            style={{ width: "100%", height: "100%", objectFit: "cover", maxHeight: "320px" }}
-          />
-        </div>
-
-        {/* Right slots */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateRows: "repeat(10, 1fr)",
-            gap: "10px",
-            height: "100%",
-          }}
-        >
-          {rightSlots.map((slot) => (
-            <SlotCard
-              key={slot.id}
-              slot={slot}
-              selectedSlot={selectedSlot}
-              setSelectedSlot={setSelectedSlot}
-            />
-          ))}
-        </div>
-
-        {/* Bottom left road corner */}
-        <div />
-
-        {/* Bottom slots */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(10, 1fr)",
-            gap: "10px",
-            width: "100%",
-          }}
-        >
-          {bottomSlots.map((slot) => (
-            <SlotCard
-              key={slot.id}
-              slot={slot}
-              selectedSlot={selectedSlot}
-              setSelectedSlot={setSelectedSlot}
-            />
-          ))}
-        </div>
-
-        {/* Bottom right road corner */}
-        <div />
+        {slots.map((slot) => (
+          <div
+            key={slot.id}
+            onClick={() => setSelectedSlot(slot)}
+            style={{
+              padding: "15px",
+              backgroundColor:
+                selectedSlot?.id === slot.id ? "#8bc8ff" : "#ffffff",
+              borderRadius: "6px",
+              cursor: "pointer",
+              textAlign: "center",
+              border:
+                selectedSlot?.id === slot.id
+                  ? "2px solid #3b9bff"
+                  : "1px solid #cfdaf0",
+              boxShadow:
+                selectedSlot?.id === slot.id
+                  ? "0 0 20px rgba(59, 139, 255, 0.35)"
+                  : "0 0 10px rgba(10, 31, 61, 0.05)",
+              color: "#0a1f3d",
+              userSelect: "none",
+            }}
+          >
+            <strong>Slot {slot.id}</strong>
+            <br />
+            £{slot.price}
+          </div>
+        ))}
       </div>
 
-      {/* Payment Section */}
+      {/* Payment section is hidden until a slot is selected */}
       {selectedSlot && (
-        <div style={{ marginTop: "4rem", maxWidth: "600px" }}>
-          <img src={logo} alt="Square Logo" style={{ width: "100px", marginBottom: "1.5rem" }} />
+        <div className="payment-form" style={{ marginTop: "3rem" }}>
+          <img
+            src={logo}
+            alt="Square Logo"
+            style={{ width: "120px", marginBottom: "1rem" }}
+          />
 
-          <h2 style={{ marginBottom: "0.5rem" }}>Pay for Slot {selectedSlot.id}</h2>
-          <p style={{ marginBottom: "1.5rem", fontSize: "16px" }}>
+          <h2>Pay for Slot {selectedSlot.id}</h2>
+          <p>
             Amount: <strong>£{selectedSlot.price}</strong>
           </p>
 
-          <div id="card-container" style={{ marginBottom: "1.5rem" }}></div>
+          {/* Key ensures a fresh DOM node if you ever want it; not strictly required with teardown,
+              but it helps avoid edge cases */}
+          <div id="card-container" key={selectedSlot.id}></div>
 
           <button
+            id="pay-button"
             onClick={handlePayment}
             disabled={cardLoading || !cardRef.current}
             style={{
-              padding: "14px 24px",
-              background: cardLoading || !cardRef.current ? "#e0e0e0" : "#3b9bff",
-              color: cardLoading || !cardRef.current ? "#999" : "white",
-              border: "none",
-              borderRadius: "8px",
+              padding: "12px 20px",
+              background: "#c2e0ff",
+              color: "#0a1f3d",
+              border: "1px solid #3b9bff",
+              borderRadius: "6px",
+              cursor: cardLoading || !cardRef.current ? "not-allowed" : "pointer",
               width: "100%",
-              fontSize: "16px",
-              fontWeight: "600",
-              cursor:
-                cardLoading || !cardRef.current ? "not-allowed" : "pointer",
-              transition: "background 0.2s",
+              opacity: cardLoading || !cardRef.current ? 0.6 : 1,
             }}
           >
-            {cardLoading ? "Loading payment..." : "Pay Now"}
+            {cardLoading ? "Loading payment fields..." : "Pay Now"}
           </button>
 
-          {status && <p style={{ marginTop: "1.5rem", fontSize: "14px" }}>{status}</p>}
+          <p
+            style={{
+              color: status.startsWith("❌") ? "#b00020" : "#0a1f3d",
+              marginTop: "1rem",
+              wordBreak: "break-word",
+            }}
+          >
+            {status}
+          </p>
         </div>
       )}
     </main>
