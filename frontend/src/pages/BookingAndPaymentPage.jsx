@@ -210,7 +210,7 @@ export default function BookingAndPaymentPage() {
         style={{
           display: "grid",
           gridTemplateColumns: "100px 1fr 100px",
-          gridTemplateRows: "120px 320px 120px",
+          gridTemplateRows: "90px 260px 90px",
           gap: "20px",
           marginTop: "2rem",
           alignItems: "center",
@@ -261,11 +261,11 @@ export default function BookingAndPaymentPage() {
           style={{
             width: "100%",
             height: "100%",
-            maxHeight: "320px",
+            maxHeight: "260px",
             borderRadius: "16px",
             overflow: "hidden",
             border: "4px solid #3b9bff",
-            boxShadow: "0 20px 40px rgba(0,0,0,0.15)",
+            boxShadow: "0 20px 40px rgba(0,0,0,0.12)",
           }}
         >
           <img
