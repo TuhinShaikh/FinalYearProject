@@ -2,9 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { login } from "../api";
 
-type LoginFormProps = {};
-
-export default function LoginPage({}: LoginFormProps): JSX.Element {
+export default function LoginPage(): JSX.Element {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);

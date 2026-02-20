@@ -27,6 +27,16 @@ export function clearAuthData() {
   );
 }
 
+export function getStoredUser() {
+  const user = localStorage.getItem(USER_KEY);
+  if (!user) return null;
+  try {
+    return JSON.parse(user);
+  } catch {
+    return null;
+  }
+}
+
 function normalizeAuthToken(token = "") {
   return token.replace(/-/g, "+").replace(/_/g, "/");
 }
