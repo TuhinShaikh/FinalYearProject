@@ -1,91 +1,44 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useMemo, useState, useEffect, useRef } from "react";
 import "../App.css";
 import logo from "../assets/image.jpg";
 
-let squareSdkPromise;
+const weatherScenarios = [
+  {
+    icon: "☀️",
+    label: "Late winter sun",
+    description: "Clear skies, ideal for quick drop-offs",
+    temp: 11,
+    wind: "6 km/h NE",
+  },
+  {
+    icon: "🌧️",
+    label: "Light drizzle",
+    description: "Wet surfaces—mind the puddles",
+    temp: 9,
+    wind: "11 km/h SW",
+  },
+  {
+    icon: "🌬️",
+    label: "Brisk breeze",
+    description: "Gusts keep the air moving",
+    temp: 8,
+    wind: "18 km/h W",
+  },
+];
 
-function loadSquareSdk() {
-  if (squareSdkPromise) return squareSdkPromise;
+const statusLabelMap = {
+  available: "Open now",
+  occupied: "Recently used",
+  maintenance: "Blocked for cleaning",
+};
 
-  squareSdkPromise = new Promise((resolve, reject) => {
-    if (window.Square) {
-      resolve();
-      return;
-    }
+const statusHighlights = {
+  available: "#8bc8ff",
+  occupied: "#9ea7b8",
+  maintenance: "#f2c1c1",
+};
 
-    const existingScript = document.getElementById("square-sdk");
-    if (existingScript) {
-      existingScript.addEventListener("load", resolve, { once: true });
-      existingScript.addEventListener(
-        "error",
-        () => {
-          squareSdkPromise = null;
-          reject(new Error("Square SDK failed to load"));
-        },
-        { once: true }
-      );
-      return;
-    }
-
-    const script = document.createElement("script");
-    script.id = "square-sdk";
-    script.src = "https://sandbox.web.squarecdn.com/v1/square.js";
-    script.onload = () => resolve();
-    script.onerror = () => {
-      squareSdkPromise = null;
-      reject(new Error("Square SDK failed to load"));
-    };
-    document.head.appendChild(script);
-  });
-
-  return squareSdkPromise;
-}
-
-export default function BookingAndPaymentPage() {
-  const [slots, setSlots] = useState([]);
-  const [selectedSlot, setSelectedSlot] = useState(null);
-  const [status, setStatus] = useState("");
-  const [cardLoading, setCardLoading] = useState(false);
-
-  const cardRef = useRef(null);
-
-  // Generate a broad range of slots with tiered pricing for the demo grid
-  useEffect(() => {
-    const generated = Array.from({ length: 100 }, (_, i) => {
-      const id = i + 1;
-      let price = 0;
-
-      if (id === 1) price = 100;
-      else if (id <= 20) price = 50;
-      else if (id <= 60) price = 40;
-      else if (id <= 80) price = 20;
-      else price = 15;
-
-      return { id, price };
-    });
-
-    setSlots(generated);
-  }, []);
-
-  // --- IMPORTANT: cleanly destroy/detach old card on every slot change ---
-  useEffect(() => {
-    // helper: remove any previously attached card + clear DOM container
-    const teardown = () => {
-      try {
-        if (cardRef.current?.destroy) cardRef.current.destroy();
-      } catch {
-        // ignore
-      } finally {
-        cardRef.current = null;
-      }
-
-      const el = document.getElementById("card-container");
-      if (el) el.innerHTML = "";
-    };
-
-    if (!selectedSlot) {
-      teardown();
-      return;
+const filterOptions = [
     }
 
     let cancelled = false;
