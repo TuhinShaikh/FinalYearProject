@@ -174,14 +174,6 @@ export default function BookingAndPaymentPage() {
     return "#1c3152";
   }, [status]);
 
-  const refreshSlots = () => {
-    setSlots(applyAiBlocks(createSlots()));
-    setSelectedSlot(null);
-    setFilter("all");
-    setStatus("✨ AI refreshed the lot with a fresh blocked pattern.");
-    setSeed(Date.now());
-  };
-
   const handleSlotSelect = (slot) => {
     if (slot.status !== "available") {
       setStatus(
@@ -327,25 +319,6 @@ export default function BookingAndPaymentPage() {
             premium spaces without the wait.
           </p>
         </div>
-        <button
-          type="button"
-          onClick={refreshSlots}
-          style={{
-            border: "none",
-            borderRadius: "999px",
-            padding: "0.75rem 1.6rem",
-            background: "#0f6ef6",
-            color: "#fff",
-            fontWeight: 600,
-            cursor: "pointer",
-            boxShadow: "0 15px 35px rgba(15, 110, 246, 0.35)"
-          }}
-        >
-          <span role="img" aria-label="sparkles">
-            ✨
-          </span>{" "}
-          AI Reshuffle the lot
-        </button>
       </section>
 
       <section
