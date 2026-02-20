@@ -104,13 +104,21 @@ export async function login(email, password) {
   return data;
 }
 
-export async function register(username, password) {
+export async function register({ email, username, password }) {
+  const body = JSON.stringify({
+    ...(email ? { email } : {}),
+    ...(username ? { username } : {}),
+    password,
+  });
   const response = await fetch(buildUrl("/api/auth/register"), {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ username, password }),
+    credentials: "include",
+    body,
   });
-  return handleResponse(response);
+  const data = await handleResponse(response);
+  saveAuthData(data);
+  return data;
 }
 
 export async function logout() {
