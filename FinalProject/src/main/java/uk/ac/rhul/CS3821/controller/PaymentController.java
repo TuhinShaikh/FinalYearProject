@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import uk.ac.rhul.CS3821.dto.PaymentRequest;
+import uk.ac.rhul.CS3821.dto.SquareConfigResponse;
 import uk.ac.rhul.CS3821.service.PaymentService;
 
 // Proxy for the Square payment service so the UI can charge cards and issue refunds
@@ -16,6 +17,16 @@ public class PaymentController {
 
     public PaymentController(PaymentService paymentService) {
         this.paymentService = paymentService;
+    }
+
+    @GetMapping("/config")
+    public ResponseEntity<SquareConfigResponse> getConfig() {
+        try {
+            return ResponseEntity.ok(
+                new SquareConfigResponse(paymentService.getLocationId()));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new SquareConfigResponse(null));
+        }
     }
 
     // Charge the provided source token for a parking slot
