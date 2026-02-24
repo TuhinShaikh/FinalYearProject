@@ -6,7 +6,7 @@ export default function JourneyPlannerPage() {
   const [trains, setTrains] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [lastUpdated, setLastUpdated] = useState<string | null>(null);
+  const [lastUpdated, setLastUpdated] = useState(null);
 
   const loadTrains = useCallback(async (targetStation) => {
     setLoading(true);
@@ -46,6 +46,11 @@ export default function JourneyPlannerPage() {
     >
       <h1>Greater Anglia Live Departures</h1>
       <p>Enter a station CRS code (e.g. LST for Liverpool Street) to view live trains.</p>
+      {lastUpdated && (
+        <p style={{ fontSize: "0.9rem", marginTop: "0.2rem", color: "#445673" }}>
+          Last updated at {lastUpdated}
+        </p>
+      )}
 
       <div style={{ marginTop: "1rem" }}>
         <input
