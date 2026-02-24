@@ -6,18 +6,18 @@ export default function JourneyPlannerPage() {
   const [trains, setTrains] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [lastUpdated, setLastUpdated] = useState<string | null>(null);
 
   const loadTrains = useCallback(async (targetStation) => {
     setLoading(true);
     setError(null);
     try {
-      const res = await axios.get("http://localhost:8080/api/trains/greater-anglia", {
+      const res = await axios.get("/api/trains/greater-anglia", {
         params: { station: targetStation },
       });
 
-      console.log("API response:", res.data);
-
       setTrains(res.data.trainServices || []);
+      setLastUpdated(new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" }));
     } catch (err) {
       console.error("Error fetching trains", err);
       setError("Unable to reach Greater Anglia right now. Please try again shortly.");
@@ -27,8 +27,13 @@ export default function JourneyPlannerPage() {
   }, []);
 
   useEffect(() => {
-    loadTrains("LST");
-  }, [loadTrains]);
+    loadTrains(station);
+  }, [loadTrains, station]);
+
+  useEffect(() => {
+    const interval = setInterval(() => loadTrains(station), 45000);
+    return () => clearInterval(interval);
+  }, [loadTrains, station]);
 
   return (
     <main
