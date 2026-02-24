@@ -1,5 +1,5 @@
 // src/api.js
-const API_URL = (import.meta.env.VITE_API_URL ?? "").replace(/\/$/, "");
+const API_URL = (import.meta.env.VITE_API_URL ?? "").trim().replace(/\/$/, "");
 
 const ACCESS_TOKEN_KEY = "accessToken";
 const REFRESH_TOKEN_KEY = "refreshToken";
@@ -67,6 +67,9 @@ function getAuthHeaders() {
 }
 
 function buildUrl(path) {
+  if (!API_URL) {
+    return `${path.startsWith("/api") ? "" : "/api"}${path}`;
+  }
   return `${API_URL}${path}`;
 }
 
