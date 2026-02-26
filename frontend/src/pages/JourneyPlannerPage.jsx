@@ -22,10 +22,6 @@ export default function JourneyPlannerPage() {
     setStatusMessage("Refreshing live departures…");
     try {
       const res = await axios.get("/api/trains/greater-anglia", {
-        params: { station: targetStation },
-      });
-      const services = Array.isArray(res.data?.trainServices) ? res.data.trainServices : [];
-      setTrains(services);
       if (services.length === 0) {
         setStatusMessage("No services reported for that station right now.");
       } else {
