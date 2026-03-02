@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import BookingPage from './pages/BookingPage';
-import JourneyPlannerPage from './pages/JourneyPlannerPage';
+import TransportPage from './pages/transport/Transport';
 import RideOptionsPage from './pages/RideOptionsPage';
 import PaymentPage from './pages/PaymentPage';
 import AccessibilityPage from './pages/AccessibilityPage';
@@ -13,7 +13,7 @@ export default function AppRouter() {
       <NavigationBar />
       <Routes>
         <Route path="/booking" element={<BookingPage />} />
-        <Route path="/journey" element={<JourneyPlannerPage />} />
+        <Route path="/transport" element={<TransportPage />} />
         <Route path="/rides" element={<RideOptionsPage />} />
         <Route path="/payment" element={<PaymentPage />} />
         <Route path="/accessibility" element={<AccessibilityPage />} />

@@ -2,20 +2,24 @@ package uk.ac.rhul.CS3821.service;
 
 import com.squareup.square.SquareClient;
 import com.squareup.square.Environment;
+import com.squareup.square.api.LocationsApi;
+import com.squareup.square.api.PaymentsApi;
+import com.squareup.square.api.RefundsApi;
 import com.squareup.square.exceptions.ApiException;
 import com.squareup.square.models.CreatePaymentRequest;
 import com.squareup.square.models.CreatePaymentResponse;
+import com.squareup.square.models.ListLocationsResponse;
+import com.squareup.square.models.Location;
 import com.squareup.square.models.Money;
 import com.squareup.square.models.RefundPaymentRequest;
 import com.squareup.square.models.RefundPaymentResponse;
-
-import com.squareup.square.api.PaymentsApi;
-import com.squareup.square.api.RefundsApi;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -25,11 +29,12 @@ import java.util.UUID;
 public class PaymentService {
 
     private final SquareClient squareClient;
+    private String cachedLocationId;
 
-        /**
-         * Configures the Square client from application properties and locks in the chosen environment.
-         */
-        public PaymentService(
+    /**
+     * Configures the Square client from application properties and locks in the chosen environment.
+     */
+    public PaymentService(
             @Value("${square.accessToken}") String accessToken,
             @Value("${square.environment}") String environment) {
 
@@ -81,5 +86,31 @@ public class PaymentService {
 
         RefundsApi refundsApi = squareClient.getRefundsApi();
         return refundsApi.refundPayment(request);
+    }
+
+    public synchronized String getLocationId() throws ApiException, IOException {
+        if (cachedLocationId != null) {
+            return cachedLocationId;
+        }
+
+        LocationsApi locationsApi = squareClient.getLocationsApi();
+        ListLocationsResponse response = locationsApi.listLocations();
+
+        if (response.getErrors() != null && !response.getErrors().isEmpty()) {
+            throw new IOException("Square location lookup failed: " + response.getErrors());
+        }
+
+        List<Location> locations = response.getLocations();
+        if (locations == null) {
+            locations = Collections.emptyList();
+        }
+
+        cachedLocationId = locations.stream()
+                .filter(location -> "ACTIVE".equals(location.getStatus()))
+                .map(Location::getId)
+                .findFirst()
+                .orElse(locations.stream().findFirst().map(Location::getId).orElse(null));
+
+        return cachedLocationId;
     }
 }

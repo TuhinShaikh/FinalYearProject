@@ -3,29 +3,46 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import TfLMap from "../components/TfLMap";
 
+const stationSuggestions = ["LST", "CAM", "NOR", "IPW", "SST", "COL", "BHM"];
+
 export default function StatusPage() {
   const [gaStatus, setGaStatus] = useState([]);
   const [tflStatus, setTflStatus] = useState([]);
   const [uberSurge, setUberSurge] = useState(null);
   const [showMap, setShowMap] = useState(false);
+  const [stationField, setStationField] = useState("LST");
+  const [activeStation, setActiveStation] = useState("LST");
+  const [loadingGa, setLoadingGa] = useState(false);
+  const [gaError, setGaError] = useState(null);
+  const [lastUpdated, setLastUpdated] = useState(null);
 
   useEffect(() => {
-    fetchGreaterAnglia();
+    fetchGreaterAnglia(activeStation);
+  }, [activeStation]);
+
+  useEffect(() => {
     fetchTfL();
     fetchUber();
   }, []);
 
-  // Fetch the Greater Anglia departures published by our backend endpoint
-  const fetchGreaterAnglia = async () => {
+  const fetchGreaterAnglia = async (targetStation) => {
+    setLoadingGa(true);
+    setGaError(null);
     try {
-      const res = await axios.get("http://localhost:8080/api/trains/greater-anglia");
+      const res = await axios.get("/api/trains/greater-anglia", {
+        params: { station: targetStation },
+      });
       setGaStatus(res.data.trainServices || []);
+      setLastUpdated(new Date());
     } catch (err) {
       console.error("GA error", err);
+      setGaStatus([]);
+      setGaError("Greater Anglia departures are currently unavailable.");
+    } finally {
+      setLoadingGa(false);
     }
   };
 
-  // Pull the live TfL tube status feed directly from TfL
   const fetchTfL = async () => {
     try {
       const res = await axios.get("https://api.tfl.gov.uk/Line/Mode/tube/Status");
@@ -35,10 +52,18 @@ export default function StatusPage() {
     }
   };
 
-  // Create a mock Uber surge multiplier for interest
   const fetchUber = () => {
-    setUberSurge((Math.random() * 2 + 1).toFixed(2)); // 1.0x – 3.0x
+    setUberSurge((Math.random() * 2 + 1).toFixed(2));
   };
+
+  const handleApplyStation = () => {
+    const normalized = stationField.trim().toUpperCase();
+    if (normalized) {
+      setActiveStation(normalized);
+    }
+  };
+
+  const formatTime = (value) => value || "—";
 
   return (
     <main
@@ -64,10 +89,9 @@ export default function StatusPage() {
       >
         <h2>Plan Journey</h2>
         <p style={{ margin: "0.5rem 0" }}>
-          Start with a tailored route plan before you check live services so you
-          know where to go when your upgrade arrives.
+          Start with a tailored route plan before you check live services so you know where to go when your upgrade arrives.
         </p>
-        <Link to="/journey">
+        <Link to="/transport">
           <button
             style={{
               marginTop: "0.5rem",
@@ -130,55 +154,171 @@ export default function StatusPage() {
         {showMap && <TfLMap tflStatus={tflStatus} />}
       </section>
 
-      {/* Greater Anglia train status data */}
       <section style={{ marginTop: "2rem" }}>
-        <h2>Greater Anglia Status</h2>
-        {gaStatus.length === 0 && <p>No live data.</p>}
-        {gaStatus.map((t, i) => (
-          <div key={i} style={{ background: "#222", padding: "1rem", marginBottom: "1rem" }}>
-            <strong>{t.destination[0].locationName}</strong>
-            <p>Scheduled: {t.std}</p>
-            <p>Expected: {t.etd}</p>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: "1rem",
+            flexWrap: "wrap",
+          }}
+        >
+          <div>
+            <h2 style={{ margin: "0 0 0.3rem" }}>Greater Anglia Status</h2>
+            <p style={{ margin: 0, color: "#516088" }}>
+              Station {activeStation}
+              {lastUpdated && ` • updated at ${lastUpdated.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`}
+            </p>
           </div>
-        ))}
+          <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
+            <input
+              list="station-options"
+              value={stationField}
+              onChange={(e) => setStationField(e.target.value.toUpperCase())}
+              aria-label="Station CRS code"
+              style={{
+                padding: "0.4rem 0.8rem",
+                borderRadius: "999px",
+                border: "1px solid rgba(10, 31, 61, 0.2)",
+                textTransform: "uppercase",
+              }}
+            />
+            <datalist id="station-options">
+              {stationSuggestions.map((code) => (
+                <option value={code} key={code} />
+              ))}
+            </datalist>
+            <button
+              onClick={handleApplyStation}
+              style={{
+                padding: "0.5rem 1rem",
+                borderRadius: "999px",
+                border: "1px solid rgba(10, 31, 61, 0.3)",
+                background: "white",
+                cursor: "pointer",
+                fontWeight: 600,
+              }}
+            >
+              Load
+            </button>
+            <button
+              onClick={() => fetchGreaterAnglia(activeStation)}
+              style={{
+                padding: "0.5rem 1rem",
+                borderRadius: "999px",
+                border: "1px solid rgba(10, 31, 61, 0.3)",
+                background: "white",
+                cursor: "pointer",
+                fontWeight: 600,
+              }}
+            >
+              Refresh
+            </button>
+          </div>
+        </div>
+
+        {gaError ? (
+          <p style={{ color: "#b00020", marginTop: "0.8rem" }}>{gaError}</p>
+        ) : null}
+
+        {loadingGa && <p style={{ marginTop: "0.8rem" }}>Loading live departures…</p>}
+
+        {!loadingGa && gaStatus.length === 0 && !gaError ? (
+          <p style={{ color: "#3b4a67", marginTop: "0.8rem" }}>
+            No live Greater Anglia services are visible right now.
+          </p>
+        ) : null}
+
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+            gap: "1rem",
+            marginTop: "1rem",
+          }}
+        >
+          {gaStatus.map((t, i) => (
+            <article
+              key={`${t.std}-${i}`}
+              style={{
+                background: "#222",
+                padding: "1rem",
+                borderRadius: "12px",
+                color: "white",
+                minHeight: "160px",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-between",
+              }}
+            >
+              <div>
+                <strong style={{ fontSize: "1.1rem" }}>{t.destination?.[0]?.locationName || "Destination"}</strong>
+                <p style={{ margin: "0.3rem 0", color: "rgba(255,255,255,0.8)" }}>{t.status || "Live"}</p>
+                <p style={{ margin: 0 }}>
+                  Scheduled: {formatTime(t.std)}
+                  <br />
+                  Expected: {formatTime(t.etd)}
+                  <br />
+                  {t.platform ? `Platform: ${t.platform}` : ""}
+                </p>
+              </div>
+              {t.operator ? <span style={{ fontSize: "0.85rem", opacity: 0.8 }}>{t.operator}</span> : null}
+            </article>
+          ))}
+        </div>
       </section>
 
-      {/* TfL tube status panels */}
-      <section style={{ marginTop: "2rem" }}>
-        <h2>TfL Tube Status</h2>
-        {tflStatus.map((line, i) => (
-          <div
-            key={i}
-            style={{
-              background: "#f8fbff",
-              padding: "1rem",
-              marginBottom: "1rem",
-              borderRadius: "8px",
-              border: "1px solid #d4e9ff",
-              boxShadow: "0 15px 30px rgba(10, 31, 61, 0.08)",
-            }}
-          >
-            <strong>{line.name}</strong>
-            <p>{line.lineStatuses[0].statusSeverityDescription}</p>
-          </div>
-        ))}
-      </section>
-
-      {/* Mock Uber surge information */}
       <section
         style={{
           marginTop: "2rem",
-          background: "#f8fbff",
-          padding: "1rem",
-          borderRadius: "8px",
-          border: "1px solid #d4e9ff",
-          boxShadow: "0 15px 30px rgba(10, 31, 61, 0.08)",
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
+          gap: "1rem",
         }}
       >
-        <h2>Uber Surge Pricing</h2>
-        <p>
-          Current surge: <strong>{uberSurge}x</strong>
-        </p>
+        <section
+          style={{
+            padding: "1.5rem",
+            borderRadius: "16px",
+            border: "1px solid rgba(10, 31, 61, 0.15)",
+            background: "#f8fbff",
+          }}
+        >
+          <h2>TfL Tube Status</h2>
+          {tflStatus.map((line, i) => (
+            <div
+              key={i}
+              style={{
+                background: "white",
+                padding: "0.8rem",
+                marginBottom: "0.6rem",
+                borderRadius: "8px",
+                border: "1px solid #d4e9ff",
+                boxShadow: "0 10px 25px rgba(10, 31, 61, 0.08)",
+              }}
+            >
+              <strong>{line.name}</strong>
+              <p style={{ margin: "0.2rem 0 0", color: "#516088" }}>
+                {line.lineStatuses[0]?.statusSeverityDescription}
+              </p>
+            </div>
+          ))}
+        </section>
+
+        <section
+          style={{
+            padding: "1.5rem",
+            borderRadius: "16px",
+            border: "1px solid rgba(10, 31, 61, 0.15)",
+            background: "#f8fbff",
+          }}
+        >
+          <h2>Uber Surge Pricing</h2>
+          <p>
+            Current surge: <strong>{uberSurge}x</strong>
+          </p>
+        </section>
       </section>
     </main>
   );

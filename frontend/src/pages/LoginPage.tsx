@@ -1,45 +1,87 @@
 import React, { useState } from "react";
-import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { login } from "../api";
 
 export default function LoginPage(): JSX.Element {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!email.trim() || !password) {
+      setError("Please provide both an email and password.");
+      return;
+    }
+
     setError(null);
+    setLoading(true);
     try {
-      const res = await axios.post("/api/auth/login", { email, password });
-      localStorage.setItem("accessToken", res.data.accessToken);
-      alert("Login successful!");
-      window.location.href = "/dashboard"; // optional redirect
-    } catch (err: unknown) {
-      setError("Login failed. Please check your credentials.");
+      const data = await login(email.trim(), password);
+      if (data?.accessToken) {
+        navigate("/booking", { replace: true });
+      } else {
+        setError("Login succeeded but no token was returned.");
+      }
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Unable to login.";
+      setError(message);
+    } finally {
+      setLoading(false);
     }
   };
 
+  const fillAdmin = () => {
+    setEmail("admin@gmail.com");
+    setPassword("admin");
+  };
+
   return (
-    <div className="login-page" style={{ maxWidth: "400px", margin: "auto" }}>
+    <div className="login-page" style={{ maxWidth: "420px", margin: "auto" }}>
       <h2>Login</h2>
+      <button
+        type="button"
+        onClick={fillAdmin}
+        style={{ marginBottom: "0.5rem", fontSize: "0.9rem" }}
+      >
+        use admin@gmail.com / admin
+      </button>
       <form onSubmit={handleSubmit}>
+        <label htmlFor="login-email" style={{ display: "block", marginBottom: "0.2rem" }}>
+          Email address
+        </label>
         <input
+          id="login-email"
           type="email"
           placeholder="Email"
           value={email}
-          onChange={e => setEmail(e.target.value)}
+          onChange={(event) => setEmail(event.target.value)}
           required
         />
+
+        <label htmlFor="login-password" style={{ display: "block", margin: "0.75rem 0 0.2rem" }}>
+          Password
+        </label>
         <input
+          id="login-password"
           type="password"
           placeholder="Password"
           value={password}
-          onChange={e => setPassword(e.target.value)}
+          onChange={(event) => setPassword(event.target.value)}
           required
         />
-        <button type="submit">Login</button>
+
+        <button type="submit" disabled={loading} style={{ marginTop: "1rem" }}>
+          {loading ? "Signing in…" : "Login"}
+        </button>
       </form>
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      {error && (
+        <p style={{ color: "#b00020", marginTop: "0.75rem" }} role="alert" aria-live="polite">
+          {error}
+        </p>
+      )}
     </div>
   );
 }

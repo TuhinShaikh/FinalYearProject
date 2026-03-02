@@ -1,36 +1,28 @@
 package uk.ac.rhul.CS3821.controller;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import java.util.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import uk.ac.rhul.CS3821.service.GreaterAngliaService;
 
-// Supplies mocked Greater Anglia departures for the journey planner and status page
+import java.util.List;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/trains")
 public class TrainController {
 
-        // Return simple fake departures keyed by the CRS code so the frontend can show data immediately
+        private final GreaterAngliaService greaterAngliaService;
+
+        public TrainController(GreaterAngliaService greaterAngliaService) {
+                this.greaterAngliaService = greaterAngliaService;
+        }
+
         @GetMapping("/greater-anglia")
         public ResponseEntity<?> getGreaterAnglia(@RequestParam String station) {
-
-        Map<String, Object> train1 = Map.of(
-                "destination", List.of(Map.of("locationName", "Seven Sisters")),
-                "std", "12:30",
-                "etd", "On time",
-                "operator", "Greater Anglia"
-        );
-
-        Map<String, Object> train2 = Map.of(
-                "destination", List.of(Map.of("locationName", "Ipswich")),
-                "std", "12:45",
-                "etd", "Delayed",
-                "operator", "Greater Anglia"
-        );
-
-        Map<String, Object> response = Map.of(
-                "trainServices", List.of(train1, train2)
-        );
-
-        return ResponseEntity.ok(response);
-    }
+                List<Map<String, Object>> services = greaterAngliaService.fetchLiveDepartures(station);
+                return ResponseEntity.ok(Map.of("trainServices", services));
+        }
 }
