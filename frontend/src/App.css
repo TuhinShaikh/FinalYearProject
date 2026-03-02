@@ -196,3 +196,120 @@ body, html, #root {
   cursor: pointer;
   font-weight: 500;
 
+
+.chat-widget {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  width: min(340px, 94vw);
+  max-height: 520px;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid #a4b7ff;
+  box-shadow: 0 25px 35px rgba(9, 25, 79, 0.2);
+  border-radius: 18px;
+  display: flex;
+  flex-direction: column;
+  font-size: 0.9rem;
+  z-index: 1200;
+}
+
+.chat-widget__header {
+  padding: 1rem;
+  border-bottom: 1px solid rgba(10, 31, 61, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-weight: 600;
+  color: #0a1f3d;
+}
+
+.chat-widget__close {
+  border: none;
+  background: transparent;
+  color: #0f4fff;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.chat-widget__disclaimer {
+  margin: 0 1rem 0.5rem;
+  font-size: 0.78rem;
+  color: #4a567a;
+}
+
+.chat-widget__messages {
+  flex: 1;
+  padding: 0 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  overflow-y: auto;
+}
+
+.chat-widget__message {
+  padding: 0.55rem 0.8rem;
+  border-radius: 12px;
+  background: #f4f7ff;
+  color: #0a1f3d;
+  align-self: flex-start;
+  box-shadow: 0 8px 12px rgba(9, 25, 79, 0.08);
+}
+
+.chat-widget__message--bot {
+  background: #e5f0ff;
+}
+
+.chat-widget__quick {
+  padding: 0 1rem 0.35rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.chat-widget__quick button {
+  border-radius: 999px;
+  border: 1px solid #c6d3ff;
+  background: #ffffff;
+  color: #0f4fff;
+  padding: 0.35rem 0.85rem;
+  font-size: 0.78rem;
+  cursor: pointer;
+}
+
+.chat-widget__input-area {
+  padding: 0.6rem 0.85rem 0.85rem;
+  display: flex;
+  gap: 0.5rem;
+  border-top: 1px solid rgba(10, 31, 61, 0.1);
+}
+
+.chat-widget__input-area textarea {
+  flex: 1;
+  border-radius: 12px;
+  border: 1px solid #d5dff4;
+  padding: 0.5rem 0.65rem;
+  font-family: inherit;
+  resize: none;
+  min-height: 38px;
+}
+
+.chat-widget__input-area button {
+  border: none;
+  border-radius: 12px;
+  background: #0f4fff;
+  color: white;
+  padding: 0 1rem;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .chat-widget {
+    right: 1rem;
+    left: 1rem;
+    bottom: 1rem;
+    width: auto;
+    max-height: 60vh;
+  }
+}
+

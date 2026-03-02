@@ -18,9 +18,9 @@ const knowledgeBase = [
       "Head over to the Status dashboard via the main nav—there is a live TfL tube map, Greater Anglia departures, and Uber surge pricing that you can open while you wait for a train.",
   },
   {
-    keywords: ["parking", "book", "parking"],
+    keywords: ["parking", "book", "slots", "reserve"],
     response:
-      "The Book Parking page is linked from the Home dashboard nav. It shows the current slots, and the backend handles payment; once you book, you receive confirmation in the same panel.",
+      "The Book Parking page is linked from the Home dashboard nav. It shows slot availability and handles checkout in one flow, so you can secure a space before you travel.",
   },
   {
     keywords: ["recommend", "ideas", "accessibility"],
