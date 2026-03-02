@@ -1,294 +1,263 @@
-import React, { useCallback, useState } from "react";
+import { useState } from "react";
 
-const formatDuration = (minutes = 0) => {
-  const hrs = Math.floor(minutes / 60);
-  const mins = Math.round(minutes % 60);
-  if (hrs > 0 && mins > 0) return `${hrs}h ${mins}m`;
-  if (hrs > 0) return `${hrs}h`;
-  return `${mins}m`;
+const defaultOrigin = "London Bridge";
+const defaultDestination = "King's Cross St. Pancras";
+
+const buttonStyles = {
+  padding: "0.85rem 1.5rem",
+  borderRadius: "999px",
+  border: "none",
+  cursor: "pointer",
+  fontWeight: "600",
+  fontSize: "1rem",
 };
 
-const formatLocalTime = (iso = "") => {
-  const parsed = new Date(iso);
-  if (Number.isNaN(parsed.getTime())) return "—";
-  return parsed.toLocaleTimeString("en-GB", {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-};
+export default function TrainsPage() {
+  const [origin, setOrigin] = useState(defaultOrigin);
+  const [destination, setDestination] = useState(defaultDestination);
+  const [journey, setJourney] = useState(null);
+  const [savedJourneys, setSavedJourneys] = useState([]);
+  const [status, setStatus] = useState("Ready to plan your next trip.");
+  const [isLoading, setIsLoading] = useState(false);
 
-const buildDefaultDate = () => new Date().toISOString().slice(0, 10);
-const buildDefaultTime = () => {
-  const now = new Date();
-  return `${now.getHours().toString().padStart(2, "0")}:${now
-    .getMinutes()
-    .toString()
-    .padStart(2, "0")}`;
-};
+  const encodeInput = (value) => encodeURIComponent(value.trim());
 
-const formatStops = (stopPoints = []) => {
-  return stopPoints
-    .map((point) => point?.commonName || point?.name || point?.id)
-    .filter(Boolean)
-    .join(" → ");
-};
-
-export default function TransportTrainsPage() {
-  const [appId, setAppId] = useState("");
-  const [apiKey, setApiKey] = useState("");
-  const [origin, setOrigin] = useState("Kings Cross St. Pancras");
-  const [destination, setDestination] = useState("Waterloo");
-  const [dateInput, setDateInput] = useState(buildDefaultDate);
-  const [timeInput, setTimeInput] = useState(buildDefaultTime);
-  const [journeys, setJourneys] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [lastFetched, setLastFetched] = useState(null);
-
-  const fetchJourneys = useCallback(async () => {
+  const planJourney = async () => {
     if (!origin.trim() || !destination.trim()) {
-      setError("Origin and destination are required.");
+      setStatus("Enter both an origin and a destination before planning.");
       return;
     }
-    setLoading(true);
-    setError("");
+
+    setIsLoading(true);
+    setStatus("Looking up TfL journeys...");
+
     try {
-      const route = `https://api.tfl.gov.uk/v1/Journey/JourneyResults/${encodeURIComponent(
-        origin
-      )}/to/${encodeURIComponent(destination)}`;
-      const params = new URLSearchParams();
-      const dateValue = dateInput.replace(/-/g, "");
-      if (dateValue) params.append("date", dateValue);
-      const timeValue = timeInput.replace(/:/g, "");
-      if (timeValue) params.append("time", timeValue);
-      if (appId.trim()) params.append("app_id", appId.trim());
-      if (apiKey.trim()) params.append("app_key", apiKey.trim());
-      const url = params.toString() ? `${route}?${params.toString()}` : route;
+      const response = await fetch(
+        `https://api.tfl.gov.uk/Journey/JourneyResults/${encodeInput(origin)}/to/${encodeInput(destination)}`
+      );
 
-      const response = await fetch(url, { headers: { Accept: "application/json" } });
-      const payload = await response.json().catch(() => null);
       if (!response.ok) {
-        const message = payload?.message || "TfL journey search failed.";
-        throw new Error(message);
+        throw new Error("TfL returned an unexpected response");
       }
-      setJourneys(Array.isArray(payload?.journeys) ? payload.journeys : []);
-      setLastFetched(new Date());
-    } catch (fetchError) {
-      console.error("Journey search error", fetchError);
-      setJourneys([]);
-      setError(fetchError.message || "We could not reach the journey planner.");
-    } finally {
-      setLoading(false);
-    }
-  }, [appId, apiKey, origin, destination, dateInput, timeInput]);
 
-  const renderLeg = (leg, index) => (
-    <div key={`${leg.id || index}`} style={{ marginBottom: "0.4rem" }}>
-      <p style={{ margin: 0, fontSize: "0.95rem", fontWeight: 600 }}>{leg.mode?.name || leg.mode?.id || "Route"}</p>
-      <p style={{ margin: "0.15rem 0", fontSize: "0.85rem", color: "#4b5563" }}>
-        {leg.instruction?.summary || "Follow the route"}
-      </p>
-      <p style={{ margin: 0, fontSize: "0.8rem", color: "#6b7280" }}>
-        {formatLocalTime(leg.departureTime)} → {formatLocalTime(leg.arrivalTime)} · {formatDuration(leg.duration)}
-      </p>
-      <p style={{ margin: "0.15rem 0 0", fontSize: "0.8rem", color: "#6b7280" }}>
-        Stops: {formatStops(leg.path?.stopPoints)}
-      </p>
-    </div>
-  );
+      const data = await response.json();
+      const firstJourney = data.journeys?.[0];
+
+      if (!firstJourney) {
+        setJourney(null);
+        setStatus("TfL did not return any journeys for that route.");
+        return;
+      }
+
+      const normalizedJourney = { ...firstJourney, legs: firstJourney.legs ?? [] };
+      setJourney(normalizedJourney);
+      setStatus(`Found a ${normalizedJourney.duration}-minute journey with ${normalizedJourney.legs.length} steps.`);
+    } catch (error) {
+      console.error("Journey planning failed", error);
+      setJourney(null);
+      setStatus("Unable to plan the route right now. Try again in a moment.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const addAndGo = () => {
+    if (!journey) {
+      setStatus("Plan a journey first so you know what you are adding.");
+      return;
+    }
+
+    const entry = {
+      id: Date.now(),
+      from: origin,
+      to: destination,
+      duration: journey.duration,
+      timestamp: new Date().toLocaleTimeString(),
+    };
+
+    setSavedJourneys((prev) => [entry, ...prev]);
+    setStatus("Journey added. Opening the TfL planner so you can head there.");
+
+    if (typeof window !== "undefined") {
+      const tflUrl = `https://tfl.gov.uk/plan-a-journey/journey-results?from=${encodeInput(origin)}&to=${encodeInput(destination)}`;
+      window.open(tflUrl, "_blank");
+    }
+  };
 
   return (
     <main
+      role="main"
+      aria-label="Train Journey Planner"
       style={{
         minHeight: "100vh",
-        background: "#f3f4f6",
-        padding: "2rem",
-        fontFamily: "Inter, system-ui, sans-serif",
-        color: "#0f172a",
+        padding: "3rem 1.5rem 4rem",
+        background: "radial-gradient(circle at top, #e8f3ff 0%, #fefefe 60%)",
+        color: "#0b1d3c",
       }}
     >
       <section
         style={{
-          maxWidth: "900px",
           margin: "0 auto",
-          background: "#fff",
-          borderRadius: "16px",
-          padding: "2rem",
-          boxShadow: "0 20px 40px rgba(15, 23, 42, 0.08)",
+          maxWidth: "960px",
+          background: "rgba(255, 255, 255, 0.92)",
+          borderRadius: "24px",
+          padding: "2.4rem",
+          boxShadow: "0 25px 45px rgba(9, 25, 79, 0.15)",
+          border: "1px solid #e3edff",
         }}
       >
-        <h1 style={{ marginTop: 0, fontSize: "2rem" }}>Simple TfL journey planner</h1>
-        <p style={{ marginTop: 0, color: "#475569" }}>
-          Type in an origin and destination, pick a date/time, and the planner will show the routes and the stops each leg passes through.
-        </p>
+        <div style={{ marginBottom: "1.5rem" }}>
+          <p style={{ textTransform: "uppercase", letterSpacing: "0.3rem", color: "#6a7cff", fontSize: "0.8rem", margin: 0 }}>
+            London Trains
+          </p>
+          <h1 style={{ margin: "0.4rem 0 0" }}>Journey Planner</h1>
+          <p style={{ margin: "0.5rem 0 0", color: "#42506d" }}>
+            Tell TfL where you are starting and where you want to go, and we will fetch the most sensible route.
+          </p>
+        </div>
 
         <div
           style={{
-            marginTop: "1.5rem",
             display: "grid",
-            gridTemplateColumns: "1fr 1fr",
+            gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
             gap: "1rem",
+            marginBottom: "1.4rem",
           }}
         >
-          <label style={{ display: "flex", flexDirection: "column" }}>
-            <span style={{ fontSize: "0.85rem", color: "#475569" }}>Origin</span>
+          <label style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}>
+            <span style={{ fontSize: "0.9rem" }}>Origin</span>
             <input
+              type="text"
               value={origin}
               onChange={(event) => setOrigin(event.target.value)}
-              placeholder="e.g. King's Cross St. Pancras"
+              placeholder="Where are you now?"
               style={{
-                padding: "0.75rem",
+                padding: "0.75rem 1rem",
                 borderRadius: "12px",
-                border: "1px solid #cbd5f5",
-                marginTop: "0.4rem",
+                border: "1px solid #cbd4f5",
                 fontSize: "1rem",
               }}
             />
           </label>
 
-          <label style={{ display: "flex", flexDirection: "column" }}>
-            <span style={{ fontSize: "0.85rem", color: "#475569" }}>Destination</span>
+          <label style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}>
+            <span style={{ fontSize: "0.9rem" }}>Destination</span>
             <input
+              type="text"
               value={destination}
               onChange={(event) => setDestination(event.target.value)}
-              placeholder="e.g. Waterloo"
+              placeholder="Where do you want to go?"
               style={{
-                padding: "0.75rem",
+                padding: "0.75rem 1rem",
                 borderRadius: "12px",
-                border: "1px solid #cbd5f5",
-                marginTop: "0.4rem",
-                fontSize: "1rem",
-              }}
-            />
-          </label>
-
-          <label style={{ display: "flex", flexDirection: "column" }}>
-            <span style={{ fontSize: "0.85rem", color: "#475569" }}>Date</span>
-            <input
-              type="date"
-              value={dateInput}
-              onChange={(event) => setDateInput(event.target.value)}
-              style={{
-                padding: "0.75rem",
-                borderRadius: "12px",
-                border: "1px solid #cbd5f5",
-                marginTop: "0.4rem",
-                fontSize: "1rem",
-              }}
-            />
-          </label>
-
-          <label style={{ display: "flex", flexDirection: "column" }}>
-            <span style={{ fontSize: "0.85rem", color: "#475569" }}>Time</span>
-            <input
-              type="time"
-              value={timeInput}
-              onChange={(event) => setTimeInput(event.target.value)}
-              style={{
-                padding: "0.75rem",
-                borderRadius: "12px",
-                border: "1px solid #cbd5f5",
-                marginTop: "0.4rem",
+                border: "1px solid #cbd4f5",
                 fontSize: "1rem",
               }}
             />
           </label>
         </div>
 
-        <div style={{ marginTop: "1rem", display: "flex", flexDirection: "column", gap: "0.6rem" }}>
-          <small style={{ color: "#475569" }}>App ID and API key are optional but can help if your requests are rate limited.</small>
-          <div style={{ display: "flex", gap: "0.6rem", flexWrap: "wrap" }}>
-            <input
-              value={appId}
-              onChange={(event) => setAppId(event.target.value)}
-              placeholder="TfL App ID (optional)"
-              style={{
-                flex: 1,
-                padding: "0.65rem",
-                borderRadius: "12px",
-                border: "1px solid #e2e8f0",
-                fontSize: "0.95rem",
-              }}
-            />
-            <input
-              value={apiKey}
-              onChange={(event) => setApiKey(event.target.value)}
-              placeholder="TfL API Key (optional)"
-              type="password"
-              style={{
-                flex: 1,
-                padding: "0.65rem",
-                borderRadius: "12px",
-                border: "1px solid #e2e8f0",
-                fontSize: "0.95rem",
-              }}
-            />
-          </div>
-        </div>
-
-        <button
-          type="button"
-          onClick={fetchJourneys}
-          disabled={loading}
-          style={{
-            marginTop: "1.5rem",
-            background: "#2563eb",
-            color: "#fff",
-            borderRadius: "12px",
-            border: "none",
-            padding: "0.9rem 1.5rem",
-            fontSize: "1rem",
-            cursor: "pointer",
-            alignSelf: "flex-start",
-          }}
-        >
-          {loading ? "Searching journeys…" : "Search journeys"}
-        </button>
-
-        {error ? (
-          <div
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "0.85rem", marginBottom: "1.25rem" }}>
+          <button
             style={{
-              marginTop: "1rem",
-              padding: "0.8rem",
-              background: "#fee2e2",
-              borderRadius: "10px",
-              color: "#b91c1c",
+              ...buttonStyles,
+              background: "#0f4fff",
+              color: "white",
+              boxShadow: "0 12px 20px rgba(15, 79, 255, 0.2)",
+            }}
+            onClick={planJourney}
+            disabled={isLoading}
+          >
+            {isLoading ? "Planning..." : "Plan journey"}
+          </button>
+
+          <button
+            style={{
+              ...buttonStyles,
+              background: "#fff",
+              color: "#0f4fff",
+              border: "1px solid #0f4fff",
+            }}
+            onClick={addAndGo}
+          >
+            Add & go to TfL
+          </button>
+        </div>
+
+        <p style={{ color: "#4b5b78", marginTop: 0 }}>{status}</p>
+
+        {journey && (
+          <section
+            aria-live="polite"
+            style={{
+              marginTop: "1.5rem",
+              padding: "1.5rem",
+              borderRadius: "18px",
+              background: "linear-gradient(180deg, #f4f7ff 0%, #ffffff 100%)",
+              border: "1px solid #dfe8ff",
             }}
           >
-            {error}
-          </div>
-        ) : null}
+            <h2 style={{ marginTop: 0 }}>Suggested route</h2>
+            <p style={{ margin: "0.5rem 0" }}>
+              <strong>Duration:</strong> {journey.duration} minutes
+            </p>
+            <p style={{ margin: "0.5rem 0" }}>
+              <strong>Transfers:</strong> {Math.max((journey.legs?.length ?? 1) - 1, 0)}
+            </p>
+            <ul style={{ listStyle: "none", paddingLeft: 0, margin: "0.75rem 0 0" }}>
+              {(journey.legs || []).map((leg, index) => {
+                const departureName =
+                  leg.departurePoint?.commonName || leg.instruction?.detailed || "Departure";
+                const arrivalName =
+                  leg.arrivalPoint?.commonName || leg.instruction?.detailed || "Arrival";
+                const key = leg.id ?? `${leg.mode?.id ?? leg.mode?.name ?? index}-${departureName}`;
 
-        {lastFetched ? (
-          <p style={{ marginTop: "1rem", color: "#475569", fontSize: "0.85rem" }}>
-            Last updated {lastFetched.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
-          </p>
-        ) : null}
+                return (
+                  <li key={key} style={{ marginBottom: "0.8rem" }}>
+                    <div style={{ fontWeight: 600 }}>{leg.mode?.name || leg.instruction?.summary || "Journey"}</div>
+                    <div style={{ fontSize: "0.9rem", color: "#5a647a" }}>
+                      {departureName} &rarr; {arrivalName}
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+          </section>
+        )}
 
-        <section style={{ marginTop: "2rem", display: "flex", flexDirection: "column", gap: "1rem" }}>
-          {journeys.map((journey, index) => (
-            <article
-              key={`${journey.startDateTime}-${index}`}
+        {savedJourneys.length > 0 && (
+          <section style={{ marginTop: "1.5rem" }}>
+            <h3>Saved journeys</h3>
+            <div
               style={{
-                padding: "1rem",
-                borderRadius: "14px",
-                border: "1px solid #e2e8f0",
-                background: "#f8fafc",
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+                gap: "1rem",
               }}
             >
-              <div style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: "0.5rem" }}>
-                <h3 style={{ margin: 0, fontSize: "1.2rem" }}>{formatDuration(journey.duration)}</h3>
-                <span style={{ color: "#475569", fontSize: "0.9rem" }}>
-                  {formatLocalTime(journey.startDateTime)} → {formatLocalTime(journey.arrivalDateTime)}
-                </span>
-              </div>
-              <p style={{ margin: "0.4rem 0", color: "#475569" }}>Legs: {journey.legs?.length || 0}</p>
-              <div style={{ display: "flex", flexDirection: "column", gap: "0.6rem" }}>
-                {(journey.legs || []).map((leg, legIndex) => renderLeg(leg, legIndex))}
-              </div>
-            </article>
-          ))}
-        </section>
+              {savedJourneys.map((saved) => (
+                <article
+                  key={saved.id}
+                  style={{
+                    padding: "1rem",
+                    borderRadius: "14px",
+                    border: "1px solid #dfe4ff",
+                    background: "#fff",
+                  }}
+                >
+                  <p style={{ margin: 0, fontSize: "0.85rem", color: "#5c6498" }}>{saved.timestamp}</p>
+                  <p style={{ margin: "0.2rem 0" }}>
+                    <strong>{saved.from}</strong>
+                    <br />
+                    <span style={{ opacity: 0.7 }}>{saved.to}</span>
+                  </p>
+                  <p style={{ margin: 0, fontSize: "0.85rem" }}>~{saved.duration} mins</p>
+                </article>
+              ))}
+            </div>
+          </section>
+        )}
       </section>
     </main>
   );
+}
