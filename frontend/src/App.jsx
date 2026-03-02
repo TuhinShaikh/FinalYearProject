@@ -11,6 +11,7 @@ import TravelPlanner from "./pages/TravelPlanner";
 import StatusPage from "./pages/StatusPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterUser from "./pages/RegisterUser";
+import ChatWidget from "./components/ChatWidget";
 
 export default function App() {
   const location = useLocation();
@@ -84,6 +85,8 @@ export default function App() {
           </Routes>
         </>
       )}
+
+      <ChatWidget />
     </div>
   );
 }
