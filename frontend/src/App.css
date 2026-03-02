@@ -197,20 +197,47 @@ body, html, #root {
   font-weight: 500;
 
 
+.chat-page {
+  padding: 2rem 1rem;
+  min-height: calc(100vh - 140px);
+  background: linear-gradient(180deg, #f6f8ff 0%, #ffffff 60%);
+}
+
+.chat-page__panel {
+  padding: 2rem;
+  background: #ffffff;
+  border-radius: 24px;
+  border: 1px solid rgba(116, 139, 255, 0.15);
+  box-shadow: 0 25px 45px rgba(9, 25, 79, 0.1);
+}
+
+.chat-page__header {
+  margin-bottom: 1rem;
+}
+
+.chat-page__header h1 {
+  margin: 0;
+  font-size: 2rem;
+  color: #0a1f3d;
+}
+
+.chat-page__intro {
+  margin: 0.5rem 0 1.5rem;
+  color: #4c5676;
+}
+
 .chat-widget {
-  position: fixed;
-  top: 96px;
-  right: 1.8rem;
-  width: 280px;
-  max-height: 360px;
-  background: rgba(255, 255, 255, 0.98);
-  border: 1px solid #a4b7ff;
-  box-shadow: 0 20px 35px rgba(9, 25, 79, 0.25);
-  border-radius: 18px;
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid #dfe7ff;
+  box-shadow: 0 20px 35px rgba(9, 25, 79, 0.15);
+  border-radius: 20px;
   display: flex;
   flex-direction: column;
-  font-size: 0.9rem;
-  z-index: 1200;
+  font-size: 0.95rem;
+  padding-bottom: 0.5rem;
 }
 
 .chat-widget__header {

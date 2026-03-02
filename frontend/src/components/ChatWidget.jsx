@@ -83,11 +83,7 @@ export default function ChatWidget() {
   };
 
   return (
-    <div
-      className="chat-widget"
-      aria-live="polite"
-      style={{ top: "96px", right: "1.8rem" }}
-    >
+    <div className="chat-widget" aria-live="polite">
       <header className="chat-widget__header">
         <strong>Travel Copilot</strong>
         <button
