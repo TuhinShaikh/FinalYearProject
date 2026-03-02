@@ -91,7 +91,7 @@ export default function StatusPage() {
         <p style={{ margin: "0.5rem 0" }}>
           Start with a tailored route plan before you check live services so you know where to go when your upgrade arrives.
         </p>
-        <Link to="/journey">
+        <Link to="/transport">
           <button
             style={{
               marginTop: "0.5rem",

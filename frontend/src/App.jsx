@@ -4,7 +4,7 @@ import "./App.css";
 
 // Pages
 import BookingAndPaymentPage from "./pages/BookingAndPaymentPage";
-import TrainsPage from "./pages/transport/TrainsPage";
+import TransportPage from "./pages/transport/Transport";
 import RideOptionsPage from "./pages/RideOptionsPage";
 import AccessibilityPage from "./pages/AccessibilityPage";
 import TravelPlanner from "./pages/TravelPlanner";
@@ -36,7 +36,7 @@ export default function App() {
           {/* Primary navigation exposed once authenticated */}
           <nav className="navbar">
             <Link to="/home"><button>Home</button></Link>
-            <Link to="/journey"><button>Transport / Trains</button></Link>
+            <Link to="/transport"><button>Transport</button></Link>
             <Link to="/rides"><button>Taxi</button></Link>
             <Link to="/booking"><button>Book Parking</button></Link>
             <Link to="/status"><button>TfL</button></Link>
@@ -53,7 +53,7 @@ export default function App() {
                 <div className="content">
                   <section className="main-buttons">
                     <h2>Transport</h2>
-                    <Link to="/journey"><button>Transport / Trains</button></Link>
+                    <Link to="/transport"><button>Transport</button></Link>
                     <Link to="/rides"><button>Taxi</button></Link>
 
                     <h2>Parking</h2>
@@ -68,7 +68,7 @@ export default function App() {
 
               {/* Individual page components */}
             <Route path="/booking" element={<BookingAndPaymentPage />} />
-            <Route path="/journey" element={<TrainsPage />} />
+            <Route path="/transport" element={<TransportPage />} />
             <Route path="/rides" element={<RideOptionsPage />} />
             <Route path="/accessibility" element={<AccessibilityPage />} />
 
