@@ -199,13 +199,13 @@ body, html, #root {
 
 .chat-widget {
   position: fixed;
-  bottom: 1.5rem;
-  right: 1.5rem;
-  width: min(340px, 94vw);
-  max-height: 520px;
-  background: rgba(255, 255, 255, 0.95);
+  top: 96px;
+  right: 1.8rem;
+  width: 280px;
+  max-height: 360px;
+  background: rgba(255, 255, 255, 0.98);
   border: 1px solid #a4b7ff;
-  box-shadow: 0 25px 35px rgba(9, 25, 79, 0.2);
+  box-shadow: 0 20px 35px rgba(9, 25, 79, 0.25);
   border-radius: 18px;
   display: flex;
   flex-direction: column;
@@ -306,10 +306,9 @@ body, html, #root {
 @media (max-width: 768px) {
   .chat-widget {
     right: 1rem;
-    left: 1rem;
-    bottom: 1rem;
-    width: auto;
-    max-height: 60vh;
+    top: 70px;
+    width: min(90vw, 260px);
+    max-height: 50vh;
   }
 }
 
