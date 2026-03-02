@@ -1,0 +1,138 @@
+import { useEffect, useRef, useState } from "react";
+
+const quickPrompts = [
+  "How do I plan a TfL journey?",
+  "What is the live status?",
+  "Where do I book parking?",
+];
+
+const knowledgeBase = [
+  {
+    keywords: ["plan", "journey", "train", "tfl"],
+    response:
+      "Use the TfL journey planner block on this page. Enter your origin and destination, then tap Plan journey—if TfL returns multiple choices, pick one of the suggestions I surface and try again.",
+  },
+  {
+    keywords: ["status", "live"],
+    response:
+      "Head over to the Status dashboard via the main nav—there is a live TfL tube map, Greater Anglia departures, and Uber surge pricing that you can open while you wait for a train.",
+  },
+  {
+    keywords: ["parking", "book", "parking"],
+    response:
+      "The Book Parking page is linked from the Home dashboard nav. It shows the current slots, and the backend handles payment; once you book, you receive confirmation in the same panel.",
+  },
+  {
+    keywords: ["recommend", "ideas", "accessibility"],
+    response:
+      "The recommendations card on the Transport page refreshes TfL's accessibility-aware suggestions—hit the Refresh button to pull the latest data.",
+  },
+];
+
+const fallbackResponse =
+  "I can point you to the Transport planner, Status dashboard, or Parking booking screens—just ask for the part you need."
+;
+
+function generateAssistantResponse(message) {
+  const normalized = message?.toLowerCase() ?? "";
+  const match = knowledgeBase.find((item) =>
+    item.keywords.some((keyword) => normalized.includes(keyword))
+  );
+  return match ? match.response : fallbackResponse;
+}
+
+export default function ChatWidget() {
+  const [messages, setMessages] = useState([
+    { id: "welcome", sender: "bot", text: "Hi! I can help you plan journeys, check status, or book parking." },
+  ]);
+  const [draft, setDraft] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [disclaimerVisible, setDisclaimerVisible] = useState(true);
+  const scrollRef = useRef(null);
+
+  useEffect(() => {
+    scrollRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
+  const sendMessage = async (text) => {
+    const trimmed = text?.trim();
+    if (!trimmed) return;
+
+    const userMessage = { id: `${Date.now()}-user`, sender: "user", text: trimmed };
+    setMessages((prev) => [...prev, userMessage]);
+    setDraft("");
+    setLoading(true);
+
+    const assistantMessage = await new Promise((resolve) =>
+      setTimeout(() => resolve(generateAssistantResponse(trimmed)), 450)
+    );
+
+    setMessages((prev) => [...prev, { id: `${Date.now()}-bot`, sender: "bot", text: assistantMessage }]);
+    setLoading(false);
+  };
+
+  const handleQuick = (prompt) => sendMessage(prompt);
+
+  const handleSend = () => sendMessage(draft);
+
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter" && !event.shiftKey) {
+      event.preventDefault();
+      handleSend();
+    }
+  };
+
+  return (
+    <div className="chat-widget" aria-live="polite">
+      <header className="chat-widget__header">
+        <strong>Travel Copilot</strong>
+        <button
+          className="chat-widget__close"
+          aria-label="Toggle helper"
+          onClick={() => setDisclaimerVisible((prev) => !prev)}
+        >
+          {disclaimerVisible ? "Hide" : "Show"}
+        </button>
+      </header>
+
+      {disclaimerVisible && (
+        <p className="chat-widget__disclaimer">
+          This assistant works entirely on your device and references the same TfL planner you already use on this page.
+        </p>
+      )}
+
+      <div className="chat-widget__messages">
+        {messages.map((message) => (
+          <div
+            key={message.id}
+            className={`chat-widget__message ${message.sender === "bot" ? "chat-widget__message--bot" : ""}`}
+          >
+            <span>{message.text}</span>
+          </div>
+        ))}
+        <div ref={scrollRef} />
+      </div>
+
+      <div className="chat-widget__quick">
+        {quickPrompts.map((prompt) => (
+          <button key={prompt} onClick={() => handleQuick(prompt)} type="button">
+            {prompt}
+          </button>
+        ))}
+      </div>
+
+      <div className="chat-widget__input-area">
+        <textarea
+          value={draft}
+          onChange={(event) => setDraft(event.target.value)}
+          onKeyDown={handleKeyDown}
+          placeholder="Ask how to plan, check status, or spot a train"
+          rows={1}
+        />
+        <button onClick={handleSend} disabled={loading}>
+          {loading ? "Typing…" : "Send"}
+        </button>
+      </div>
+    </div>
+  );
+}
