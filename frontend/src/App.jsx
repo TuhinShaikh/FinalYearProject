@@ -11,6 +11,7 @@ import TravelPlanner from "./pages/TravelPlanner";
 import StatusPage from "./pages/StatusPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterUser from "./pages/RegisterUser";
+import ChatbotPage from "./pages/ChatbotPage";
 
 export default function App() {
   const location = useLocation();
@@ -41,6 +42,7 @@ export default function App() {
             <Link to="/booking"><button>Book Parking</button></Link>
             <Link to="/status"><button>TfL</button></Link>
             <Link to="/accessibility"><button>Accessibility</button></Link>
+            <Link to="/assistant"><button>Copilot</button></Link>
           </nav>
 
           {/* Application routes */}
@@ -61,6 +63,7 @@ export default function App() {
 
                     <h2>Live Updates</h2>
                     <Link to="/status"><button>TfL</button></Link>
+                    <Link to="/assistant"><button>Travel Copilot</button></Link>
                   </section>
                 </div>
               }
@@ -80,10 +83,12 @@ export default function App() {
 
             {/* Real TfL status dashboard */}
             <Route path="/status" element={<StatusPage />} />
+            <Route path="/assistant" element={<ChatbotPage />} />
 
           </Routes>
         </>
       )}
+
     </div>
   );
 }
