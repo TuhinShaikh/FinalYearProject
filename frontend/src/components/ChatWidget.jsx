@@ -94,12 +94,18 @@ function describeZonePricing(zoneKey, zoneLabel) {
   if (!cap && !card) return null;
   const parts = [];
   if (cap) {
-    parts.push(`${zoneLabel} pay-as-you-go daily cap ${cap.daily} (off-peak ${cap.offpeak}, Monday–Sunday £${cap.weekly?.replace(/£/, "")}?).`);
+    parts.push(`${zoneLabel} pay-as-you-go daily cap ${cap.daily} (off-peak ${cap.offpeak}, weekly ${cap.weekly}).`);
   }
   if (card) {
-    parts.push(`Travelcard day £${card.day.replace(/£/, "")}, weekly £${card.weekly.replace(/£/, "")}, monthly £${card.monthly.replace(/£/, "")}, annual £${card.annual.replace(/£/, "")} for ${zoneLabel}.`);
+    parts.push(`Travelcard day ${card.day}, weekly ${card.weekly}, monthly ${card.monthly}, annual ${card.annual}.`);
   }
   return parts.join(" ");
+}
+
+function buildZoneKey(digits) {
+  const unique = [...new Set(digits.map(Number))].sort((a, b) => a - b);
+  if (unique.length === 1) return `${unique[0]}`;
+  return `${unique[0]}-${unique[unique.length - 1]}`;
 }
 
 function isTriggered(message, triggers) {
