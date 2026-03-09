@@ -5,9 +5,9 @@
   --sky-blue: #aac7d8;
   --pale-blue: #dfebf6;
   --soft-ash: #e6e6e6;
+  --mist: #e7eef8;
   --warm-tan: #c89a6b;
   --shadow: rgba(41, 53, 60, 0.15);
-button {
   cursor: pointer;
   font: inherit;
   border: 1px solid transparent;
@@ -107,26 +107,40 @@ button:focus-visible {
     linear-gradient(180deg, #bccfe4 0%, #a7c3d7 40%, #7992a7 100%);
   border-bottom: 1px solid rgba(41, 53, 60, 0.08);
 }
+
+.hero h1 {
+  margin: 0;
+  font-size: clamp(2.4rem, 3.5vw, 3.2rem);
+  font-weight: 600;
+  color: var(--dark-ink);
+}
+
+.auth-buttons {
+  margin-top: 2.25rem;
+  display: flex;
   flex-wrap: wrap;
   gap: 1rem;
   justify-content: center;
 }
 .auth-buttons button {
   min-width: 140px;
+  background: var(--sky-blue);
+  color: var(--dark-ink);
+  border: 1px solid rgba(41, 53, 60, 0.1);
 }
 .auth-buttons .login {
-  background: var(--royal-blue-deep);
+  background: var(--warm-tan);
 }
 .auth-buttons .register {
-  background: var(--royal-blue-soft);
+  background: var(--pale-blue);
 }
 .auth-buttons .guest {
-  background: transparent;
-  color: var(--royal-blue-deep);
-  box-shadow: inset 0 0 0 1px rgba(5, 21, 52, 0.3);
+  background: rgba(230, 230, 230, 0.9);
+  border-color: rgba(41, 53, 60, 0.25);
+  color: var(--dark-ink);
 }
 .auth-buttons .guest:hover {
-  background: rgba(5, 21, 52, 0.08);
+  background: rgba(230, 230, 230, 1);
 }
 
 .navbar {
@@ -137,16 +151,16 @@ button:focus-visible {
   justify-content: center;
   gap: 0.5rem;
   padding: 0.85rem 1rem;
-  background: rgba(227, 235, 255, 0.95);
-  border-bottom: 1px solid rgba(5, 21, 52, 0.12);
+  background: rgba(209, 222, 236, 0.95);
+  border-bottom: 1px solid rgba(41, 53, 60, 0.12);
   backdrop-filter: blur(12px);
   z-index: 100;
 }
 .navbar button {
-  background: transparent;
-  color: var(--royal-blue-deep);
-  border: 1px solid rgba(5, 21, 52, 0.2);
-  box-shadow: none;
+  background: rgba(223, 235, 246, 0.9);
+  color: var(--dark-ink);
+  border: 1px solid rgba(41, 53, 60, 0.2);
+  box-shadow: 0 6px 18px rgba(41, 53, 60, 0.12);
   padding: 0.55rem 1.2rem;
 }
 .navbar button:hover {
@@ -168,14 +182,14 @@ button:focus-visible {
   padding: 0.45rem 0.8rem;
   border-radius: 999px;
   border: 1px solid transparent;
-  color: var(--royal-blue-deep);
+  color: var(--dark-ink);
   font-weight: 500;
 }
 .navbar-links a:hover {
-  background: rgba(92, 123, 255, 0.1);
+  background: rgba(170, 199, 216, 0.35);
 }
 .navbar-links a:focus-visible {
-  border-color: rgba(92, 123, 255, 0.4);
+  border-color: rgba(41, 53, 60, 0.25);
 }
 
 .content {
