@@ -33,21 +33,9 @@ export default function LoginPage(): JSX.Element {
     }
   };
 
-  const fillAdmin = () => {
-    setEmail("admin@gmail.com");
-    setPassword("admin");
-  };
-
   return (
     <div className="login-page" style={{ maxWidth: "420px", margin: "auto" }}>
       <h2>Login</h2>
-      <button
-        type="button"
-        onClick={fillAdmin}
-        style={{ marginBottom: "0.5rem", fontSize: "0.9rem" }}
-      >
-        use admin@gmail.com / admin
-      </button>
       <form onSubmit={handleSubmit}>
         <label htmlFor="login-email" style={{ display: "block", marginBottom: "0.2rem" }}>
           Email address
