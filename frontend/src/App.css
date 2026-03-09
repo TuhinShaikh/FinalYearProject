@@ -1,12 +1,11 @@
 :root {
-  --royal-blue: #2c4cef;
-  --royal-blue-deep: #0f2463;
-  --royal-blue-soft: #5f7bff;
-  --royal-blue-muted: #a2b2ff;
-  --cloud: #f7f8ff;
-  --mist: #edf0ff;
-  --ink: #0b1a3d;
-  --shadow: rgba(12, 30, 96, 0.16);
+  --royal-blue: #0d2f6a;
+  --royal-blue-deep: #081a3b;
+  --sky-blue: #5ea0ff;
+  --light-sky: #dfe8ff;
+  --ice: #f2f6ff;
+  --ink: #051534;
+  --shadow: rgba(5, 21, 52, 0.18);
 }
 
 *,
@@ -20,7 +19,7 @@ html {
   margin: 0;
   padding: 0;
   font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
-  background: var(--cloud);
+  background: var(--ice);
   color: var(--ink);
   min-height: 100%;
   line-height: 1.6;
@@ -32,7 +31,7 @@ html {
 
 .app {
   min-height: 100vh;
-  background: linear-gradient(180deg, var(--cloud), #ffffff 65%);
+  background: linear-gradient(180deg, var(--ice), #f7fbff 65%);
   display: flex;
   flex-direction: column;
   color: var(--ink);
@@ -79,9 +78,9 @@ button:disabled {
   align-items: center;
   justify-content: center;
   padding: 4rem 1rem 2.5rem;
-  background: radial-gradient(circle at 15% 25%, rgba(92, 123, 255, 0.35), transparent 50%),
-    linear-gradient(180deg, #ffffff 0%, #f3f6ff 55%, #edf0ff 100%);
-  border-bottom: 1px solid rgba(17, 34, 82, 0.07);
+  background: radial-gradient(circle at 20% 30%, rgba(94, 160, 255, 0.35), transparent 55%),
+    linear-gradient(180deg, var(--ice) 0%, var(--light-sky) 55%, #dbe5ff 100%);
+  border-bottom: 1px solid rgba(5, 21, 52, 0.08);
 }
 
 .hero-overlay {
@@ -89,9 +88,9 @@ button:disabled {
   text-align: center;
   padding: 3rem 2.5rem;
   border-radius: 30px;
-  background: rgba(255, 255, 255, 0.9);
-  border: 1px solid rgba(17, 34, 82, 0.08);
-  box-shadow: 0 40px 70px rgba(7, 24, 66, 0.12);
+  background: rgba(227, 235, 255, 0.95);
+  border: 1px solid rgba(5, 21, 52, 0.08);
+  box-shadow: 0 40px 70px rgba(5, 21, 52, 0.12);
 }
 
 .hero h1 {
@@ -120,10 +119,10 @@ button:disabled {
 .auth-buttons .guest {
   background: transparent;
   color: var(--royal-blue-deep);
-  box-shadow: inset 0 0 0 1px rgba(15, 38, 112, 0.3);
+  box-shadow: inset 0 0 0 1px rgba(5, 21, 52, 0.3);
 }
 .auth-buttons .guest:hover {
-  background: rgba(15, 38, 112, 0.08);
+  background: rgba(5, 21, 52, 0.08);
 }
 
 .navbar {
@@ -134,21 +133,21 @@ button:disabled {
   justify-content: center;
   gap: 0.5rem;
   padding: 0.85rem 1rem;
-  background: rgba(255, 255, 255, 0.92);
-  border-bottom: 1px solid rgba(17, 34, 82, 0.12);
+  background: rgba(227, 235, 255, 0.95);
+  border-bottom: 1px solid rgba(5, 21, 52, 0.12);
   backdrop-filter: blur(12px);
   z-index: 100;
 }
 .navbar button {
   background: transparent;
   color: var(--royal-blue-deep);
-  border: 1px solid rgba(15, 38, 112, 0.2);
+  border: 1px solid rgba(5, 21, 52, 0.2);
   box-shadow: none;
   padding: 0.55rem 1.2rem;
 }
 .navbar button:hover {
-  border-color: var(--royal-blue-soft);
-  background: var(--royal-blue-soft);
+  border-color: var(--sky-blue);
+  background: var(--sky-blue);
   color: #fff;
 }
 
@@ -183,11 +182,11 @@ button:disabled {
 }
 .main-buttons {
   width: min(1120px, 100%);
-  background: #fff;
+  background: rgba(235, 241, 255, 0.9);
   border-radius: 32px;
   padding: 2.5rem;
-  box-shadow: 0 40px 80px rgba(7, 24, 66, 0.08);
-  border: 1px solid rgba(17, 34, 82, 0.05);
+  box-shadow: 0 40px 80px rgba(5, 21, 52, 0.08);
+  border: 1px solid rgba(5, 21, 52, 0.05);
   display: grid;
   gap: 1.5rem;
 }
@@ -217,11 +216,11 @@ button:disabled {
 }
 .event-card {
   width: min(520px, 100%);
-  background: #fff;
+  background: rgba(255, 255, 255, 0.95);
   border-radius: 22px;
   padding: 1.6rem 2rem;
-  border: 1px solid rgba(17, 34, 82, 0.06);
-  box-shadow: 0 20px 40px rgba(7, 24, 66, 0.06);
+  border: 1px solid rgba(5, 21, 52, 0.08);
+  box-shadow: 0 20px 40px rgba(5, 21, 52, 0.08);
   text-align: left;
 }
 .event-card button {
@@ -235,11 +234,11 @@ button:disabled {
 .payment-form {
   margin: 2rem auto;
   max-width: 520px;
-  background: #fff;
+  background: rgba(227, 235, 255, 0.95);
   padding: 2rem;
   border-radius: 26px;
-  border: 1px solid rgba(17, 34, 82, 0.08);
-  box-shadow: 0 30px 60px rgba(7, 24, 66, 0.12);
+  border: 1px solid rgba(5, 21, 52, 0.08);
+  box-shadow: 0 30px 60px rgba(5, 21, 52, 0.12);
 }
 .payment-form h2 {
   margin: 0 0 1rem;
@@ -280,7 +279,7 @@ button:disabled {
 .chat-page {
   padding: 3rem 1rem 4rem;
   min-height: calc(100vh - 130px);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), #f6f7ff 70%);
+  background: linear-gradient(180deg, rgba(242, 246, 255, 0.95), #e8efff 70%);
 }
 .chat-page__panel {
   background: #fff;
