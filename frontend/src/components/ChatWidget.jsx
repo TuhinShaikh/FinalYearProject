@@ -34,6 +34,9 @@ const fallbackResponse =
 
 const greetingTriggers = ["hi", "hello", "hey", "good morning", "good evening", "howdy"];
 const appreciationTriggers = ["thanks", "thank you", "ta", "cheers"];
+const capabilityPattern = /what can (you|u) do/;
+const namePattern = /do (i|you) need (my )?name/;
+const travelIntentPattern = /([\w\s]+?)\s+to\s+([\w\s]+)/;
 
 function isTriggered(message, triggers) {
   return triggers.some((token) => message.includes(token));
@@ -46,6 +49,16 @@ function generateAssistantResponse(message) {
   }
   if (isTriggered(normalized, appreciationTriggers)) {
     return "Happy to help! Whenever you're ready, just send another question.";
+  }
+  if (capabilityPattern.test(normalized)) {
+    return "I can walk you to the Transport planner, the live Status dashboard, or the booking flow—tell me what you need first and I will link you to it.";
+  }
+  if (namePattern.test(normalized)) {
+    return "No name needed—just say what you are trying to do (journey, status, parking) and I'll point you toward the relevant screen.";
+  }
+  if (travelIntentPattern.test(normalized)) {
+    const [, origin, destination] = normalized.match(travelIntentPattern);
+    return `Got it—journeys from ${origin.trim()} to ${destination.trim()} are best planned inside the TfL journey planner block on this page. Enter those places and tap Plan journey so I can surface more tips.`;
   }
   const match = knowledgeBase.find((item) =>
     item.keywords.some((keyword) => normalized.includes(keyword))
