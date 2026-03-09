@@ -245,7 +245,7 @@ button:focus-visible {
 .event-card button {
   margin-top: 1rem;
   width: fit-content;
-  background: var(--royal-blue-soft);
+  background: var(--storm);
   color: #fff;
   box-shadow: none;
 }
@@ -289,10 +289,10 @@ button:focus-visible {
   border-radius: 18px;
   padding: 0.85rem;
   font-size: 1rem;
-  background: var(--royal-blue);
+  background: var(--slate);
 }
 #pay-button:hover {
-  background: var(--royal-blue-deep);
+  background: var(--dark-ink);
 }
 
 .chat-page {
@@ -301,7 +301,7 @@ button:focus-visible {
   background: linear-gradient(180deg, rgba(242, 246, 255, 0.95), #e8efff 70%);
 }
 .chat-page__panel {
-  background: #fff;
+  background: rgba(230, 235, 241, 0.95);
   border-radius: 36px;
   padding: 3rem;
   border: 1px solid rgba(17, 34, 82, 0.08);
@@ -310,7 +310,7 @@ button:focus-visible {
 .chat-page__header h1 {
   margin: 0;
   font-size: 2.2rem;
-  color: var(--royal-blue-deep);
+  color: var(--slate);
 }
 .chat-page__intro {
   margin: 0.5rem 0 1.5rem;
@@ -321,7 +321,7 @@ button:focus-visible {
   width: 100%;
   max-width: 840px;
   margin: 0 auto;
-  background: #fff;
+  background: rgba(230, 235, 241, 0.9);
   border-radius: 30px;
   border: 1px solid rgba(17, 34, 82, 0.08);
   box-shadow: 0 25px 55px rgba(7, 24, 66, 0.12);
@@ -341,7 +341,7 @@ button:focus-visible {
 .chat-widget__close {
   background: transparent;
   border: none;
-  color: var(--royal-blue-deep);
+  color: var(--slate);
   font-size: 1rem;
   font-weight: 600;
 }
