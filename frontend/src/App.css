@@ -330,6 +330,86 @@ body, html, #root {
   font-weight: 600;
 }
 
+.chat-page__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  gap: 2rem;
+  align-items: flex-start;
+}
+
+.chat-page__assistant {
+  display: flex;
+  justify-content: center;
+}
+
+.chat-page__aside {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.chat-page__aside-card {
+  background: linear-gradient(180deg, #ffffff 0%, #f6f8ff 100%);
+  padding: 1.25rem;
+  border-radius: 18px;
+  border: 1px solid rgba(64, 90, 255, 0.15);
+  box-shadow: 0 15px 50px rgba(15, 43, 112, 0.08);
+}
+
+.chat-page__aside-card h2 {
+  margin: 0 0 0.65rem;
+  font-size: 1.15rem;
+  color: #0a1f3d;
+}
+
+.chat-page__aside-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.chat-page__aside-list strong {
+  display: block;
+  font-size: 0.95rem;
+  color: #0a1f3d;
+}
+
+.chat-page__aside-list span {
+  display: block;
+  font-size: 0.85rem;
+  color: #4c5676;
+}
+
+.chat-page__aside-note {
+  margin: 0 0 0.65rem;
+  font-size: 0.9rem;
+  color: #4c5676;
+}
+
+.chat-page__aside-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.chat-page__aside-link {
+  border-radius: 12px;
+  border: 1px solid #d5dff4;
+  padding: 0.5rem 0.85rem;
+  font-weight: 600;
+  color: #0f4fff;
+  text-decoration: none;
+  background: #ffffff;
+}
+
+.chat-page__aside-link:hover {
+  background: #eef3ff;
+  border-color: #8fb5ff;
+}
+
 @media (max-width: 768px) {
   .chat-widget {
     right: 1rem;
