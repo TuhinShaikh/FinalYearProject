@@ -126,6 +126,16 @@ function generateAssistantResponse(message) {
   if (namePattern.test(normalized)) {
     return "No name needed—just say what you are trying to do (journey, status, parking) and I'll point you toward the relevant screen.";
   }
+  const zoneMatch = normalized.match(zoneQueryPattern);
+  if (zoneMatch) {
+    const digits = zoneMatch[1].match(/\d+/g);
+    if (digits) {
+      const zoneKey = buildZoneKey(digits);
+      const zoneLabel = formatZoneLabel(digits);
+      const zoneResponse = describeZonePricing(zoneKey, zoneLabel);
+      if (zoneResponse) return zoneResponse;
+    }
+  }
   if (travelIntentPattern.test(normalized)) {
     const [, origin, destination] = normalized.match(travelIntentPattern);
     return `Got it—journeys from ${origin.trim()} to ${destination.trim()} are best planned inside the TfL journey planner block on this page. Enter those places and tap Plan journey so I can surface more tips.`;
