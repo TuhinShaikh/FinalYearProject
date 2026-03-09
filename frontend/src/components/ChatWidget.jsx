@@ -30,11 +30,23 @@ const knowledgeBase = [
 ];
 
 const fallbackResponse =
-  "I can point you to the Transport planner, Status dashboard, or Parking booking screens—just ask for the part you need."
-;
+  "I can point you to the Transport planner, Status dashboard, or Parking booking screens—just ask for the part you need.";
+
+const greetingTriggers = ["hi", "hello", "hey", "good morning", "good evening", "howdy"];
+const appreciationTriggers = ["thanks", "thank you", "ta", "cheers"];
+
+function isTriggered(message, triggers) {
+  return triggers.some((token) => message.includes(token));
+}
 
 function generateAssistantResponse(message) {
   const normalized = message?.toLowerCase() ?? "";
+  if (isTriggered(normalized, greetingTriggers)) {
+    return "Hey! I'm the Travel Copilot—you can ask for journey planning, live status, or parking tips and I will help you find the right page.";
+  }
+  if (isTriggered(normalized, appreciationTriggers)) {
+    return "Happy to help! Whenever you're ready, just send another question.";
+  }
   const match = knowledgeBase.find((item) =>
     item.keywords.some((keyword) => normalized.includes(keyword))
   );

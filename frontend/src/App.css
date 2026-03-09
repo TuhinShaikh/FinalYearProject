@@ -195,7 +195,7 @@ body, html, #root {
   border-radius: 5px;
   cursor: pointer;
   font-weight: 500;
-
+}
 
 .chat-page {
   padding: 2rem 1rem;
@@ -416,6 +416,18 @@ body, html, #root {
     top: 70px;
     width: min(90vw, 260px);
     max-height: 50vh;
+  }
+
+  .chat-page__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .chat-page__panel {
+    padding: 1.5rem;
+  }
+
+  .chat-page__aside-card {
+    padding: 1rem;
   }
 }
 
