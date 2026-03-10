@@ -52,19 +52,24 @@ export default function App() {
             <Route
               path="/home"
               element={
-                <div className="content">
-                  <section className="main-buttons">
-                    <h2>Transport</h2>
-                    <Link to="/transport"><button>Transport</button></Link>
-                    <Link to="/rides"><button>Taxi</button></Link>
+                <div className="content home-hero">
+                  <div className="home-logo-shell">
+                    
+                    <img
+                      className="spurs-logo"
+                      src="https://upload.wikimedia.org/wikipedia/sco/thumb/b/b4/Tottenham_Hotspur.svg/500px-Tottenham_Hotspur.svg.png?_=20170428001911"
+                      alt="Tottenham Hotspur Logo"
+                    />
 
-                    <h2>Parking</h2>
-                    <Link to="/booking"><button>Book Parking</button></Link>
+                    <p className="home-logo-copy">
+                      Tottenham Hotspur Travel Assistant
+                    </p>
 
-                    <h2>Live Updates</h2>
-                    <Link to="/status"><button>TfL</button></Link>
-                    <Link to="/assistant"><button>Travel Copilot</button></Link>
-                  </section>
+                    <p className="home-logo-copy">
+                      Plan your journey, book parking, check TfL status and more.
+                    </p>
+
+                  </div>
                 </div>
               }
             />
