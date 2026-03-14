@@ -11,24 +11,6 @@ export default function StatusPage() {
     fetchTfL();
   }, []);
 
-  const fetchGreaterAnglia = async (targetStation) => {
-    setLoadingGa(true);
-    setGaError(null);
-    try {
-      const res = await axios.get("/api/trains/greater-anglia", {
-        params: { station: targetStation },
-      });
-      setGaStatus(res.data.trainServices || []);
-      setLastUpdated(new Date());
-    } catch (err) {
-      console.error("GA error", err);
-      setGaStatus([]);
-      setGaError("Greater Anglia departures are currently unavailable.");
-    } finally {
-      setLoadingGa(false);
-    }
-  };
-
   const fetchTfL = async () => {
     try {
       const res = await axios.get("https://api.tfl.gov.uk/Line/Mode/tube/Status");
@@ -37,19 +19,6 @@ export default function StatusPage() {
       console.error("TfL error", err);
     }
   };
-
-  const fetchUber = () => {
-    setUberSurge((Math.random() * 2 + 1).toFixed(2));
-  };
-
-  const handleApplyStation = () => {
-    const normalized = stationField.trim().toUpperCase();
-    if (normalized) {
-      setActiveStation(normalized);
-    }
-  };
-
-  const formatTime = (value) => value || "—";
 
   return (
     <main
