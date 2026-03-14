@@ -44,15 +44,15 @@ export default function App() {
               />
               <span className="sr-only">Tottenham Hotspur Travel Assistant</span>
             </div>
-            <div className="navbar-links">
-              <Link to="/booking"><button>Book Parking</button></Link>
-              <Link to="/assistant"><button>Copilot</button></Link>
-              <Link to="/home"><button>Home</button></Link>
-              <Link to="/rides"><button>Taxi</button></Link>
-              <Link to="/status"><button>TfL</button></Link>
-              <Link to="/transport"><button>Transport</button></Link>
-              <Link to="/accessibility"><button>Accessibility</button></Link>
-            </div>
+              <div className="navbar-links">
+                <Link to="/booking"><button className="nav-pill">Book Parking</button></Link>
+                <Link to="/assistant"><button className="nav-pill">Copilot</button></Link>
+                <Link to="/home"><button className="nav-pill">Home</button></Link>
+                <Link to="/rides"><button className="nav-pill">Taxi</button></Link>
+                <Link to="/status"><button className="nav-pill">TfL</button></Link>
+                <Link to="/transport"><button className="nav-pill">Transport</button></Link>
+                <Link to="/accessibility"><button className="nav-pill">Accessibility</button></Link>
+              </div>
           </nav>
 
           {/* Application routes */}
