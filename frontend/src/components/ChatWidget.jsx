@@ -24,7 +24,7 @@ const knowledgeBase = [
   {
     keywords: ["status", "live"],
     response:
-      "Head over to the Status dashboard via the main nav—there is a live TfL tube map, Greater Anglia departures, and Uber surge pricing that you can open while you wait for a train.",
+      "Head over to the Status dashboard via the main nav—there is a live TfL tube map plus a Tottenham stadium showcase so you can plan the journey with the stadium in view.",
   },
   {
     keywords: ["parking", "book", "slots", "reserve"],
@@ -34,7 +34,7 @@ const knowledgeBase = [
   {
     keywords: ["recommend", "ideas", "accessibility"],
     response:
-      "The recommendations card on the Transport page refreshes TfL's accessibility-aware suggestions—hit the Refresh button to pull the latest data.",
+      "Use the TfL journey planner on the Transport page—enter an origin and destination, tap Plan journey, and I will keep you updated on accessible options.",
   },
   {
     keywords: ["travelcard", "travel cards", "season ticket"],
