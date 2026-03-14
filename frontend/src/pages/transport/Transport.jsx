@@ -15,57 +15,55 @@ const buttonStyles = {
 const suggestionButtonStyles = {
   borderRadius: "999px",
   border: "1px solid #c6d3ff",
-  background: "white",
-  color: "#0f4fff",
-  padding: "0.35rem 1rem",
-  fontWeight: 600,
-  cursor: "pointer",
-  fontSize: "0.85rem",
-};
+        <article
+          style={
+            padding: "1.8rem",
+            borderRadius: "20px",
+            background: "#ffffff",
+            border: "1px solid #dfe8ff",
+            boxShadow: "0 20px 30px rgba(9, 25, 79, 0.08)",
+          }}
+        >
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+              gap: "1rem",
+              marginBottom: "1.25rem",
+            }}
+          >
+            <label style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}>
+              <span style={{ fontSize: "0.9rem" }}>Origin</span>
+              <input
+                type="text"
+                value={origin}
+                onChange={(event) => setOrigin(event.target.value)}
+                placeholder="Where are you now?"
+                style={{
+                  padding: "0.75rem 1rem",
+                  borderRadius: "12px",
+                  border: "1px solid #cbd4f5",
+                  fontSize: "1rem",
+                }}
+              />
+            </label>
 
-export default function TransportPage() {
-  const [origin, setOrigin] = useState(defaultOrigin);
-  const [destination, setDestination] = useState(defaultDestination);
-  const [journey, setJourney] = useState(null);
-  const [savedJourneys, setSavedJourneys] = useState([]);
-  const [status, setStatus] = useState("Ready to plan your next trip.");
-  const [journeyLoading, setJourneyLoading] = useState(false);
-  const [disambiguationOptions, setDisambiguationOptions] = useState({ origin: [], destination: [] });
-
-  const encodeInput = (value) => encodeURIComponent(value.trim());
-
-  const planJourney = async () => {
-    if (!origin.trim() || !destination.trim()) {
-      setStatus("Enter both an origin and a destination before planning.");
-      return;
-    }
-
-    setJourneyLoading(true);
-    setStatus("Looking up TfL journeys...");
-
-    try {
-      const response = await fetch(
-        `https://api.tfl.gov.uk/Journey/JourneyResults/${encodeInput(origin)}/to/${encodeInput(destination)}`
-      );
-
-      const data = await response.json();
-
-      const normalizeOptions = (block) =>
-        (block?.disambiguationOptions ?? [])
-          .slice(0, 3)
-          .map((option, index) => ({
-            id: option.parameterValue ?? `${block?.matchStatus ?? ""}-${index}`,
-            name:
-              option.place?.commonName || option.place?.description || option.name || option.description ||
-              option.parameterValue || `choice ${index + 1}`,
-            parameterValue: option.parameterValue,
-            uri: option.uri,
-          }));
-
-      const originSuggestions = normalizeOptions(data.fromLocationDisambiguation);
-      const destinationSuggestions = normalizeOptions(data.toLocationDisambiguation);
-
-      if (response.status === 300) {
+            <label style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}>
+              <span style={{ fontSize: "0.9rem" }}>Destination</span>
+              <input
+                type="text"
+                value={destination}
+                onChange={(event) => setDestination(event.target.value)}
+                placeholder="Where do you want to go?"
+                style={{
+                  padding: "0.75rem 1rem",
+                  borderRadius: "12px",
+                  border: "1px solid #cbd4f5",
+                  fontSize: "1rem",
+                }}
+              />
+            </label>
+          </div>
         setJourney(null);
         setDisambiguationOptions({ origin: originSuggestions, destination: destinationSuggestions });
         if (originSuggestions.length || destinationSuggestions.length) {
@@ -187,8 +185,8 @@ export default function TransportPage() {
             boxShadow: "0 20px 30px rgba(9, 25, 79, 0.08)",
           }}
         >
-            <div
-              style={{
+          <div
+            style={{
                 display: "grid",
                 gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
                 gap: "1rem",
@@ -376,7 +374,6 @@ export default function TransportPage() {
               </section>
             )}
           </article>
-        </div>
       </section>
     </main>
   );

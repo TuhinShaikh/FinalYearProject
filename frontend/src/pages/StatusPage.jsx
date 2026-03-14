@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import TfLMap from "../components/TfLMap";
+import stadiumImage from "../assets/stadium.jpg";
 
 export default function StatusPage() {
   const [tflStatus, setTflStatus] = useState([]);
@@ -164,7 +165,7 @@ export default function StatusPage() {
             }}
           >
             <img
-              src="/assets/tottenham-stadium.jpg"
+              src={stadiumImage}
               alt="Tottenham Hotspur Stadium"
               style={{
                 width: "100%",
