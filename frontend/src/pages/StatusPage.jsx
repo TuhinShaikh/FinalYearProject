@@ -3,26 +3,12 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import TfLMap from "../components/TfLMap";
 
-const stationSuggestions = ["LST", "CAM", "NOR", "IPW", "SST", "COL", "BHM"];
-
 export default function StatusPage() {
-  const [gaStatus, setGaStatus] = useState([]);
   const [tflStatus, setTflStatus] = useState([]);
-  const [uberSurge, setUberSurge] = useState(null);
   const [showMap, setShowMap] = useState(false);
-  const [stationField, setStationField] = useState("LST");
-  const [activeStation, setActiveStation] = useState("LST");
-  const [loadingGa, setLoadingGa] = useState(false);
-  const [gaError, setGaError] = useState(null);
-  const [lastUpdated, setLastUpdated] = useState(null);
-
-  useEffect(() => {
-    fetchGreaterAnglia(activeStation);
-  }, [activeStation]);
 
   useEffect(() => {
     fetchTfL();
-    fetchUber();
   }, []);
 
   const fetchGreaterAnglia = async (targetStation) => {
