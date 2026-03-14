@@ -1,5 +1,4 @@
 import { useState } from "react";
-import axios from "axios";
 
 const defaultOrigin = "London Bridge";
 const defaultDestination = "King's Cross St. Pancras";
@@ -25,8 +24,6 @@ const suggestionButtonStyles = {
 };
 
 export default function TransportPage() {
-  const [options, setOptions] = useState([]);
-  const [recommendationsLoading, setRecommendationsLoading] = useState(false);
   const [origin, setOrigin] = useState(defaultOrigin);
   const [destination, setDestination] = useState(defaultDestination);
   const [journey, setJourney] = useState(null);
@@ -36,25 +33,6 @@ export default function TransportPage() {
   const [disambiguationOptions, setDisambiguationOptions] = useState({ origin: [], destination: [] });
 
   const encodeInput = (value) => encodeURIComponent(value.trim());
-
-  const fetchRecommendations = async () => {
-    try {
-      setRecommendationsLoading(true);
-      const response = await axios.post("/travel/recommend", null, {
-        params: {
-          origin,
-          destination,
-          accessibilityNeeded: true,
-          badWeather: false,
-        },
-      });
-      setOptions(response.data || []);
-    } catch (error) {
-      console.error("Failed to fetch travel recommendations", error);
-    } finally {
-      setRecommendationsLoading(false);
-    }
-  };
 
   const planJourney = async () => {
     if (!origin.trim() || !destination.trim()) {
