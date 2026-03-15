@@ -1,10 +1,18 @@
-import React, { useState } from "react";
+import React from "react";
+import { useAccessibility } from "../context/AccessibilityContext";
 
 export default function AccessibilityPage() {
-  const [fontSize, setFontSize] = useState(16);
-  const [highContrast, setHighContrast] = useState(false);
-  const [screenReader, setScreenReader] = useState(false);
-  const [stepFree, setStepFree] = useState(false);
+  const {
+    fontSize,
+    highContrast,
+    screenReader,
+    stepFree,
+    setFontSize,
+    toggleHighContrast,
+    toggleScreenReader,
+    toggleStepFree,
+    resetAccessibility,
+  } = useAccessibility();
 
   const textColor = highContrast ? "#f8fbff" : "#0a1f3d";
   const cardBackground = highContrast ? "#163362" : "#ffffff";
@@ -68,7 +76,7 @@ export default function AccessibilityPage() {
         <h2>High Contrast Mode</h2>
         <p>Improves visibility with stronger color separation.</p>
         <button
-          onClick={() => setHighContrast((v) => !v)}
+          onClick={toggleHighContrast}
           style={{
             backgroundColor: toggleBackground,
             marginTop: "0.5rem",
@@ -92,7 +100,7 @@ export default function AccessibilityPage() {
         <h2>Screen Reader Mode</h2>
         <p>Enhances ARIA labels and simplifies layout for assistive tools.</p>
         <button
-          onClick={() => setScreenReader((v) => !v)}
+          onClick={toggleScreenReader}
           style={{
             backgroundColor: toggleBackground,
             marginTop: "0.5rem",
@@ -116,7 +124,7 @@ export default function AccessibilityPage() {
         <h2>Step-Free Route Filter</h2>
         <p>Show only accessible routes when planning your journey.</p>
         <button
-          onClick={() => setStepFree((v) => !v)}
+          onClick={toggleStepFree}
           style={{
             backgroundColor: toggleBackground,
             marginTop: "0.5rem",
@@ -133,6 +141,13 @@ export default function AccessibilityPage() {
         Your accessibility preferences are applied instantly and will remain active
         while you browse the site.
       </p>
+
+      <button
+        onClick={resetAccessibility}
+        style={{ marginTop: "1rem", backgroundColor: "#d4e9ff", color: "#0a1f3d" }}
+      >
+        Reset to Defaults
+      </button>
     </main>
   );
 }

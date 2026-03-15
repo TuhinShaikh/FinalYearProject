@@ -6,6 +6,7 @@
   --warm-tan: #c99b6a;
   --mist: #eef2f7;
   --shadow: rgba(19, 30, 55, 0.25);
+  --app-font-size: 16px;
 }
 
 *,
@@ -19,9 +20,36 @@ body {
   margin: 0;
   padding: 0;
   min-height: 100%;
+  font-size: var(--app-font-size);
   font-family: "Inter", "Segoe UI", sans-serif;
   background: linear-gradient(180deg, #e6eef9 0%, #d5e1ef 45%, #f4f6fb 100%);
   color: var(--deep-navy);
+}
+
+body.a11y-high-contrast {
+  background: #0a1f3d;
+  color: #f8fbff;
+}
+
+body.a11y-high-contrast .app {
+  background: #0a1f3d;
+  color: #f8fbff;
+}
+
+body.a11y-high-contrast .navbar {
+  background: #112a52;
+  border-bottom-color: rgba(248, 251, 255, 0.25);
+}
+
+body.a11y-high-contrast .nav-pill {
+  background: #1a3a6d;
+  color: #f8fbff;
+  border-color: rgba(248, 251, 255, 0.35);
+}
+
+body.a11y-screen-reader .app {
+  letter-spacing: 0.02em;
+  line-height: 1.75;
 }
 
 #root {
@@ -139,11 +167,13 @@ button:focus-visible {
 .nav-pill:hover {
   border-color: rgba(74, 109, 255, 0.6);
   background: rgba(230, 236, 255, 0.95);
+  transform: none;
+  box-shadow: 0 10px 24px rgba(15, 38, 112, 0.18);
 }
 
 .nav-pill:active {
-  transform: translateY(1px);
-  box-shadow: 0 0 18px rgba(74, 109, 255, 0.65);
+  transform: none;
+  box-shadow: 0 10px 24px rgba(15, 38, 112, 0.18);
   background: #f2f5ff;
   border-color: #4a6dff;
 }

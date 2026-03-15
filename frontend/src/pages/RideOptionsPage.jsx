@@ -4,7 +4,6 @@ export default function RideOptionsPage() {
   const [rides, setRides] = useState([]);
 
   const fetchRides = () => {
-    // Provide mocked ride-hailing results so users can preview service choices
     const mockData = [
       {
         provider: "UberX",
