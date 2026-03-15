@@ -4,7 +4,9 @@ import {
   MapContainer,
   TileLayer,
   CircleMarker,
+  Polyline,
   Popup,
+  useMapEvents,
 } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
@@ -60,6 +62,116 @@ const premierStadiums = [
 ];
 
 const londonCenter = [51.5074, -0.1278];
+
+function VisibleStadiumPolyline({ stadiums }) {
+  const [bounds, setBounds] = useState(null);
+
+  const map = useMapEvents({
+    moveend: () => setBounds(map.getBounds()),
+    zoomend: () => setBounds(map.getBounds()),
+  });
+
+  useEffect(() => {
+    setBounds(map.getBounds());
+  }, [map]);
+
+  const dijkstraSegments = useMemo(() => {
+    if (!bounds) return [];
+
+    const visibleStadiums = stadiums.filter((stadium) =>
+      bounds.contains([stadium.lat, stadium.lon])
+    );
+
+    if (visibleStadiums.length < 2) return [];
+
+    const n = visibleStadiums.length;
+    const toRad = (deg) => (deg * Math.PI) / 180;
+    const distanceMeters = (a, b) => {
+      const r = 6371000;
+      const dLat = toRad(b.lat - a.lat);
+      const dLon = toRad(b.lon - a.lon);
+      const lat1 = toRad(a.lat);
+      const lat2 = toRad(b.lat);
+      const x =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+      return 2 * r * Math.atan2(Math.sqrt(x), Math.sqrt(1 - x));
+    };
+
+    const neighbors = Array.from({ length: n }, () => []);
+    const k = Math.min(4, n - 1);
+
+    for (let i = 0; i < n; i += 1) {
+      const ranked = [];
+      for (let j = 0; j < n; j += 1) {
+        if (i === j) continue;
+        ranked.push({ j, w: distanceMeters(visibleStadiums[i], visibleStadiums[j]) });
+      }
+      ranked.sort((a, b) => a.w - b.w);
+      ranked.slice(0, k).forEach(({ j, w }) => {
+        neighbors[i].push({ to: j, w });
+        neighbors[j].push({ to: i, w });
+      });
+    }
+
+    // Start from the western-most visible stadium.
+    let start = 0;
+    for (let i = 1; i < n; i += 1) {
+      if (visibleStadiums[i].lon < visibleStadiums[start].lon) {
+        start = i;
+      }
+    }
+
+    const dist = Array(n).fill(Number.POSITIVE_INFINITY);
+    const visited = Array(n).fill(false);
+    const parent = Array(n).fill(-1);
+    dist[start] = 0;
+
+    for (let step = 0; step < n; step += 1) {
+      let u = -1;
+      for (let i = 0; i < n; i += 1) {
+        if (!visited[i] && (u === -1 || dist[i] < dist[u])) {
+          u = i;
+        }
+      }
+      if (u === -1 || !Number.isFinite(dist[u])) break;
+
+      visited[u] = true;
+      neighbors[u].forEach(({ to, w }) => {
+        if (visited[to]) return;
+        const next = dist[u] + w;
+        if (next < dist[to]) {
+          dist[to] = next;
+          parent[to] = u;
+        }
+      });
+    }
+
+    return parent
+      .map((p, i) => {
+        if (p < 0) return null;
+        return [
+          [visibleStadiums[p].lat, visibleStadiums[p].lon],
+          [visibleStadiums[i].lat, visibleStadiums[i].lon],
+        ];
+      })
+      .filter(Boolean);
+  }, [bounds, stadiums]);
+
+  if (dijkstraSegments.length === 0) return null;
+
+  return (
+    <>
+      {dijkstraSegments.map((segment, idx) => (
+        <Polyline
+          key={`stadium-link-${idx}`}
+          positions={segment}
+          pathOptions={{ color: "#ff3b30", weight: 2, opacity: 0.75 }}
+        />
+      ))}
+    </>
+  );
+}
 
 export default function TfLMap({ tflStatus }) {
   const [stopPoints, setStopPoints] = useState([]);
@@ -213,6 +325,7 @@ export default function TfLMap({ tflStatus }) {
               </Popup>
             </CircleMarker>
           ))}
+          <VisibleStadiumPolyline stadiums={premierStadiums} />
         </MapContainer>
       </div>
 
