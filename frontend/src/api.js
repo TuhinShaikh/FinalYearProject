@@ -190,3 +190,33 @@ export async function refund(paymentId) {
   if (!res.ok) throw new Error("Refund failed");
   return res.json();
 }
+
+// ===============================
+// Ride options
+// ===============================
+export async function fetchLiveRides({ lat = 51.6048, lon = -0.066, radiusMeters = 3000 } = {}) {
+  const query = new URLSearchParams({
+    lat: String(lat),
+    lon: String(lon),
+    radiusMeters: String(radiusMeters),
+  });
+
+  const requestOptions = {
+    method: "GET",
+    credentials: "include",
+  };
+
+  const primaryUrl = buildUrl(`/api/rides/live?${query.toString()}`);
+
+  try {
+    const response = await fetch(primaryUrl, requestOptions);
+    return await handleResponse(response);
+  } catch (error) {
+    // If direct backend URL fails (common with WSL/Windows localhost routing), retry via Vite proxy.
+    if (primaryUrl.startsWith("http")) {
+      const fallbackResponse = await fetch(`/api/rides/live?${query.toString()}`, requestOptions);
+      return handleResponse(fallbackResponse);
+    }
+    throw error;
+  }
+}
