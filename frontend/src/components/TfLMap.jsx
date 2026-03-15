@@ -4,7 +4,6 @@ import {
   MapContainer,
   TileLayer,
   CircleMarker,
-  Marker,
   Popup,
 } from "react-leaflet";
 import L from "leaflet";
@@ -175,7 +174,10 @@ export default function TfLMap({ tflStatus }) {
 
       <div style={{ height: "60vh", borderRadius: "14px", overflow: "hidden" }}>
         <MapContainer center={londonCenter} zoom={11} scrollWheelZoom style={{ height: "100%" }}>
-          <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+          <TileLayer
+            url="https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png"
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+          />
 
           {stopPoints.map((stop) => {
             const lat = stop.lat ?? stop.latitude;
@@ -200,13 +202,16 @@ export default function TfLMap({ tflStatus }) {
           })}
 
           {premierStadiums.map((stadium) => (
-            <Marker key={stadium.club + stadium.stadium} position={[stadium.lat, stadium.lon]}>
+            <CircleMarker
+              key={stadium.club + stadium.stadium}
+              center={[stadium.lat, stadium.lon]}
+              radius={6}
+              pathOptions={{ color: "#8b0000", fillColor: "#ff3b30", fillOpacity: 1, weight: 2 }}
+            >
               <Popup>
                 <strong>{stadium.club}</strong>
-                <br />
-                {stadium.stadium}
               </Popup>
-            </Marker>
+            </CircleMarker>
           ))}
         </MapContainer>
       </div>

@@ -153,6 +153,8 @@ export default function StatusPage() {
             borderRadius: "16px",
             border: "1px solid rgba(10, 31, 61, 0.15)",
             background: "#f8fbff",
+            display: "flex",
+            flexDirection: "column",
           }}
         >
           <h2>Tottenham Stadium</h2>
@@ -162,6 +164,8 @@ export default function StatusPage() {
               borderRadius: "12px",
               overflow: "hidden",
               border: "1px solid rgba(10, 31, 61, 0.1)",
+              minHeight: "420px",
+              flex: 1,
             }}
           >
             <img
@@ -169,8 +173,9 @@ export default function StatusPage() {
               alt="Tottenham Hotspur Stadium"
               style={{
                 width: "100%",
-                height: "220px",
+                height: "100%",
                 objectFit: "cover",
+                objectPosition: "50% 72%",
                 display: "block",
               }}
             />
