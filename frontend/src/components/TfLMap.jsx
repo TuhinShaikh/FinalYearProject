@@ -6,6 +6,7 @@ import {
   CircleMarker,
   Polyline,
   Popup,
+  Tooltip,
   useMapEvents,
 } from "react-leaflet";
 import L from "leaflet";
@@ -62,6 +63,11 @@ const premierStadiums = [
 ];
 
 const londonCenter = [51.5074, -0.1278];
+const whiteHartLaneStation = {
+  name: "White Hart Lane",
+  lat: 51.6069,
+  lon: -0.0689,
+};
 
 function VisibleStadiumPolyline({ stadiums }) {
   const [bounds, setBounds] = useState(null);
@@ -175,12 +181,10 @@ function VisibleStadiumPolyline({ stadiums }) {
 
 export default function TfLMap({ tflStatus }) {
   const [stopPoints, setStopPoints] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [overgroundPaths, setOvergroundPaths] = useState([]);
 
   useEffect(() => {
     let mounted = true;
-    setLoading(true);
 
     axios
       .get("https://api.tfl.gov.uk/Line/Mode/tube/StopPoints")
@@ -189,12 +193,46 @@ export default function TfLMap({ tflStatus }) {
         const payload = res.data?.stopPoints ?? res.data ?? [];
         setStopPoints(Array.isArray(payload) ? payload : []);
       })
-      .catch((err) => {
+      .catch(() => {});
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    let mounted = true;
+
+    const parseStopPointSequences = (payload) => {
+      const sequences = payload?.stopPointSequences ?? [];
+      if (!Array.isArray(sequences)) return [];
+
+      return sequences
+        .map((sequence) => {
+          const points = sequence?.stopPoint ?? [];
+          if (!Array.isArray(points)) return [];
+          return points
+            .map((point) => {
+              const lat = point?.lat ?? point?.latitude;
+              const lon = point?.lon ?? point?.longitude;
+              if (lat == null || lon == null) return null;
+              return [lat, lon];
+            })
+            .filter(Boolean);
+        })
+        .filter((path) => path.length > 1);
+    };
+
+    axios
+      .get("https://api.tfl.gov.uk/Line/london-overground/Route/Sequence/all")
+      .then((res) => {
         if (!mounted) return;
-        setError("Unable to load tube stop data: " + (err?.message ?? "network"));
+        const parsed = parseStopPointSequences(res.data);
+        setOvergroundPaths(parsed);
       })
-      .finally(() => {
-        if (mounted) setLoading(false);
+      .catch(() => {
+        if (!mounted) return;
+        setOvergroundPaths([]);
       });
 
     return () => {
@@ -265,24 +303,12 @@ export default function TfLMap({ tflStatus }) {
         }}
       >
         <div>
-          <h3 style={{ margin: 0 }}>TfL Tube Map</h3>
+          <h3 style={{ margin: 0 }}>London Overground + Stadium View</h3>
           <p style={{ margin: "0.25rem 0 0" }}>
-            Live London tube lines, stations, and Premier League stadiums pushed on top of an OpenStreetMap
-            base tile.
+            Full Overground route with stadium markers and club names on a clean no-label base map.
           </p>
         </div>
-        <div style={{ textAlign: "right" }}>
-          <p style={{ margin: 0, fontWeight: 600 }}>{stopPoints.length} stations plotted</p>
-          <p style={{ margin: 0 }}>{loading ? "Loading..." : "Data refreshed live"}</p>
-        </div>
       </div>
-
-      {loading && <p>Loading tube coordinates...</p>}
-      {error && (
-        <p style={{ color: "#b00020", marginBottom: "1rem" }}>
-          {error}
-        </p>
-      )}
 
       <div style={{ height: "60vh", borderRadius: "14px", overflow: "hidden" }}>
         <MapContainer center={londonCenter} zoom={11} scrollWheelZoom style={{ height: "100%" }}>
@@ -290,6 +316,14 @@ export default function TfLMap({ tflStatus }) {
             url="https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png"
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
           />
+
+          {overgroundPaths.map((path, idx) => (
+            <Polyline
+              key={`overground-path-${idx}`}
+              positions={path}
+              pathOptions={{ color: "#000000", weight: 3, opacity: 0.9 }}
+            />
+          ))}
 
           {stopPoints.map((stop) => {
             const lat = stop.lat ?? stop.latitude;
@@ -325,6 +359,24 @@ export default function TfLMap({ tflStatus }) {
               </Popup>
             </CircleMarker>
           ))}
+
+          <CircleMarker
+            center={[whiteHartLaneStation.lat, whiteHartLaneStation.lon]}
+            radius={5}
+            pathOptions={{ color: "#000000", fillColor: "#000000", fillOpacity: 1, weight: 1 }}
+          >
+            <Tooltip
+              permanent
+              direction="top"
+              offset={[0, -8]}
+              opacity={1}
+            >
+              <span style={{ color: "#000000", fontWeight: 700 }}>
+                {whiteHartLaneStation.name}
+              </span>
+            </Tooltip>
+          </CircleMarker>
+
           <VisibleStadiumPolyline stadiums={premierStadiums} />
         </MapContainer>
       </div>

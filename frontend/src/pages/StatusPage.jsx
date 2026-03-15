@@ -86,9 +86,9 @@ export default function StatusPage() {
           }}
         >
           <div style={{ flex: "1 1 220px" }}>
-            <h2 style={{ margin: 0 }}>TfL Tube Map + Stadiums</h2>
+            <h2 style={{ margin: 0 }}>London Overground + Stadium Map</h2>
             <p style={{ margin: "0.4rem 0 0" }}>
-              Click the button to load the London tube network, see live line status, and highlight every Premier League stadium.
+              Open a simplified London map with the full Overground route, highlighted stadium points, and club labels.
             </p>
           </div>
           <button
@@ -104,7 +104,7 @@ export default function StatusPage() {
               boxShadow: "0 10px 20px rgba(10, 31, 61, 0.2)",
             }}
           >
-            {showMap ? "Hide live map" : "Open interactive map"}
+            {showMap ? "Hide map" : "Open map"}
           </button>
         </div>
         {showMap && <TfLMap tflStatus={tflStatus} />}
