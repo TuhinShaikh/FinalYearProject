@@ -6,6 +6,7 @@ const defaultSettings = {
   fontSize: 16,
   highContrast: false,
   screenReader: false,
+  reduceMotion: false,
   stepFree: false,
 };
 
@@ -38,6 +39,8 @@ export function AccessibilityProvider({ children }) {
     document.documentElement.style.setProperty("--app-font-size", `${size}px`);
     document.body.classList.toggle("a11y-high-contrast", settings.highContrast);
     document.body.classList.toggle("a11y-screen-reader", settings.screenReader);
+    document.body.classList.toggle("a11y-reduce-motion", settings.reduceMotion);
+    document.body.setAttribute("data-step-free", settings.stepFree ? "true" : "false");
   }, [settings]);
 
   const value = useMemo(() => {
@@ -57,6 +60,8 @@ export function AccessibilityProvider({ children }) {
         setSettings((prev) => ({ ...prev, highContrast: !prev.highContrast })),
       toggleScreenReader: () =>
         setSettings((prev) => ({ ...prev, screenReader: !prev.screenReader })),
+      toggleReduceMotion: () =>
+        setSettings((prev) => ({ ...prev, reduceMotion: !prev.reduceMotion })),
       toggleStepFree: () =>
         setSettings((prev) => ({ ...prev, stepFree: !prev.stepFree })),
       resetAccessibility: () => setSettings(defaultSettings),

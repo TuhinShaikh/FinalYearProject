@@ -6,10 +6,12 @@ export default function AccessibilityPage() {
     fontSize,
     highContrast,
     screenReader,
+    reduceMotion,
     stepFree,
     setFontSize,
     toggleHighContrast,
     toggleScreenReader,
+    toggleReduceMotion,
     toggleStepFree,
     resetAccessibility,
   } = useAccessibility();
@@ -17,9 +19,19 @@ export default function AccessibilityPage() {
   const textColor = highContrast ? "#f8fbff" : "#0a1f3d";
   const cardBackground = highContrast ? "#163362" : "#ffffff";
   const toggleBackground = highContrast ? "#f9d74a" : "#c2e0ff";
+  const controlButtonStyle = {
+    minHeight: "44px",
+    minWidth: "44px",
+    padding: "0.75rem 1rem",
+  };
+
+  const statusSummary = `Font size ${fontSize}px. High contrast ${highContrast ? "on" : "off"}. Assistive reading mode ${screenReader ? "on" : "off"}. Reduced motion ${reduceMotion ? "on" : "off"}. Step-free route filter ${stepFree ? "on" : "off"}.`;
+
   return (
     <main
       role="main"
+      id="main-content"
+      tabIndex={-1}
       aria-label="Accessibility Options"
       style={{
         padding: "2rem",
@@ -39,6 +51,9 @@ export default function AccessibilityPage() {
         Adjust your viewing and navigation preferences for a more comfortable
         experience around the stadium.
       </p>
+      <p className="sr-only" aria-live="polite">
+        {statusSummary}
+      </p>
 
       {/* Font Size */}
       <section
@@ -52,13 +67,19 @@ export default function AccessibilityPage() {
       >
         <h2>Font Size</h2>
         <p>Increase or decrease text size across the site.</p>
+        <p style={{ margin: "0.25rem 0 0.75rem", opacity: 0.75 }}>Current size: {fontSize}px</p>
         <button
           onClick={() => setFontSize((s) => Math.max(12, s - 2))}
-          style={{ marginRight: "1rem" }}
+          aria-label="Decrease font size"
+          style={{ ...controlButtonStyle, marginRight: "1rem" }}
         >
           A-
         </button>
-        <button onClick={() => setFontSize((s) => Math.min(28, s + 2))}>
+        <button
+          onClick={() => setFontSize((s) => Math.min(28, s + 2))}
+          aria-label="Increase font size"
+          style={controlButtonStyle}
+        >
           A+
         </button>
       </section>
@@ -77,17 +98,19 @@ export default function AccessibilityPage() {
         <p>Improves visibility with stronger color separation.</p>
         <button
           onClick={toggleHighContrast}
+          aria-pressed={highContrast}
           style={{
             backgroundColor: toggleBackground,
             marginTop: "0.5rem",
             color: "#0a1f3d",
+            ...controlButtonStyle,
           }}
         >
           {highContrast ? "Disable High Contrast" : "Enable High Contrast"}
         </button>
       </section>
 
-      {/* Screen Reader Mode */}
+      {/* Assistive Reading Mode */}
       <section
         style={{
           marginBottom: "2rem",
@@ -97,17 +120,45 @@ export default function AccessibilityPage() {
           border: "1px solid rgba(10, 31, 61, 0.08)",
         }}
       >
-        <h2>Screen Reader Mode</h2>
-        <p>Enhances ARIA labels and simplifies layout for assistive tools.</p>
+        <h2>Assistive Reading Mode</h2>
+        <p>Increases spacing and readability to support assistive tools and easier scanning.</p>
         <button
           onClick={toggleScreenReader}
+          aria-pressed={screenReader}
           style={{
             backgroundColor: toggleBackground,
             marginTop: "0.5rem",
             color: "#0a1f3d",
+            ...controlButtonStyle,
           }}
         >
-          {screenReader ? "Disable Screen Reader Mode" : "Enable Screen Reader Mode"}
+          {screenReader ? "Disable Assistive Reading" : "Enable Assistive Reading"}
+        </button>
+      </section>
+
+      {/* Reduced Motion */}
+      <section
+        style={{
+          marginBottom: "2rem",
+          backgroundColor: cardBackground,
+          padding: "1rem",
+          borderRadius: "12px",
+          border: "1px solid rgba(10, 31, 61, 0.08)",
+        }}
+      >
+        <h2>Reduced Motion</h2>
+        <p>Turns off transitions and animations across the site where possible.</p>
+        <button
+          onClick={toggleReduceMotion}
+          aria-pressed={reduceMotion}
+          style={{
+            backgroundColor: toggleBackground,
+            marginTop: "0.5rem",
+            color: "#0a1f3d",
+            ...controlButtonStyle,
+          }}
+        >
+          {reduceMotion ? "Disable Reduced Motion" : "Enable Reduced Motion"}
         </button>
       </section>
 
@@ -125,10 +176,12 @@ export default function AccessibilityPage() {
         <p>Show only accessible routes when planning your journey.</p>
         <button
           onClick={toggleStepFree}
+          aria-pressed={stepFree}
           style={{
             backgroundColor: toggleBackground,
             marginTop: "0.5rem",
             color: "#0a1f3d",
+            ...controlButtonStyle,
           }}
         >
           {stepFree ? "Disable Step-Free Filter" : "Enable Step-Free Filter"}
@@ -144,7 +197,12 @@ export default function AccessibilityPage() {
 
       <button
         onClick={resetAccessibility}
-        style={{ marginTop: "1rem", backgroundColor: "#d4e9ff", color: "#0a1f3d" }}
+        style={{
+          marginTop: "1rem",
+          backgroundColor: "#d4e9ff",
+          color: "#0a1f3d",
+          ...controlButtonStyle,
+        }}
       >
         Reset to Defaults
       </button>

@@ -19,10 +19,11 @@ export default function App() {
 
   return (
     <div className="app">
+      <a href="#main-content" className="skip-link">Skip to main content</a>
 
       {/* Landing options for login/register/guest */}
       {isLoginPage ? (
-        <div className="hero">
+        <div className="hero" id="main-content" tabIndex={-1}>
           <div className="hero-overlay">
             <h1>Welcome</h1>
             <div className="auth-buttons">
@@ -36,18 +37,17 @@ export default function App() {
         <>
           {/* Primary navigation exposed once authenticated */}
           <nav className="navbar" aria-label="Primary navigation">
-            <div className="navbar-brand">
+            <Link to="/home" className="navbar-brand" aria-label="Home">
               <img
                 src="https://upload.wikimedia.org/wikipedia/sco/thumb/b/b4/Tottenham_Hotspur.svg/500px-Tottenham_Hotspur.svg.png?_=20170428001911"
                 alt="Tottenham Hotspur"
                 className="navbar-logo"
               />
               <span className="sr-only">Tottenham Hotspur Travel Assistant</span>
-            </div>
+            </Link>
               <div className="navbar-links">
                 <Link to="/booking"><button className="nav-pill">Book Parking</button></Link>
                 <Link to="/assistant"><button className="nav-pill">Copilot</button></Link>
-                <Link to="/home"><button className="nav-pill">Home</button></Link>
                 <Link to="/rides"><button className="nav-pill">Taxi</button></Link>
                 <Link to="/status"><button className="nav-pill">TfL</button></Link>
                 <Link to="/transport"><button className="nav-pill">Transport</button></Link>
@@ -56,7 +56,8 @@ export default function App() {
           </nav>
 
           {/* Application routes */}
-          <Routes>
+          <div id="main-content" tabIndex={-1}>
+            <Routes>
 
                   {/* Primary dashboard shortcuts grouped by category */}
             <Route
@@ -100,7 +101,8 @@ export default function App() {
             <Route path="/status" element={<StatusPage />} />
             <Route path="/assistant" element={<ChatbotPage />} />
 
-          </Routes>
+            </Routes>
+          </div>
         </>
       )}
 
