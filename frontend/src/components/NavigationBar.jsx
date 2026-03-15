@@ -1,11 +1,10 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import "./NavigationBar.css";
 
 export default function NavigationBar() {
   return (
     <nav className="navbar">
-<div className="navbar-logo">Three Point Lane</div>
+      <div className="navbar-logo">Three Point Lane</div>
       <div className="navbar-links">
         <Link to="/login">Login</Link>
         <Link to="/register">Register</Link>

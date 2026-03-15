@@ -1,5 +1,4 @@
 import { useState } from "react";
-import axios from "axios";
 
 const defaultOrigin = "London Bridge";
 const defaultDestination = "King's Cross St. Pancras";
@@ -25,8 +24,6 @@ const suggestionButtonStyles = {
 };
 
 export default function TransportPage() {
-  const [options, setOptions] = useState([]);
-  const [recommendationsLoading, setRecommendationsLoading] = useState(false);
   const [origin, setOrigin] = useState(defaultOrigin);
   const [destination, setDestination] = useState(defaultDestination);
   const [journey, setJourney] = useState(null);
@@ -36,25 +33,6 @@ export default function TransportPage() {
   const [disambiguationOptions, setDisambiguationOptions] = useState({ origin: [], destination: [] });
 
   const encodeInput = (value) => encodeURIComponent(value.trim());
-
-  const fetchRecommendations = async () => {
-    try {
-      setRecommendationsLoading(true);
-      const response = await axios.post("/travel/recommend", null, {
-        params: {
-          origin,
-          destination,
-          accessibilityNeeded: true,
-          badWeather: false,
-        },
-      });
-      setOptions(response.data || []);
-    } catch (error) {
-      console.error("Failed to fetch travel recommendations", error);
-    } finally {
-      setRecommendationsLoading(false);
-    }
-  };
 
   const planJourney = async () => {
     if (!origin.trim() || !destination.trim()) {
@@ -200,89 +178,15 @@ export default function TransportPage() {
           </p>
         </div>
 
-        <div
+        <article
           style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
-            gap: "1.25rem",
+            padding: "1.8rem",
+            borderRadius: "20px",
+            background: "#ffffff",
+            border: "1px solid #dfe8ff",
+            boxShadow: "0 20px 30px rgba(9, 25, 79, 0.08)",
           }}
         >
-          <article
-            style={{
-              padding: "1.8rem",
-              borderRadius: "20px",
-              background: "#f8fbff",
-              border: "1px solid #dfe8ff",
-            }}
-          >
-            <header
-              style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.1rem" }}
-            >
-              <div>
-                <p style={{ margin: 0, fontSize: "0.75rem", letterSpacing: "0.2rem", color: "#5e68a4" }}>
-                  Live TfL ideas
-                </p>
-                <h2 style={{ margin: "0.35rem 0 0" }}>Recommendations</h2>
-              </div>
-              <button
-                onClick={fetchRecommendations}
-                disabled={recommendationsLoading}
-                style={{
-                  padding: "0.45rem 1rem",
-                  borderRadius: "999px",
-                  border: "none",
-                  cursor: "pointer",
-                  background: "#ffffff",
-                  boxShadow: "0 8px 14px rgba(15, 79, 255, 0.15)",
-                  color: "#0f4fff",
-                  fontWeight: 600,
-                }}
-              >
-                {recommendationsLoading ? "Refreshing..." : "Refresh"}
-              </button>
-            </header>
-
-            {options.length === 0 ? (
-              <p style={{ color: "#5a647a", marginTop: 0 }}>
-                Tap refresh to pull journey ideas that respect accessibility and weather preferences.
-              </p>
-            ) : (
-              <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-                {options.map((option, index) => (
-                  <article
-                    key={option.provider ?? option.mode ?? index}
-                    style={{
-                      borderRadius: "14px",
-                      padding: "1rem",
-                      border: "1px solid rgba(15, 79, 255, 0.2)",
-                      background: "#fff",
-                    }}
-                  >
-                    <div style={{ fontWeight: 600, fontSize: "1rem" }}> {option.mode ?? "Journey"} </div>
-                    <p style={{ margin: "0.3rem 0", color: "#43516b" }}>
-                      <strong>Provider:</strong> {option.provider ?? "TfL"}
-                    </p>
-                    <p style={{ margin: "0.2rem 0", color: "#43516b" }}>
-                      <strong>Time:</strong> {option.estimatedTime ?? "—"} mins · <strong>Cost:</strong> £{option.cost ?? "—"}
-                    </p>
-                    {option.recommended && (
-                      <p style={{ color: "#00b894", margin: 0, fontWeight: 600 }}>★ Recommended route</p>
-                    )}
-                  </article>
-                ))}
-              </div>
-            )}
-          </article>
-
-          <article
-            style={{
-              padding: "1.8rem",
-              borderRadius: "20px",
-              background: "#ffffff",
-              border: "1px solid #dfe8ff",
-              boxShadow: "0 20px 30px rgba(9, 25, 79, 0.08)",
-            }}
-          >
             <div
               style={{
                 display: "grid",
@@ -472,7 +376,6 @@ export default function TransportPage() {
               </section>
             )}
           </article>
-        </div>
       </section>
     </main>
   );

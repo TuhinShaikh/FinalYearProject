@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import axios from "axios";
 
 const quickPrompts = [
   "How do I plan a TfL journey?",
@@ -24,7 +25,7 @@ const knowledgeBase = [
   {
     keywords: ["status", "live"],
     response:
-      "Head over to the Status dashboard via the main nav—there is a live TfL tube map, Greater Anglia departures, and Uber surge pricing that you can open while you wait for a train.",
+      "Open the Status dashboard from the main nav for live line updates and the London Overground + Stadium map.",
   },
   {
     keywords: ["parking", "book", "slots", "reserve"],
@@ -34,7 +35,7 @@ const knowledgeBase = [
   {
     keywords: ["recommend", "ideas", "accessibility"],
     response:
-      "The recommendations card on the Transport page refreshes TfL's accessibility-aware suggestions—hit the Refresh button to pull the latest data.",
+      "Use the TfL journey planner on the Transport page—enter an origin and destination, tap Plan journey, and I will keep you updated on accessible options.",
   },
   {
     keywords: ["travelcard", "travel cards", "season ticket"],
@@ -61,8 +62,12 @@ const greetingTriggers = ["hi", "hello", "hey", "good morning", "good evening", 
 const appreciationTriggers = ["thanks", "thank you", "ta", "cheers"];
 const capabilityPattern = /what can (you|u) do/;
 const namePattern = /do (i|you) need (my )?name/;
-const travelIntentPattern = /([\w\s]+?)\s+to\s+([\w\s]+)/;
+const travelIntentPattern = /^\s*([\w\s'.-]+?)\s+to\s+([\w\s'.-]+?)\s*$/;
+const journeyFromToPattern = /from\s+([\w\s'.-]+?)\s+to\s+([\w\s'.-]+)/;
+const journeyToFromPattern = /to\s+([\w\s'.-]+?)\s+from\s+([\w\s'.-]+)/;
+const fareIntentPattern = /(how much|cost|fare|price|ticket)/;
 const zoneQueryPattern = /zone\s*((?:\d+\s*(?:and|-|to)?\s*)+)/;
+const stationZonePricePattern = /(zone|fare|price|cost|how much).*(station|from|to)|\b(station|zone|fare|price|cost)\b/;
 
 const zoneCapsMap = {
   "1": { daily: "£8.90", offpeak: "£8.90", weekly: "£44.70" },
@@ -89,8 +94,9 @@ function formatZoneLabel(digits) {
 }
 
 function describeZonePricing(zoneKey, zoneLabel) {
-  const cap = zoneCapsMap[zoneKey];
-  const card = travelcardZonesMap[zoneKey];
+  const pricingKey = getPricingZonePricingKey(zoneKey);
+  const cap = zoneCapsMap[pricingKey];
+  const card = travelcardZonesMap[pricingKey];
   if (!cap && !card) return null;
   const parts = [];
   if (cap) {
@@ -102,6 +108,18 @@ function describeZonePricing(zoneKey, zoneLabel) {
   return parts.join(" ");
 }
 
+function getZoneDigits(zoneKey) {
+  return [...new Set((`${zoneKey}`.match(/\d+/g) ?? []).map(Number))].sort((a, b) => a - b);
+}
+
+function getPricingZonePricingKey(zoneKey) {
+  const digits = getZoneDigits(zoneKey);
+  if (!digits.length) return null;
+  const maxZone = Math.min(6, Math.max(...digits));
+  if (maxZone <= 1) return "1";
+  return `1-${maxZone}`;
+}
+
 function buildZoneKey(digits) {
   const unique = [...new Set(digits.map(Number))].sort((a, b) => a - b);
   if (unique.length === 1) return `${unique[0]}`;
@@ -109,10 +127,131 @@ function buildZoneKey(digits) {
 }
 
 function isTriggered(message, triggers) {
-  return triggers.some((token) => message.includes(token));
+  const escapeRegex = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return triggers.some((token) => {
+    const pattern = new RegExp(`(^|\\s|[.,!?;:])${escapeRegex(token)}($|\\s|[.,!?;:])`, "i");
+    return pattern.test(message);
+  });
 }
 
-function generateAssistantResponse(message) {
+function cleanPlaceName(raw) {
+  if (!raw) return "";
+
+  let value = raw
+    .toLowerCase()
+    .replace(/^[\s,.;:!?-]+|[\s,.;:!?-]+$/g, "")
+    .replace(/^(to|go|go to|travel to|get to|head to)\s+/, "")
+    .replace(/\s+(please|now|today|thanks|thank you)$/g, "")
+    .trim();
+
+  if (value === "white hart line") {
+    value = "white hart lane";
+  }
+
+  return value
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
+}
+
+function normalizeStationName(name) {
+  return (name ?? "")
+    .toLowerCase()
+    .replace(/\b(underground|overground|rail|dlr|elizabeth line|station|london)\b/g, "")
+    .replace(/[^a-z0-9\s]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function extractZoneKeyFromStopPoint(stopPoint) {
+  const directZone = stopPoint?.zone;
+  if (directZone) {
+    const nums = `${directZone}`.match(/\d+/g);
+    if (nums?.length) {
+      const unique = [...new Set(nums.map(Number))].sort((a, b) => a - b);
+      return unique.length === 1 ? `${unique[0]}` : `${unique[0]}-${unique[unique.length - 1]}`;
+    }
+  }
+
+  const props = stopPoint?.additionalProperties ?? [];
+  for (const prop of props) {
+    const key = `${prop?.key ?? ""}`.toLowerCase();
+    if (key.includes("zone")) {
+      const nums = `${prop?.value ?? ""}`.match(/\d+/g);
+      if (nums?.length) {
+        const unique = [...new Set(nums.map(Number))].sort((a, b) => a - b);
+        return unique.length === 1 ? `${unique[0]}` : `${unique[0]}-${unique[unique.length - 1]}`;
+      }
+    }
+  }
+
+  return null;
+}
+
+function findStationInMessage(message, stationsIndex) {
+  const normalizedMessage = normalizeStationName(message);
+  if (!normalizedMessage) return null;
+
+  const matches = stationsIndex.filter((station) => {
+    if (!station.normalized || station.normalized.length < 3) return false;
+    const paddedMessage = ` ${normalizedMessage} `;
+    const paddedStation = ` ${station.normalized} `;
+    return paddedMessage.includes(paddedStation);
+  });
+
+  if (!matches.length) return null;
+  matches.sort((a, b) => b.normalized.length - a.normalized.length);
+  return matches[0];
+}
+
+function findStationByName(name, stationsIndex) {
+  const normalizedQuery = normalizeStationName(name);
+  if (!normalizedQuery) return null;
+
+  const exact = stationsIndex.find((station) => station.normalized === normalizedQuery);
+  if (exact) return exact;
+
+  const partial = stationsIndex
+    .filter((station) => station.normalized.includes(normalizedQuery) || normalizedQuery.includes(station.normalized))
+    .sort((a, b) => b.normalized.length - a.normalized.length);
+
+  return partial[0] ?? null;
+}
+
+function formatZoneLabelFromKey(zoneKey) {
+  return zoneKey.includes("-") ? `Zones ${zoneKey}` : `Zone ${zoneKey}`;
+}
+
+function extractJourneyPlaces(normalized) {
+  const fromTo = normalized.match(journeyFromToPattern);
+  if (fromTo) {
+    return {
+      origin: cleanPlaceName(fromTo[1]),
+      destination: cleanPlaceName(fromTo[2]),
+    };
+  }
+
+  const toFrom = normalized.match(journeyToFromPattern);
+  if (toFrom) {
+    return {
+      origin: cleanPlaceName(toFrom[2]),
+      destination: cleanPlaceName(toFrom[1]),
+    };
+  }
+
+  const direct = normalized.match(travelIntentPattern);
+  if (direct) {
+    return {
+      origin: cleanPlaceName(direct[1]),
+      destination: cleanPlaceName(direct[2]),
+    };
+  }
+
+  return null;
+}
+
+function generateAssistantResponse(message, stationZones) {
   const normalized = message?.toLowerCase() ?? "";
   if (isTriggered(normalized, greetingTriggers)) {
     return "Hey! I'm the Travel Copilot—you can ask for journey planning, live status, or parking tips and I will help you find the right page.";
@@ -136,8 +275,45 @@ function generateAssistantResponse(message) {
       if (zoneResponse) return zoneResponse;
     }
   }
-  if (travelIntentPattern.test(normalized)) {
-    const [, origin, destination] = normalized.match(travelIntentPattern);
+
+  if (stationZonePricePattern.test(normalized) && stationZones.length > 0) {
+    const stationMatch = findStationInMessage(normalized, stationZones);
+    if (stationMatch) {
+      const zoneLabel = formatZoneLabelFromKey(stationMatch.zoneKey);
+      const pricing = describeZonePricing(stationMatch.zoneKey, zoneLabel);
+      if (pricing) {
+        const pricingKey = getPricingZonePricingKey(stationMatch.zoneKey);
+        const mappedNote = pricingKey && pricingKey !== stationMatch.zoneKey
+          ? ` Using ${formatZoneLabelFromKey(pricingKey)} fare bands for the current cap table.`
+          : "";
+        return `${stationMatch.displayName} is in ${zoneLabel}. ${pricing}${mappedNote}`;
+      }
+      return `${stationMatch.displayName} is in ${zoneLabel}.`;
+    }
+  }
+
+  const route = extractJourneyPlaces(normalized);
+  if (fareIntentPattern.test(normalized) && route) {
+    const originStation = findStationByName(route.origin, stationZones);
+    const destinationStation = findStationByName(route.destination, stationZones);
+    if (originStation && destinationStation) {
+      const mergedDigits = [...new Set([
+        ...getZoneDigits(originStation.zoneKey),
+        ...getZoneDigits(destinationStation.zoneKey),
+      ])].sort((a, b) => a - b);
+      const mergedZoneKey = mergedDigits.length === 1
+        ? `${mergedDigits[0]}`
+        : `${mergedDigits[0]}-${mergedDigits[mergedDigits.length - 1]}`;
+      const mergedZoneLabel = formatZoneLabelFromKey(mergedZoneKey);
+      const pricing = describeZonePricing(mergedZoneKey, mergedZoneLabel);
+      if (pricing) {
+        return `${originStation.displayName} (${formatZoneLabelFromKey(originStation.zoneKey)}) to ${destinationStation.displayName} (${formatZoneLabelFromKey(destinationStation.zoneKey)}): ${pricing}`;
+      }
+    }
+    return `For fare details from ${route.origin} to ${route.destination}, open the Transport planner and run that route first. TfL will return the exact journey options, then you can compare caps or Travelcard prices.`;
+  }
+  if (route) {
+    const { origin, destination } = route;
     return `Got it—journeys from ${origin.trim()} to ${destination.trim()} are best planned inside the TfL journey planner block on this page. Enter those places and tap Plan journey so I can surface more tips.`;
   }
   const match = knowledgeBase.find((item) =>
@@ -153,7 +329,72 @@ export default function ChatWidget() {
   const [draft, setDraft] = useState("");
   const [loading, setLoading] = useState(false);
   const [disclaimerVisible, setDisclaimerVisible] = useState(true);
+  const [stationZones, setStationZones] = useState([]);
   const scrollRef = useRef(null);
+
+  useEffect(() => {
+    let mounted = true;
+
+    const modeEndpoints = [
+      "tube",
+      "overground",
+      "dlr",
+      "elizabeth-line",
+    ];
+
+    Promise.allSettled(
+      modeEndpoints.map((mode) => axios.get(`https://api.tfl.gov.uk/StopPoint/Mode/${mode}`))
+    ).then((results) => {
+      if (!mounted) return;
+
+      const byName = new Map();
+
+      results.forEach((result) => {
+        if (result.status !== "fulfilled") return;
+        const payload = result.value?.data?.stopPoints ?? result.value?.data ?? [];
+        if (!Array.isArray(payload)) return;
+
+        payload.forEach((stopPoint) => {
+          const displayName = `${stopPoint?.commonName ?? stopPoint?.name ?? ""}`.trim();
+          const normalizedName = normalizeStationName(displayName);
+          if (!displayName || !normalizedName) return;
+
+          const zoneKey = extractZoneKeyFromStopPoint(stopPoint);
+          if (!zoneKey) return;
+
+          const existing = byName.get(normalizedName);
+          if (!existing) {
+            byName.set(normalizedName, {
+              normalized: normalizedName,
+              displayName,
+              zoneKey,
+            });
+            return;
+          }
+
+          if (displayName.length > existing.displayName.length) {
+            existing.displayName = displayName;
+          }
+          if (existing.zoneKey !== zoneKey) {
+            const nums = [...new Set(`${existing.zoneKey}-${zoneKey}`.match(/\d+/g)?.map(Number) ?? [])].sort(
+              (a, b) => a - b
+            );
+            if (nums.length === 1) {
+              existing.zoneKey = `${nums[0]}`;
+            } else if (nums.length > 1) {
+              existing.zoneKey = `${nums[0]}-${nums[nums.length - 1]}`;
+            }
+          }
+        });
+      });
+
+      setStationZones(Array.from(byName.values()));
+    });
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -169,7 +410,7 @@ export default function ChatWidget() {
     setLoading(true);
 
     const assistantMessage = await new Promise((resolve) =>
-      setTimeout(() => resolve(generateAssistantResponse(trimmed)), 450)
+      setTimeout(() => resolve(generateAssistantResponse(trimmed, stationZones)), 450)
     );
 
     setMessages((prev) => [...prev, { id: `${Date.now()}-bot`, sender: "bot", text: assistantMessage }]);

@@ -2,46 +2,15 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import TfLMap from "../components/TfLMap";
-
-const stationSuggestions = ["LST", "CAM", "NOR", "IPW", "SST", "COL", "BHM"];
+import stadiumImage from "../assets/stadium.jpg";
 
 export default function StatusPage() {
-  const [gaStatus, setGaStatus] = useState([]);
   const [tflStatus, setTflStatus] = useState([]);
-  const [uberSurge, setUberSurge] = useState(null);
   const [showMap, setShowMap] = useState(false);
-  const [stationField, setStationField] = useState("LST");
-  const [activeStation, setActiveStation] = useState("LST");
-  const [loadingGa, setLoadingGa] = useState(false);
-  const [gaError, setGaError] = useState(null);
-  const [lastUpdated, setLastUpdated] = useState(null);
-
-  useEffect(() => {
-    fetchGreaterAnglia(activeStation);
-  }, [activeStation]);
 
   useEffect(() => {
     fetchTfL();
-    fetchUber();
   }, []);
-
-  const fetchGreaterAnglia = async (targetStation) => {
-    setLoadingGa(true);
-    setGaError(null);
-    try {
-      const res = await axios.get("/api/trains/greater-anglia", {
-        params: { station: targetStation },
-      });
-      setGaStatus(res.data.trainServices || []);
-      setLastUpdated(new Date());
-    } catch (err) {
-      console.error("GA error", err);
-      setGaStatus([]);
-      setGaError("Greater Anglia departures are currently unavailable.");
-    } finally {
-      setLoadingGa(false);
-    }
-  };
 
   const fetchTfL = async () => {
     try {
@@ -51,19 +20,6 @@ export default function StatusPage() {
       console.error("TfL error", err);
     }
   };
-
-  const fetchUber = () => {
-    setUberSurge((Math.random() * 2 + 1).toFixed(2));
-  };
-
-  const handleApplyStation = () => {
-    const normalized = stationField.trim().toUpperCase();
-    if (normalized) {
-      setActiveStation(normalized);
-    }
-  };
-
-  const formatTime = (value) => value || "—";
 
   return (
     <main
@@ -130,9 +86,9 @@ export default function StatusPage() {
           }}
         >
           <div style={{ flex: "1 1 220px" }}>
-            <h2 style={{ margin: 0 }}>TfL Tube Map + Stadiums</h2>
+            <h2 style={{ margin: 0 }}>London Overground + Stadium Map</h2>
             <p style={{ margin: "0.4rem 0 0" }}>
-              Click the button to load the London tube network, see live line status, and highlight every Premier League stadium.
+              Open a simplified London map with the full Overground route, highlighted stadium points, and club labels.
             </p>
           </div>
           <button
@@ -148,125 +104,10 @@ export default function StatusPage() {
               boxShadow: "0 10px 20px rgba(10, 31, 61, 0.2)",
             }}
           >
-            {showMap ? "Hide live map" : "Open interactive map"}
+            {showMap ? "Hide map" : "Open map"}
           </button>
         </div>
         {showMap && <TfLMap tflStatus={tflStatus} />}
-      </section>
-
-      <section style={{ marginTop: "2rem" }}>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            gap: "1rem",
-            flexWrap: "wrap",
-          }}
-        >
-          <div>
-            <h2 style={{ margin: "0 0 0.3rem" }}>Greater Anglia Status</h2>
-            <p style={{ margin: 0, color: "#516088" }}>
-              Station {activeStation}
-              {lastUpdated && ` • updated at ${lastUpdated.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`}
-            </p>
-          </div>
-          <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
-            <input
-              list="station-options"
-              value={stationField}
-              onChange={(e) => setStationField(e.target.value.toUpperCase())}
-              aria-label="Station CRS code"
-              style={{
-                padding: "0.4rem 0.8rem",
-                borderRadius: "999px",
-                border: "1px solid rgba(10, 31, 61, 0.2)",
-                textTransform: "uppercase",
-              }}
-            />
-            <datalist id="station-options">
-              {stationSuggestions.map((code) => (
-                <option value={code} key={code} />
-              ))}
-            </datalist>
-            <button
-              onClick={handleApplyStation}
-              style={{
-                padding: "0.5rem 1rem",
-                borderRadius: "999px",
-                border: "1px solid rgba(10, 31, 61, 0.3)",
-                background: "white",
-                cursor: "pointer",
-                fontWeight: 600,
-              }}
-            >
-              Load
-            </button>
-            <button
-              onClick={() => fetchGreaterAnglia(activeStation)}
-              style={{
-                padding: "0.5rem 1rem",
-                borderRadius: "999px",
-                border: "1px solid rgba(10, 31, 61, 0.3)",
-                background: "white",
-                cursor: "pointer",
-                fontWeight: 600,
-              }}
-            >
-              Refresh
-            </button>
-          </div>
-        </div>
-
-        {gaError ? (
-          <p style={{ color: "#b00020", marginTop: "0.8rem" }}>{gaError}</p>
-        ) : null}
-
-        {loadingGa && <p style={{ marginTop: "0.8rem" }}>Loading live departures…</p>}
-
-        {!loadingGa && gaStatus.length === 0 && !gaError ? (
-          <p style={{ color: "#3b4a67", marginTop: "0.8rem" }}>
-            No live Greater Anglia services are visible right now.
-          </p>
-        ) : null}
-
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-            gap: "1rem",
-            marginTop: "1rem",
-          }}
-        >
-          {gaStatus.map((t, i) => (
-            <article
-              key={`${t.std}-${i}`}
-              style={{
-                background: "#222",
-                padding: "1rem",
-                borderRadius: "12px",
-                color: "white",
-                minHeight: "160px",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "space-between",
-              }}
-            >
-              <div>
-                <strong style={{ fontSize: "1.1rem" }}>{t.destination?.[0]?.locationName || "Destination"}</strong>
-                <p style={{ margin: "0.3rem 0", color: "rgba(255,255,255,0.8)" }}>{t.status || "Live"}</p>
-                <p style={{ margin: 0 }}>
-                  Scheduled: {formatTime(t.std)}
-                  <br />
-                  Expected: {formatTime(t.etd)}
-                  <br />
-                  {t.platform ? `Platform: ${t.platform}` : ""}
-                </p>
-              </div>
-              {t.operator ? <span style={{ fontSize: "0.85rem", opacity: 0.8 }}>{t.operator}</span> : null}
-            </article>
-          ))}
-        </div>
       </section>
 
       <section
@@ -312,11 +153,35 @@ export default function StatusPage() {
             borderRadius: "16px",
             border: "1px solid rgba(10, 31, 61, 0.15)",
             background: "#f8fbff",
+            display: "flex",
+            flexDirection: "column",
           }}
         >
-          <h2>Uber Surge Pricing</h2>
-          <p>
-            Current surge: <strong>{uberSurge}x</strong>
+          <h2>Tottenham Stadium</h2>
+          <div
+            style={{
+              marginTop: "0.6rem",
+              borderRadius: "12px",
+              overflow: "hidden",
+              border: "1px solid rgba(10, 31, 61, 0.1)",
+              minHeight: "420px",
+              flex: 1,
+            }}
+          >
+            <img
+              src={stadiumImage}
+              alt="Tottenham Hotspur Stadium"
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                objectPosition: "50% 72%",
+                display: "block",
+              }}
+            />
+          </div>
+          <p style={{ marginTop: "0.75rem", color: "#516088" }}>
+            A view of Tottenham Hotspur Stadium sits beside the tube status to keep the vibe of the matchday journey front and center.
           </p>
         </section>
       </section>

@@ -35,14 +35,24 @@ export default function App() {
       ) : (
         <>
           {/* Primary navigation exposed once authenticated */}
-          <nav className="navbar">
-            <Link to="/home"><button>Home</button></Link>
-            <Link to="/transport"><button>Transport</button></Link>
-            <Link to="/rides"><button>Taxi</button></Link>
-            <Link to="/booking"><button>Book Parking</button></Link>
-            <Link to="/status"><button>TfL</button></Link>
-            <Link to="/accessibility"><button>Accessibility</button></Link>
-            <Link to="/assistant"><button>Copilot</button></Link>
+          <nav className="navbar" aria-label="Primary navigation">
+            <div className="navbar-brand">
+              <img
+                src="https://upload.wikimedia.org/wikipedia/sco/thumb/b/b4/Tottenham_Hotspur.svg/500px-Tottenham_Hotspur.svg.png?_=20170428001911"
+                alt="Tottenham Hotspur"
+                className="navbar-logo"
+              />
+              <span className="sr-only">Tottenham Hotspur Travel Assistant</span>
+            </div>
+              <div className="navbar-links">
+                <Link to="/booking"><button className="nav-pill">Book Parking</button></Link>
+                <Link to="/assistant"><button className="nav-pill">Copilot</button></Link>
+                <Link to="/home"><button className="nav-pill">Home</button></Link>
+                <Link to="/rides"><button className="nav-pill">Taxi</button></Link>
+                <Link to="/status"><button className="nav-pill">TfL</button></Link>
+                <Link to="/transport"><button className="nav-pill">Transport</button></Link>
+                <Link to="/accessibility"><button className="nav-pill">Accessibility</button></Link>
+              </div>
           </nav>
 
           {/* Application routes */}
@@ -52,19 +62,24 @@ export default function App() {
             <Route
               path="/home"
               element={
-                <div className="content">
-                  <section className="main-buttons">
-                    <h2>Transport</h2>
-                    <Link to="/transport"><button>Transport</button></Link>
-                    <Link to="/rides"><button>Taxi</button></Link>
+                <div className="content home-hero">
+                  <div className="home-logo-shell">
+                    
+                    <img
+                      className="spurs-logo"
+                      src="https://upload.wikimedia.org/wikipedia/sco/thumb/b/b4/Tottenham_Hotspur.svg/500px-Tottenham_Hotspur.svg.png?_=20170428001911"
+                      alt="Tottenham Hotspur Logo"
+                    />
 
-                    <h2>Parking</h2>
-                    <Link to="/booking"><button>Book Parking</button></Link>
+                    <p className="home-logo-copy">
+                      Tottenham Hotspur Travel Assistant
+                    </p>
 
-                    <h2>Live Updates</h2>
-                    <Link to="/status"><button>TfL</button></Link>
-                    <Link to="/assistant"><button>Travel Copilot</button></Link>
-                  </section>
+                    <p className="home-logo-copy">
+                      Plan your journey, book parking, check TfL status and more.
+                    </p>
+
+                  </div>
                 </div>
               }
             />
