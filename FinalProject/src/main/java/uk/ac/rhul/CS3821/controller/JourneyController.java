@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import java.util.*;
 
-// Combines the route planner and live train data so the UI can suggest the best next train
+// I combine route output with live train data here so the UI can show one practical journey recommendation.
 @RestController
 @RequestMapping("/api/travel")
 public class JourneyController {
@@ -16,7 +16,7 @@ public class JourneyController {
     @Autowired
     private TrainController trainController;
 
-    // Build a journey recommendation and attach a recommended train service when possible
+    // I attach a recommended train when I can match the next route stop to a service destination.
     @GetMapping("/plan")
     public ResponseEntity<?> planJourney(
             @RequestParam String start,

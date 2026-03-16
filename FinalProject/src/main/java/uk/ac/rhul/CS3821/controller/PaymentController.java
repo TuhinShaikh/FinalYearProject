@@ -8,7 +8,7 @@ import uk.ac.rhul.CS3821.dto.PaymentRequest;
 import uk.ac.rhul.CS3821.dto.SquareConfigResponse;
 import uk.ac.rhul.CS3821.service.PaymentService;
 
-// Proxy for the Square payment service so the UI can charge cards and issue refunds
+// I use this controller as a safe proxy so card tokens never need direct backend secrets in the browser.
 @RestController
 @RequestMapping("/payments")
 public class PaymentController {
@@ -29,7 +29,7 @@ public class PaymentController {
         }
     }
 
-    // Charge the provided source token for a parking slot
+    // I process card token + amount here because payment creation should stay on the server side.
     @PostMapping
     public ResponseEntity<?> createPayment(@RequestBody PaymentRequest request) {
         try {
@@ -40,7 +40,7 @@ public class PaymentController {
         }
     }
 
-    // Trigger a refund on an existing charge if the UI asks for it
+    // I kept refund logic here so support/admin actions use the same endpoint flow.
     @PostMapping("/{id}/refund")
     public ResponseEntity<?> refundPayment(@PathVariable String id,
                                            @RequestParam int amountCents) {
