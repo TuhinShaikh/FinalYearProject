@@ -14,9 +14,11 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.io.IOException;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -107,5 +109,65 @@ class PaymentServiceTest {
         assertThat(first).isEqualTo("LOC-NEW");
         assertThat(second).isEqualTo("LOC-NEW");
         verify(locationsApi).listLocations();
+    }
+
+    @Test
+    void getLocationIdThrowsWhenSquareReturnsErrors() throws Exception {
+        PaymentService service = new PaymentService("token", "sandbox");
+        SquareClient squareClient = mock(SquareClient.class);
+        LocationsApi locationsApi = mock(LocationsApi.class);
+        ListLocationsResponse response = mock(ListLocationsResponse.class);
+        com.squareup.square.models.Error error = mock(com.squareup.square.models.Error.class);
+
+        when(squareClient.getLocationsApi()).thenReturn(locationsApi);
+        when(locationsApi.listLocations()).thenReturn(response);
+        when(response.getErrors()).thenReturn(List.of(error));
+        when(error.toString()).thenReturn("bad request");
+        ReflectionTestUtils.setField(service, "squareClient", squareClient);
+
+        assertThatThrownBy(service::getLocationId)
+                .isInstanceOf(IOException.class)
+                .hasMessageContaining("Square location lookup failed");
+    }
+
+    @Test
+    void getLocationIdFallsBackToFirstLocationWhenNoActiveFound() throws Exception {
+        PaymentService service = new PaymentService("token", "sandbox");
+        SquareClient squareClient = mock(SquareClient.class);
+        LocationsApi locationsApi = mock(LocationsApi.class);
+        ListLocationsResponse response = mock(ListLocationsResponse.class);
+        Location first = mock(Location.class);
+        Location second = mock(Location.class);
+
+        when(squareClient.getLocationsApi()).thenReturn(locationsApi);
+        when(locationsApi.listLocations()).thenReturn(response);
+        when(response.getErrors()).thenReturn(null);
+        when(response.getLocations()).thenReturn(List.of(first, second));
+        when(first.getStatus()).thenReturn("INACTIVE");
+        when(second.getStatus()).thenReturn("INACTIVE");
+        when(first.getId()).thenReturn("LOC-FIRST");
+        ReflectionTestUtils.setField(service, "squareClient", squareClient);
+
+        String locationId = service.getLocationId();
+
+        assertThat(locationId).isEqualTo("LOC-FIRST");
+    }
+
+    @Test
+    void getLocationIdReturnsNullWhenLocationsResponseIsNull() throws Exception {
+        PaymentService service = new PaymentService("token", "sandbox");
+        SquareClient squareClient = mock(SquareClient.class);
+        LocationsApi locationsApi = mock(LocationsApi.class);
+        ListLocationsResponse response = mock(ListLocationsResponse.class);
+
+        when(squareClient.getLocationsApi()).thenReturn(locationsApi);
+        when(locationsApi.listLocations()).thenReturn(response);
+        when(response.getErrors()).thenReturn(null);
+        when(response.getLocations()).thenReturn(null);
+        ReflectionTestUtils.setField(service, "squareClient", squareClient);
+
+        String locationId = service.getLocationId();
+
+        assertThat(locationId).isNull();
     }
 }

@@ -28,4 +28,16 @@ class JwtUtilTest {
 
         assertThat(jwtUtil.extractClaims(token).getSubject()).isEqualTo("user-2");
     }
+
+    @Test
+    void generateRefreshTokenCreatesValidTokenWithSubject() {
+        String secret = "01234567890123456789012345678901";
+        JwtUtil jwtUtil = new JwtUtil(secret, 60000L, 120000L);
+
+        String refresh = jwtUtil.generateRefreshToken("user-refresh");
+        Claims claims = jwtUtil.extractClaims(refresh);
+
+        assertThat(claims.getSubject()).isEqualTo("user-refresh");
+        assertThat(jwtUtil.validateToken(refresh, "user-refresh")).isTrue();
+    }
 }
