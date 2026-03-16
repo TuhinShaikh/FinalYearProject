@@ -1,6 +1,7 @@
 package uk.ac.rhul.CS3821.security;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -55,9 +56,13 @@ public class JwtUtil {
     }
 
     public boolean validateToken(String token, String subject) {
-        Claims claims = extractClaims(token);
-        return claims.getSubject().equals(subject)
-                && claims.getExpiration().after(new Date());
+        try {
+            Claims claims = extractClaims(token);
+            return claims.getSubject().equals(subject)
+                    && claims.getExpiration().after(new Date());
+        } catch (ExpiredJwtException ex) {
+            return false;
+        }
     }
 
     public String generateToken(String subject) {
