@@ -4,7 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.*;
 
-// Provides a Dijkstra-based planner so the UI can compare routes between nodes
+// I kept route planning here so the UI can request shortest paths from one endpoint.
 @RestController
 @RequestMapping("/api/travel")
 public class TravelController {
@@ -20,7 +20,7 @@ public class TravelController {
     }
     static class Route { List<String> path; double cost; Route(List<String> p,double c){path=p;cost=c;} }
 
-    // Run Dijkstra over the hard-coded graph to compute shortest paths
+    // I run Dijkstra here because weights are positive and I need a predictable shortest path.
     static Route dijkstra(Graph g,String start,String goal){
         Map<String,Double> dist=new HashMap<>();
         Map<String,String> prev=new HashMap<>();
@@ -41,14 +41,14 @@ public class TravelController {
         return new Route(List.of(),Double.POSITIVE_INFINITY);
     }
 
-    // Reconstruct the path once the goal node is popped from the queue
+    // I rebuild the path from the predecessor map so the frontend gets ordered nodes.
     static Route reconstruct(Map<String,String> prev,String goal,double cost){
         List<String> path=new ArrayList<>(); String cur=goal;
         while(cur!=null){path.add(cur);cur=prev.get(cur);} Collections.reverse(path);
         return new Route(path,cost);
     }
 
-    // Expose the route and total cost so the frontend can show travel options
+    // I return nodes + cost together because the client needs both for display and comparison.
     @GetMapping("/route")
     public ResponseEntity<?> route(@RequestParam String start,@RequestParam String goal){
         Graph g=new Graph();

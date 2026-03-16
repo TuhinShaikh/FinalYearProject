@@ -11,7 +11,7 @@ import java.util.UUID;
 @Table(name = "users", uniqueConstraints = {
     @UniqueConstraint(columnNames = "email")
 })
-// Stores accounts for fans and guests so bookings/payments can be attributed
+// I keep user accounts here so every booking and payment is tied to a real profile.
 public class User {
 
     @Id
@@ -20,11 +20,11 @@ public class User {
     private UUID userId;
 
     @Column(name = "email", nullable = false, unique = true, length = 255)
-    // Email acts as the login identifier for the user
+    // I use email as the login identifier because it is unique and easy for users to remember.
     private String email;
 
     @Column(name = "hashed_password", nullable = false)
-    // The hashed credential we never expose on the front end
+    // I only store the hashed password so raw credentials are never exposed.
     private String password;
 
     @Column(name = "first_name", nullable = false, length = 100)
@@ -34,11 +34,11 @@ public class User {
     private String lastName;
 
     @Column(name = "phone_number", length = 20)
-    // Optional phone so we can surface contact info on bookings
+    // I keep phone optional since not every user wants to provide it.
     private String phoneNumber;
 
     @Column(name = "is_disabled", nullable = false)
-    // Guard flag in case the account needs to be locked down
+    // I use this flag to quickly disable an account when needed.
     private boolean isDisabled = false;
 
     @CreationTimestamp
@@ -52,7 +52,7 @@ public class User {
     @Column(name = "last_login")
     private Instant lastLogin;
 
-    // Constructors
+    // I keep both constructors so JPA can instantiate and the app can create populated users.
     public User() {}
 
     public User(String email, String password, String firstName, String lastName, String phoneNumber) {
@@ -63,7 +63,7 @@ public class User {
         this.phoneNumber = phoneNumber;
     }
 
-    // Getters and Setters
+    // I expose standard accessors because services/controllers map this entity in many places.
     public UUID getUserId() { return userId; }
     public void setUserId(UUID userId) { this.userId = userId; }
 
