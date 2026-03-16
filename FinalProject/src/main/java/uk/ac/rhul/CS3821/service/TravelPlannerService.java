@@ -6,13 +6,13 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Generates travel recommendations combining transport modes based on user needs.
+ * I build quick transport recommendations so the frontend can rank options immediately.
  */
 @Service
 public class TravelPlannerService {
 
         /**
-         * Creates a list of mocked recommendations; currently prioritises accessibility and weather flags.
+         * I keep this mocked list for now because accessibility/weather behavior is what I want to test first.
          */
         public List<Map<String, Object>> getRecommendations(String origin, String destination, boolean accessibilityNeeded, boolean badWeather) {
         List<Map<String, Object>> options = new ArrayList<>();
