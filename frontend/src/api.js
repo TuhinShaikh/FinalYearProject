@@ -137,7 +137,7 @@ export async function logout() {
 // Parking
 // ===============================
 export async function bookParking(spotId) {
-  const res = await fetch(`${API_URL}/bookings`, {
+  const res = await fetch(buildUrl(`/bookings`), {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -150,7 +150,7 @@ export async function bookParking(spotId) {
 }
 
 export async function cancelBooking(bookingId) {
-  const res = await fetch(`${API_URL}/bookings/${bookingId}`, {
+  const res = await fetch(buildUrl(`/bookings/${bookingId}`), {
     method: "DELETE",
     headers: getAuthHeaders(),
   });
@@ -159,7 +159,7 @@ export async function cancelBooking(bookingId) {
 }
 
 export async function viewBookings() {
-  const res = await fetch(`${API_URL}/bookings`, {
+  const res = await fetch(buildUrl(`/bookings`), {
     headers: getAuthHeaders(),
   });
   if (!res.ok) throw new Error("Fetch bookings failed");
@@ -170,7 +170,7 @@ export async function viewBookings() {
 // Payments
 // ===============================
 export async function pay(amountCents, sourceId) {
-  const res = await fetch(`${API_URL}/payments`, {
+  const res = await fetch(buildUrl(`/payments`), {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -183,7 +183,7 @@ export async function pay(amountCents, sourceId) {
 }
 
 export async function refund(paymentId) {
-  const res = await fetch(`${API_URL}/payments/${paymentId}/refund`, {
+  const res = await fetch(buildUrl(`/payments/${paymentId}/refund`), {
     method: "POST",
     headers: getAuthHeaders(),
   });
