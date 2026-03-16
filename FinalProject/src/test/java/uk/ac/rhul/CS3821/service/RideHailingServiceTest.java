@@ -11,6 +11,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 
@@ -101,15 +102,20 @@ class RideHailingServiceTest {
         }
 
         @Test
-        void privateHelpersCoverBooleanAndNumberEdgeCases() {
+        void privateHelpersCoverBooleanAndNumberEdgeCases() throws Exception {
                 RideHailingService service = new RideHailingService();
 
-                assertThat((Boolean) ReflectionTestUtils.invokeMethod(service, "asBoolean", Boolean.TRUE)).isTrue();
-                assertThat((Boolean) ReflectionTestUtils.invokeMethod(service, "asBoolean", null)).isFalse();
-                assertThat((Boolean) ReflectionTestUtils.invokeMethod(service, "asBoolean", "true")).isTrue();
+                Method asBoolean = RideHailingService.class.getDeclaredMethod("asBoolean", Object.class);
+                Method asDouble = RideHailingService.class.getDeclaredMethod("asDouble", Object.class);
+                asBoolean.setAccessible(true);
+                asDouble.setAccessible(true);
 
-                assertThat((Double) ReflectionTestUtils.invokeMethod(service, "asDouble", 1.5)).isEqualTo(1.5);
-                assertThat((Double) ReflectionTestUtils.invokeMethod(service, "asDouble", null)).isEqualTo(0.0);
-                assertThat((Double) ReflectionTestUtils.invokeMethod(service, "asDouble", "not-a-number")).isEqualTo(0.0);
+                assertThat((Boolean) asBoolean.invoke(service, Boolean.TRUE)).isTrue();
+                assertThat((Boolean) asBoolean.invoke(service, new Object[]{null})).isFalse();
+                assertThat((Boolean) asBoolean.invoke(service, "true")).isTrue();
+
+                assertThat((Double) asDouble.invoke(service, 1.5)).isEqualTo(1.5);
+                assertThat((Double) asDouble.invoke(service, new Object[]{null})).isEqualTo(0.0);
+                assertThat((Double) asDouble.invoke(service, "not-a-number")).isEqualTo(0.0);
         }
 }
