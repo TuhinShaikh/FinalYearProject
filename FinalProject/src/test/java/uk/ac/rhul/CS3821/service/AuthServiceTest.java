@@ -114,4 +114,48 @@ class AuthServiceTest {
         assertThat(existing.getLastLogin()).isNotNull();
         verify(userRepository).save(existing);
     }
+
+    @Test
+    void registerUsesEmailAsFirstNameWhenNameIsNull() {
+        RegisterRequest request = new RegisterRequest(null, "nullname@example.com", "secret");
+        UUID userId = UUID.randomUUID();
+
+        when(userRepository.existsByEmail("nullname@example.com")).thenReturn(false);
+        when(passwordEncoder.encode("secret")).thenReturn("encoded-pass");
+        when(userRepository.save(any(User.class))).thenAnswer(invocation -> {
+            User user = invocation.getArgument(0);
+            user.setUserId(userId);
+            return user;
+        });
+        when(jwtUtil.generateToken(userId.toString())).thenReturn("jwt-token");
+
+        authService.register(request);
+
+        ArgumentCaptor<User> captor = ArgumentCaptor.forClass(User.class);
+        verify(userRepository).save(captor.capture());
+        assertThat(captor.getValue().getFirstName()).isEqualTo("nullname@example.com");
+        assertThat(captor.getValue().getLastName()).isEqualTo("");
+    }
+
+    @Test
+    void registerUsesEmailAsFirstNameWhenNameIsBlank() {
+        RegisterRequest request = new RegisterRequest("   ", "blankname@example.com", "secret");
+        UUID userId = UUID.randomUUID();
+
+        when(userRepository.existsByEmail("blankname@example.com")).thenReturn(false);
+        when(passwordEncoder.encode("secret")).thenReturn("encoded-pass");
+        when(userRepository.save(any(User.class))).thenAnswer(invocation -> {
+            User user = invocation.getArgument(0);
+            user.setUserId(userId);
+            return user;
+        });
+        when(jwtUtil.generateToken(userId.toString())).thenReturn("jwt-token");
+
+        authService.register(request);
+
+        ArgumentCaptor<User> captor = ArgumentCaptor.forClass(User.class);
+        verify(userRepository).save(captor.capture());
+        assertThat(captor.getValue().getFirstName()).isEqualTo("blankname@example.com");
+        assertThat(captor.getValue().getLastName()).isEqualTo("");
+    }
 }
