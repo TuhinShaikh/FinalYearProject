@@ -11,6 +11,8 @@ import uk.ac.rhul.CS3821.dto.PaymentRequest;
 import uk.ac.rhul.CS3821.dto.SquareConfigResponse;
 import uk.ac.rhul.CS3821.service.PaymentService;
 
+import java.util.Map;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -58,6 +60,18 @@ class PaymentControllerTest {
     }
 
     @Test
+    void createPaymentReturnsOkOnSuccess() throws Exception {
+        PaymentRequest request = new PaymentRequest(1200, "cnon:card-nonce");
+        Map<String, Object> payload = Map.of("id", "pay_1");
+        when(paymentService.createPayment(1200, "cnon:card-nonce")).thenReturn(payload);
+
+        ResponseEntity<?> response = controller.createPayment(request);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isEqualTo(payload);
+    }
+
+    @Test
     void refundPaymentReturnsBadRequestOnFailure() throws Exception {
         when(paymentService.refundPayment("pay-1", 500)).thenThrow(new RuntimeException("refund failed"));
 
@@ -65,5 +79,16 @@ class PaymentControllerTest {
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(response.getBody()).isEqualTo("refund failed");
+    }
+
+    @Test
+    void refundPaymentReturnsOkOnSuccess() throws Exception {
+        Map<String, Object> payload = Map.of("id", "refund_1");
+        when(paymentService.refundPayment("pay-1", 500)).thenReturn(payload);
+
+        ResponseEntity<?> response = controller.refundPayment("pay-1", 500);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isEqualTo(payload);
     }
 }

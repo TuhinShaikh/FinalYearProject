@@ -48,4 +48,40 @@ class JourneyControllerNoRecommendationTest {
         assertThat(body).isNotNull();
         assertThat(body.get("recommendedTrain")).isNull();
     }
+
+        @Test
+        @SuppressWarnings("unchecked")
+        void planJourneyReturnsNullRecommendedWhenRouteHasSingleNode() {
+        JourneyController controller = new JourneyController();
+        TravelController travelController = mock(TravelController.class);
+        TrainController trainController = mock(TrainController.class);
+
+        ReflectionTestUtils.setField(controller, "travelController", travelController);
+        ReflectionTestUtils.setField(controller, "trainController", trainController);
+
+        Map<String, Object> route = Map.of(
+            "nodes", List.of("STADIUM"),
+            "totalCostMinutes", 0.0,
+            "algorithm", "DIJKSTRA"
+        );
+
+        Map<String, Object> service = Map.of(
+            "destination", List.of(Map.of("locationName", "Ipswich")),
+            "std", "12:30",
+            "etd", "On time"
+        );
+
+        doReturn(ResponseEntity.ok(route))
+            .when(travelController)
+            .route("STADIUM", "STADIUM");
+        doReturn(ResponseEntity.ok(Map.of("trainServices", List.of(service))))
+            .when(trainController)
+            .getGreaterAnglia("LST");
+
+        ResponseEntity<?> response = controller.planJourney("STADIUM", "STADIUM", "LST");
+
+        Map<String, Object> body = (Map<String, Object>) response.getBody();
+        assertThat(body).isNotNull();
+        assertThat(body.get("recommendedTrain")).isNull();
+        }
 }

@@ -28,6 +28,17 @@ class BookingControllerTest {
     private BookingController controller;
 
     @Test
+    void createBookingReturnsSavedBooking() {
+        Booking booking = new Booking();
+        when(bookingService.createBooking(booking)).thenReturn(booking);
+
+        ResponseEntity<Booking> response = controller.createBooking(booking);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isSameAs(booking);
+    }
+
+    @Test
     void getBookingByIdReturnsOkWhenFound() {
         UUID id = UUID.randomUUID();
         Booking booking = new Booking();
@@ -69,6 +80,18 @@ class BookingControllerTest {
         when(bookingService.getBookingsByUser(userId)).thenReturn(bookings);
 
         ResponseEntity<List<Booking>> response = controller.getBookingsByUser(userId);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isEqualTo(bookings);
+    }
+
+    @Test
+    void getBookingsBySpotReturnsList() {
+        UUID spotId = UUID.randomUUID();
+        List<Booking> bookings = List.of(new Booking());
+        when(bookingService.getBookingsBySpot(spotId)).thenReturn(bookings);
+
+        ResponseEntity<List<Booking>> response = controller.getBookingsBySpot(spotId);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isEqualTo(bookings);
