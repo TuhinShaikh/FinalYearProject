@@ -1,5 +1,7 @@
 package uk.ac.rhul.CS3821.controller;
 
+import com.squareup.square.models.CreatePaymentResponse;
+import com.squareup.square.models.RefundPaymentResponse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -11,9 +13,8 @@ import uk.ac.rhul.CS3821.dto.PaymentRequest;
 import uk.ac.rhul.CS3821.dto.SquareConfigResponse;
 import uk.ac.rhul.CS3821.service.PaymentService;
 
-import java.util.Map;
-
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -62,7 +63,7 @@ class PaymentControllerTest {
     @Test
     void createPaymentReturnsOkOnSuccess() throws Exception {
         PaymentRequest request = new PaymentRequest(1200, "cnon:card-nonce");
-        Map<String, Object> payload = Map.of("id", "pay_1");
+        CreatePaymentResponse payload = mock(CreatePaymentResponse.class);
         when(paymentService.createPayment(1200, "cnon:card-nonce")).thenReturn(payload);
 
         ResponseEntity<?> response = controller.createPayment(request);
@@ -83,7 +84,7 @@ class PaymentControllerTest {
 
     @Test
     void refundPaymentReturnsOkOnSuccess() throws Exception {
-        Map<String, Object> payload = Map.of("id", "refund_1");
+        RefundPaymentResponse payload = mock(RefundPaymentResponse.class);
         when(paymentService.refundPayment("pay-1", 500)).thenReturn(payload);
 
         ResponseEntity<?> response = controller.refundPayment("pay-1", 500);
