@@ -14,6 +14,10 @@ import org.springframework.web.client.RestTemplate;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.locks.ReentrantLock;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -95,6 +99,22 @@ class GreaterAngliaServiceTest {
 
         @Test
         @SuppressWarnings("unchecked")
+        void buildHeadersSetsBearerAuthWhenTokenIsAvailable() {
+                GreaterAngliaService service = new GreaterAngliaService(new RestTemplateBuilder());
+                ReflectionTestUtils.setField(service, "tokenUrl", "");
+                ReflectionTestUtils.setField(service, "clientId", "");
+                ReflectionTestUtils.setField(service, "clientSecret", "");
+                ReflectionTestUtils.setField(service, "bearerToken", "abc-token");
+
+                Object headersObj = ReflectionTestUtils.invokeMethod(service, "buildHeaders");
+
+                assertThat(headersObj).isInstanceOf(org.springframework.http.HttpHeaders.class);
+                org.springframework.http.HttpHeaders headers = (org.springframework.http.HttpHeaders) headersObj;
+                assertThat(headers.getFirst("Authorization")).isEqualTo("Bearer abc-token");
+        }
+
+        @Test
+        @SuppressWarnings("unchecked")
         void fetchTokenReturnsExistingTokenWhenAuthConfigMissing() {
                 GreaterAngliaService service = new GreaterAngliaService(new RestTemplateBuilder());
                 ReflectionTestUtils.setField(service, "tokenUrl", "");
@@ -120,6 +140,46 @@ class GreaterAngliaServiceTest {
                 String token = (String) ReflectionTestUtils.invokeMethod(service, "fetchToken");
 
                 assertThat(token).isEqualTo("still-valid");
+        }
+
+        @Test
+        @SuppressWarnings("unchecked")
+        void fetchTokenUsesSecondCheckAfterLockWhenTokenBecomesAvailable() throws Exception {
+                GreaterAngliaService service = new GreaterAngliaService(new RestTemplateBuilder());
+                ReflectionTestUtils.setField(service, "tokenUrl", "https://auth.example/token");
+                ReflectionTestUtils.setField(service, "clientId", "id");
+                ReflectionTestUtils.setField(service, "clientSecret", "secret");
+                ReflectionTestUtils.setField(service, "bearerToken", null);
+                ReflectionTestUtils.setField(service, "tokenExpiresAt", null);
+
+                ReentrantLock lock = (ReentrantLock) ReflectionTestUtils.getField(service, "tokenLock");
+                assertThat(lock).isNotNull();
+
+                CountDownLatch started = new CountDownLatch(1);
+                AtomicReference<String> tokenRef = new AtomicReference<>();
+
+                lock.lock();
+                try {
+                        Thread t = new Thread(() -> {
+                                started.countDown();
+                                String token = (String) ReflectionTestUtils.invokeMethod(service, "fetchToken");
+                                tokenRef.set(token);
+                        });
+                        t.start();
+
+                        assertThat(started.await(1, TimeUnit.SECONDS)).isTrue();
+                        Thread.sleep(100);
+                        ReflectionTestUtils.setField(service, "bearerToken", "late-token");
+                        ReflectionTestUtils.setField(service, "tokenExpiresAt", Instant.now().plusSeconds(60));
+
+                        lock.unlock();
+                        t.join(2000);
+                        assertThat(tokenRef.get()).isEqualTo("late-token");
+                } finally {
+                        if (lock.isHeldByCurrentThread()) {
+                                lock.unlock();
+                        }
+                }
         }
 
         @Test

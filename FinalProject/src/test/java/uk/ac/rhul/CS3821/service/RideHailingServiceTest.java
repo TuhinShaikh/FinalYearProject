@@ -111,11 +111,11 @@ class RideHailingServiceTest {
                 asDouble.setAccessible(true);
 
                 assertThat((Boolean) asBoolean.invoke(service, Boolean.TRUE)).isTrue();
-                assertThat((Boolean) asBoolean.invoke(service, new Object[]{null})).isFalse();
+                assertThat((Boolean) asBoolean.invoke(service, (Object) null)).isFalse();
                 assertThat((Boolean) asBoolean.invoke(service, "true")).isTrue();
 
                 assertThat((Double) asDouble.invoke(service, 1.5)).isEqualTo(1.5);
-                assertThat((Double) asDouble.invoke(service, new Object[]{null})).isEqualTo(0.0);
+                assertThat((Double) asDouble.invoke(service, (Object) null)).isEqualTo(0.0);
                 assertThat((Double) asDouble.invoke(service, "not-a-number")).isEqualTo(0.0);
         }
 }
