@@ -7,18 +7,18 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-// Repository for Booking aggregates so services can query by user, spot, or status
+// I keep booking query methods here so service logic stays focused on business rules.
 public interface BookingRepository extends JpaRepository<Booking, UUID> {
 
-    // Fetch bookings that belong to the provided user UUID
+    // I use this when showing a user's booking history.
     List<Booking> findByUser_UserId(UUID userId);
 
-    // Retrieve bookings attached to a parking spot
+    // I use this to inspect all bookings for a specific spot.
     List<Booking> findBySpot_SpotId(UUID spotId);
 
-    // Allow filtering by status for dashboards
+    // I use this for dashboard-style status filtering.
     List<Booking> findByStatus(String status);
 
-    // Support lookups via a confirmation code delivered to guests
+    // I use this for guest lookup flows with confirmation code.
     Optional<Booking> findByConfirmationCode(String confirmationCode);
 }

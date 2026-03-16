@@ -1,6 +1,6 @@
 package uk.ac.rhul.CS3821.dto;
 
-// Models a disruption that might be shown alongside the TfL status UI
+// I use this DTO to represent one disruption entry in travel status responses.
 public class Disruption {
     private String line;
     private String status;
@@ -12,5 +12,5 @@ public class Disruption {
         this.status = status;
     }
 
-    // getters and setters
+    // I keep this class lightweight because it only carries display data.
 }
