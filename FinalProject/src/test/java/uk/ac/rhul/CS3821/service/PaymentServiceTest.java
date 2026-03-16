@@ -26,6 +26,14 @@ import static org.mockito.Mockito.when;
 class PaymentServiceTest {
 
     @Test
+    void constructorSupportsProductionEnvironmentBranch() {
+        PaymentService service = new PaymentService("token", "production");
+
+        assertThat(service).isNotNull();
+        assertThat(ReflectionTestUtils.getField(service, "squareClient")).isNotNull();
+    }
+
+    @Test
     void getLocationIdReturnsCachedLocationWhenPresent() throws Exception {
         PaymentService service = new PaymentService("token", "sandbox");
         ReflectionTestUtils.setField(service, "cachedLocationId", "LOC-123");
