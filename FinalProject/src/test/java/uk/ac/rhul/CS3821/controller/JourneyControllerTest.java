@@ -45,7 +45,7 @@ class JourneyControllerTest {
                 .route("STADIUM", "MILTON_KEYNES");
         doReturn(ResponseEntity.ok(Map.of("trainServices", List.of(otherService, matchingService))))
                 .when(trainController)
-                .getGreaterAnglia("LST");
+                .getLiveTrains("LST");
 
         ResponseEntity<?> response = controller.planJourney("STADIUM", "MILTON_KEYNES", "LST");
 

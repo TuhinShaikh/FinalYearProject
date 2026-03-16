@@ -40,7 +40,7 @@ class JourneyControllerNoRecommendationTest {
             .route("STADIUM", "SEVEN_SISTERS");
         doReturn(ResponseEntity.ok(Map.of("trainServices", List.of(service))))
             .when(trainController)
-            .getGreaterAnglia("LST");
+            .getLiveTrains("LST");
 
         ResponseEntity<?> response = controller.planJourney("STADIUM", "SEVEN_SISTERS", "LST");
 
@@ -76,7 +76,7 @@ class JourneyControllerNoRecommendationTest {
             .route("STADIUM", "STADIUM");
         doReturn(ResponseEntity.ok(Map.of("trainServices", List.of(service))))
             .when(trainController)
-            .getGreaterAnglia("LST");
+            .getLiveTrains("LST");
 
         ResponseEntity<?> response = controller.planJourney("STADIUM", "STADIUM", "LST");
 
