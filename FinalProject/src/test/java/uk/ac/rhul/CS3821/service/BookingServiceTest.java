@@ -54,6 +54,39 @@ public class BookingServiceTest {
     }
 
     @Test
+    void getBookingByIdReturnsOptionalFromRepository() {
+        UUID bookingId = UUID.randomUUID();
+        Booking booking = createDummyBooking();
+        when(bookingRepository.findById(bookingId)).thenReturn(Optional.of(booking));
+
+        Optional<Booking> actual = bookingService.getBookingById(bookingId);
+
+        assertThat(actual).contains(booking);
+    }
+
+    @Test
+    void getBookingsBySpotReturnsListFromRepository() {
+        UUID spotId = UUID.randomUUID();
+        List<Booking> expected = List.of(createDummyBooking());
+        when(bookingRepository.findBySpot_SpotId(spotId)).thenReturn(expected);
+
+        List<Booking> actual = bookingService.getBookingsBySpot(spotId);
+
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
+    void updateBookingDelegatesToRepositorySave() {
+        Booking booking = createDummyBooking();
+        when(bookingRepository.save(booking)).thenReturn(booking);
+
+        Booking actual = bookingService.updateBooking(booking);
+
+        assertThat(actual).isSameAs(booking);
+        verify(bookingRepository).save(booking);
+    }
+
+    @Test
     void cancelBookingCallsDelete() {
         UUID bookingId = UUID.randomUUID();
 
