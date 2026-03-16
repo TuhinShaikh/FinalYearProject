@@ -185,4 +185,114 @@ class GreaterAngliaServiceTest {
                 assertThat(normalized.get(0).get("std")).isEqualTo("10:00");
                 assertThat(normalized.get(0).get("etd")).isEqualTo("Delayed");
         }
+
+        @Test
+        @SuppressWarnings("unchecked")
+        void normalizePayloadSupportsDeparturesAndDepartureBoardKeys() {
+                GreaterAngliaService service = new GreaterAngliaService(new RestTemplateBuilder());
+
+                List<Map<String, Object>> departures =
+                                (List<Map<String, Object>>) ReflectionTestUtils.invokeMethod(service,
+                                                "normalizePayload",
+                                                Map.of("departures", Map.of("destination", "Cambridge", "std", "11:00")));
+
+                List<Map<String, Object>> board =
+                                (List<Map<String, Object>>) ReflectionTestUtils.invokeMethod(service,
+                                                "normalizePayload",
+                                                Map.of("departureBoard", List.of(Map.of("destination", "Norwich", "std", "11:30"))));
+
+                assertThat(departures).hasSize(1);
+                assertThat(((List<?>) departures.get(0).get("destination"))).isNotEmpty();
+                assertThat(board).hasSize(1);
+        }
+
+        @Test
+        @SuppressWarnings("unchecked")
+        void toServiceListReturnsEmptyForUnsupportedCandidateType() {
+                GreaterAngliaService service = new GreaterAngliaService(new RestTemplateBuilder());
+
+                List<Map<String, Object>> result =
+                                (List<Map<String, Object>>) ReflectionTestUtils.invokeMethod(service, "toServiceList", "not-a-list-or-map");
+
+                assertThat(result).isEmpty();
+        }
+
+        @Test
+        @SuppressWarnings("unchecked")
+        void helperMethodsHandleExpectedBranches() {
+                GreaterAngliaService service = new GreaterAngliaService(new RestTemplateBuilder());
+
+                String picked = (String) ReflectionTestUtils.invokeMethod(service, "pick", Map.of("a", " ", "b", "ok"), new String[]{"a", "b"});
+                String missing = (String) ReflectionTestUtils.invokeMethod(service, "pick", Map.of("x", "y"), new String[]{"a", "b"});
+                boolean blank1 = (boolean) ReflectionTestUtils.invokeMethod(service, "isBlank", "");
+                boolean blank2 = (boolean) ReflectionTestUtils.invokeMethod(service, "isBlank", "abc");
+
+                Map<String, Object> fallbackBlank =
+                                (Map<String, Object>) ReflectionTestUtils.invokeMethod(service, "createFallbackService", "");
+                Map<String, Object> fallbackNamed =
+                                (Map<String, Object>) ReflectionTestUtils.invokeMethod(service, "createFallbackService", "LST");
+
+                assertThat(picked).isEqualTo("ok");
+                assertThat(missing).isNull();
+                assertThat(blank1).isTrue();
+                assertThat(blank2).isFalse();
+                assertThat(String.valueOf(fallbackBlank.get("status"))).contains("Liverpool Street");
+                assertThat(String.valueOf(fallbackNamed.get("status"))).contains("LST");
+        }
+
+        @Test
+        @SuppressWarnings("unchecked")
+        void buildDestinationSupportsMapAndString() {
+                GreaterAngliaService service = new GreaterAngliaService(new RestTemplateBuilder());
+
+                List<Map<String, String>> fromString =
+                                (List<Map<String, String>>) ReflectionTestUtils.invokeMethod(service, "buildDestination", Map.of("destination", "Chelmsford"));
+                List<Map<String, String>> fromMap =
+                                (List<Map<String, String>>) ReflectionTestUtils.invokeMethod(service, "buildDestination", Map.of("destination", Map.of("locationName", "Colchester")));
+
+                assertThat(fromString).isEqualTo(List.of(Map.of("locationName", "Chelmsford")));
+                assertThat(fromMap).isEqualTo(List.of(Map.of("locationName", "Colchester")));
+        }
+
+        @Test
+        @SuppressWarnings("unchecked")
+        void fetchTokenReturnsNullWhenTokenEndpointBodyIsNull() {
+                GreaterAngliaService service = new GreaterAngliaService(new RestTemplateBuilder());
+                RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
+                ReflectionTestUtils.setField(service, "restTemplate", restTemplate);
+                ReflectionTestUtils.setField(service, "tokenUrl", "https://auth.example/token");
+                ReflectionTestUtils.setField(service, "clientId", "id");
+                ReflectionTestUtils.setField(service, "clientSecret", "secret");
+
+                when(restTemplate.postForEntity(
+                                ArgumentMatchers.eq("https://auth.example/token"),
+                                ArgumentMatchers.any(HttpEntity.class),
+                                ArgumentMatchers.eq(Map.class)
+                )).thenReturn(ResponseEntity.ok(null));
+
+                String token = (String) ReflectionTestUtils.invokeMethod(service, "fetchToken");
+
+                assertThat(token).isNull();
+        }
+
+        @Test
+        @SuppressWarnings("unchecked")
+        void fetchLiveDeparturesFallsBackWhenPayloadHasNoServices() {
+                GreaterAngliaService service = new GreaterAngliaService(new RestTemplateBuilder());
+                RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
+                ReflectionTestUtils.setField(service, "restTemplate", restTemplate);
+                ReflectionTestUtils.setField(service, "departuresUrl", "https://api.greateranglia.co.uk/v1/departures");
+
+                when(restTemplate.exchange(
+                                ArgumentMatchers.any(),
+                                ArgumentMatchers.eq(HttpMethod.GET),
+                                ArgumentMatchers.any(HttpEntity.class),
+                                ArgumentMatchers.eq(Map.class)
+                )).thenReturn(ResponseEntity.ok(Map.of("unexpected", "shape")));
+
+                List<Map<String, Object>> result = service.fetchLiveDepartures("LST");
+
+                assertThat(result).hasSize(1);
+                assertThat(String.valueOf(result.get(0).get("status"))).contains("Unable to retrieve live data");
+        }
 }
