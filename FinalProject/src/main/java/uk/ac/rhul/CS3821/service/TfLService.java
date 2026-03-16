@@ -5,7 +5,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.http.ResponseEntity;
 
 /**
- * Proxies calls to the TfL (Transport for London) REST endpoints for journey planning.
+ * I use this service as a thin proxy to TfL APIs for journey and status data.
  */
 @Service
 public class TfLService {
@@ -15,7 +15,7 @@ public class TfLService {
     private final RestTemplate restTemplate = new RestTemplate();
 
     /**
-     * Builds the journey planning URL and returns TfL's response as-is for now.
+     * I build the journey URL and return TfL's response body directly.
      */
     public String getJourneyPlan(String from, String to) {
         String url = BASE_URL + "/Journey/JourneyResults/" + from + "/to/" + to;
@@ -24,7 +24,7 @@ public class TfLService {
     }
 
     /**
-     * Retrieves the current disruption status for the requested transport mode.
+     * I fetch disruption status by transport mode so the UI can show live issues.
      */
     public String getDisruptions(String mode) {
         String url = BASE_URL + "/Line/Mode/" + mode + "/Status";
