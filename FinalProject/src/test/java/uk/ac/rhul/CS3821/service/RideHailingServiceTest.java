@@ -102,6 +102,58 @@ class RideHailingServiceTest {
         }
 
         @Test
+        @SuppressWarnings("unchecked")
+        void getNearbyOperatorsReturnsEmptyWhenPayloadBodyIsNull() {
+                RideHailingService service = new RideHailingService();
+                RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
+                ReflectionTestUtils.setField(service, "restTemplate", restTemplate);
+
+                when(restTemplate.exchange(
+                                ArgumentMatchers.anyString(),
+                                ArgumentMatchers.eq(HttpMethod.GET),
+                                ArgumentMatchers.any(HttpEntity.class),
+                                ArgumentMatchers.<ParameterizedTypeReference<Map<String, Object>>>any()
+                )).thenReturn(ResponseEntity.ok(null));
+
+                assertThat(service.getNearbyOperators(51.6, -0.06, 3000)).isEmpty();
+        }
+
+        @Test
+        @SuppressWarnings("unchecked")
+        void getNearbyOperatorsUsesOrganisationNameFallbackAndSkipsInvalidEntries() {
+                RideHailingService service = new RideHailingService();
+                RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
+                ReflectionTestUtils.setField(service, "restTemplate", restTemplate);
+
+                Map<String, Object> validWithFallback = Map.of(
+                                "TradingName", "   ",
+                                "OrganisationName", "Fallback Cars",
+                                "Distance", 1.2
+                );
+                Map<String, Object> blankBothNames = Map.of(
+                                "TradingName", "   ",
+                                "OrganisationName", "   ",
+                                "Distance", 0.2
+                );
+
+                Map<String, Object> payload = Map.of(
+                                "Operators", Map.of("OperatorList", List.of("not-a-map", validWithFallback, blankBothNames))
+                );
+
+                when(restTemplate.exchange(
+                                ArgumentMatchers.anyString(),
+                                ArgumentMatchers.eq(HttpMethod.GET),
+                                ArgumentMatchers.any(HttpEntity.class),
+                                ArgumentMatchers.<ParameterizedTypeReference<Map<String, Object>>>any()
+                )).thenReturn(ResponseEntity.ok(payload));
+
+                List<Map<String, Object>> result = service.getNearbyOperators(51.6, -0.06, 3000);
+
+                assertThat(result).hasSize(1);
+                assertThat(result.get(0).get("provider")).isEqualTo("Fallback Cars");
+        }
+
+        @Test
         void privateHelpersCoverBooleanAndNumberEdgeCases() throws Exception {
                 RideHailingService service = new RideHailingService();
 
