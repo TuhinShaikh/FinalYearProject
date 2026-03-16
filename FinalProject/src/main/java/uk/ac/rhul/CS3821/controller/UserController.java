@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-// CRUD surface for managing user records directly from the frontend admin flows
+// I grouped user CRUD here so admin and profile flows can call one consistent API surface.
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -27,33 +27,33 @@ public class UserController {
         this.userService = userService;
     }
 
-    // Create a user so other parts of the system can link bookings/payments to an account
+    // I create users here first because booking and payment records depend on a valid account id.
     @PostMapping
     public ResponseEntity<User> createUser(@RequestBody User user) {
         return ResponseEntity.ok(userService.createUser(user));
     }
 
-    // Look up an individual user by UUID
+    // I use UUID lookup so profile screens can request one exact user record.
     @GetMapping("/{id}")
     public ResponseEntity<User> getUserById(@PathVariable UUID id) {
         Optional<User> user = userService.getUserById(id);
         return user.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
-    // Snapshot all users for the admin interface
+    // I return all users here because admin pages need a full list view.
     @GetMapping
     public ResponseEntity<List<User>> getAllUsers() {
         return ResponseEntity.ok(userService.getAllUsers());
     }
 
-    // Update user details while keeping the UUID stable
+    // I pin the id from the path so the update always targets the intended user.
     @PutMapping("/{id}")
     public ResponseEntity<User> updateUser(@PathVariable UUID id, @RequestBody User updatedUser) {
         updatedUser.setUserId(id);
         return ResponseEntity.ok(userService.updateUser(updatedUser));
     }
 
-    // Remove a user record when requested
+    // I return no-content after delete because there is nothing useful to serialize back.
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable UUID id) {
         userService.deleteUser(id);

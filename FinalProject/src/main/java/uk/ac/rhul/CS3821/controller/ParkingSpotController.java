@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-// CRUD controller that lets us manage parking spot inventory from the UI
+// I keep spot management here so availability and admin tools share the same endpoints.
 @RestController
 @RequestMapping("/spots")
 public class ParkingSpotController {
@@ -27,33 +27,33 @@ public class ParkingSpotController {
         this.parkingSpotService = parkingSpotService;
     }
 
-    // Create and return a new parking spot entry
+    // I return the created spot so the frontend can update its grid immediately.
     @PostMapping
     public ResponseEntity<ParkingSpot> createSpot(@RequestBody ParkingSpot spot) {
         return ResponseEntity.ok(parkingSpotService.createSpot(spot));
     }
 
-    // Retrieve a single spot by its UUID
+    // I added single-spot lookup for details pages and edit dialogs.
     @GetMapping("/{id}")
     public ResponseEntity<ParkingSpot> getSpotById(@PathVariable UUID id) {
         Optional<ParkingSpot> spot = parkingSpotService.getSpotById(id);
         return spot.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
-    // List every spot so the map grid can render availability
+    // I expose full spot listing because the map/grid screens depend on all slots at once.
     @GetMapping
     public ResponseEntity<List<ParkingSpot>> getAllSpots() {
         return ResponseEntity.ok(parkingSpotService.getAllSpots());
     }
 
-    // Update spot metadata while keeping the same ID
+    // I overwrite payload id with path id to avoid accidental mismatch updates.
     @PutMapping("/{id}")
     public ResponseEntity<ParkingSpot> updateSpot(@PathVariable UUID id, @RequestBody ParkingSpot updatedSpot) {
         updatedSpot.setSpotId(id);
         return ResponseEntity.ok(parkingSpotService.updateSpot(updatedSpot));
     }
 
-    // Remove a spot and return no content
+    // I return 204 for delete to keep the response lightweight.
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteSpot(@PathVariable UUID id) {
         parkingSpotService.deleteSpot(id);
