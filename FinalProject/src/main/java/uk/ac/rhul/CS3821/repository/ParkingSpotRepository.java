@@ -5,7 +5,7 @@ import uk.ac.rhul.CS3821.model.ParkingSpot;
 
 import java.util.UUID;
 
-// Repository used to seed and update the parking inventory displayed in the frontend
+// I keep spot persistence here so availability updates stay centralized.
 public interface ParkingSpotRepository extends JpaRepository<ParkingSpot, UUID> {
-    // Custom queries can be added here if needed
+    // I left this ready for future custom spot queries.
 }

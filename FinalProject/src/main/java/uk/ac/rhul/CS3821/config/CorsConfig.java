@@ -6,13 +6,13 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
- * Opens CORS to the React dev server so front-end calls succeed without browser blocks.
+ * I configured CORS here so the frontend dev server can call backend APIs without browser blocks.
  */
 @Configuration
 public class CorsConfig {
 
     /**
-     * Permits the dev server origin for all methods and headers.
+     * I allow the local frontend origin with common HTTP methods to keep local development smooth.
      */
     @Bean
     public WebMvcConfigurer corsConfigurer() {
