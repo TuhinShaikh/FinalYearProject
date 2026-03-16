@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 class JourneyControllerTest {
 
@@ -40,10 +40,12 @@ class JourneyControllerTest {
                 "etd", "On time"
         );
 
-        when(travelController.route("STADIUM", "MILTON_KEYNES")).thenReturn(ResponseEntity.ok(route));
-        when(trainController.getGreaterAnglia("LST")).thenReturn(
-                ResponseEntity.ok(Map.of("trainServices", List.of(otherService, matchingService)))
-        );
+        doReturn(ResponseEntity.ok(route))
+                .when(travelController)
+                .route("STADIUM", "MILTON_KEYNES");
+        doReturn(ResponseEntity.ok(Map.of("trainServices", List.of(otherService, matchingService))))
+                .when(trainController)
+                .getGreaterAnglia("LST");
 
         ResponseEntity<?> response = controller.planJourney("STADIUM", "MILTON_KEYNES", "LST");
 
