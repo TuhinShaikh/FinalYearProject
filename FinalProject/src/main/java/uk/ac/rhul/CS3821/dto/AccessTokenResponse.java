@@ -1,6 +1,6 @@
 package uk.ac.rhul.CS3821.dto;
 
-// Lightweight wrapper to send a JWT access token back to the client after authentication
+// I use this wrapper to return the JWT cleanly after login.
 public class AccessTokenResponse {
     private String accessToken;
 

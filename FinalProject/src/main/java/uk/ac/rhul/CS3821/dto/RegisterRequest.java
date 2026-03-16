@@ -1,6 +1,6 @@
 package uk.ac.rhul.CS3821.dto;
 
-// Captures the information required to create a new user account
+// I use this DTO to collect the minimum fields needed to register a new user.
 public class RegisterRequest {
     private String name;
     private String email;

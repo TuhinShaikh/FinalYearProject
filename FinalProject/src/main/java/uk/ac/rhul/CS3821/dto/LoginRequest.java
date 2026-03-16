@@ -1,6 +1,6 @@
 package uk.ac.rhul.CS3821.dto;
 
-// Carries the email and password payload from the frontend when a user tries to log in
+// I use this DTO to capture login credentials from the frontend.
 public class LoginRequest {
     private String email;
     private String password;

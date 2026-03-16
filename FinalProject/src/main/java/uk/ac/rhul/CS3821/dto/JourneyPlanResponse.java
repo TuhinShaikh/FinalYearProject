@@ -1,6 +1,6 @@
 package uk.ac.rhul.CS3821.dto;
 
-// DTO that packages the origin, destination, and duration for front-end travel summaries
+// I use this DTO to return a compact journey summary to the frontend.
 public class JourneyPlanResponse {
     private String origin;
     private String destination;
@@ -14,5 +14,5 @@ public class JourneyPlanResponse {
         this.duration = duration;
     }
 
-    // getters and setters
+    // I keep this class minimal because it is just a response shape.
 }

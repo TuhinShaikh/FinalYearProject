@@ -1,6 +1,6 @@
 package uk.ac.rhul.CS3821.dto;
 
-// Response that mirrors what Square returns so the UI can show transaction results
+// I use this DTO to send payment result details back to the UI.
 public class PaymentResponse {
     private String transactionId;
     private String status;
