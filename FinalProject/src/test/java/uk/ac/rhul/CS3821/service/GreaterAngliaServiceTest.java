@@ -11,6 +11,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 
@@ -91,4 +92,97 @@ class GreaterAngliaServiceTest {
         assertThat(service.getJourneyPlan("A", "B")).isEqualTo("journey-json");
         assertThat(service.getDisruptions()).isEqualTo("disruptions-json");
     }
+
+        @Test
+        @SuppressWarnings("unchecked")
+        void fetchTokenReturnsExistingTokenWhenAuthConfigMissing() {
+                GreaterAngliaService service = new GreaterAngliaService(new RestTemplateBuilder());
+                ReflectionTestUtils.setField(service, "tokenUrl", "");
+                ReflectionTestUtils.setField(service, "clientId", "");
+                ReflectionTestUtils.setField(service, "clientSecret", "");
+                ReflectionTestUtils.setField(service, "bearerToken", "cached-token");
+
+                String token = (String) ReflectionTestUtils.invokeMethod(service, "fetchToken");
+
+                assertThat(token).isEqualTo("cached-token");
+        }
+
+        @Test
+        @SuppressWarnings("unchecked")
+        void fetchTokenReturnsCachedTokenWhenNotExpired() {
+                GreaterAngliaService service = new GreaterAngliaService(new RestTemplateBuilder());
+                ReflectionTestUtils.setField(service, "tokenUrl", "https://auth.example/token");
+                ReflectionTestUtils.setField(service, "clientId", "id");
+                ReflectionTestUtils.setField(service, "clientSecret", "secret");
+                ReflectionTestUtils.setField(service, "bearerToken", "still-valid");
+                ReflectionTestUtils.setField(service, "tokenExpiresAt", Instant.now().plusSeconds(120));
+
+                String token = (String) ReflectionTestUtils.invokeMethod(service, "fetchToken");
+
+                assertThat(token).isEqualTo("still-valid");
+        }
+
+        @Test
+        @SuppressWarnings("unchecked")
+        void fetchTokenRefreshesUsingTokenEndpoint() {
+                GreaterAngliaService service = new GreaterAngliaService(new RestTemplateBuilder());
+                RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
+                ReflectionTestUtils.setField(service, "restTemplate", restTemplate);
+                ReflectionTestUtils.setField(service, "tokenUrl", "https://auth.example/token");
+                ReflectionTestUtils.setField(service, "clientId", "id");
+                ReflectionTestUtils.setField(service, "clientSecret", "secret");
+
+                Map<String, Object> tokenBody = Map.of("access_token", "fresh", "expires_in", 120);
+                when(restTemplate.postForEntity(
+                                ArgumentMatchers.eq("https://auth.example/token"),
+                                ArgumentMatchers.any(HttpEntity.class),
+                                ArgumentMatchers.eq(Map.class)
+                )).thenReturn(ResponseEntity.ok(tokenBody));
+
+                String token = (String) ReflectionTestUtils.invokeMethod(service, "fetchToken");
+
+                assertThat(token).isEqualTo("fresh");
+                assertThat(ReflectionTestUtils.getField(service, "tokenExpiresAt")).isNotNull();
+        }
+
+        @Test
+        @SuppressWarnings("unchecked")
+        void fetchTokenReturnsNullWhenRefreshFails() {
+                GreaterAngliaService service = new GreaterAngliaService(new RestTemplateBuilder());
+                RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
+                ReflectionTestUtils.setField(service, "restTemplate", restTemplate);
+                ReflectionTestUtils.setField(service, "tokenUrl", "https://auth.example/token");
+                ReflectionTestUtils.setField(service, "clientId", "id");
+                ReflectionTestUtils.setField(service, "clientSecret", "secret");
+
+                when(restTemplate.postForEntity(
+                                ArgumentMatchers.eq("https://auth.example/token"),
+                                ArgumentMatchers.any(HttpEntity.class),
+                                ArgumentMatchers.eq(Map.class)
+                )).thenThrow(new RestClientException("auth-down"));
+
+                String token = (String) ReflectionTestUtils.invokeMethod(service, "fetchToken");
+
+                assertThat(token).isNull();
+                assertThat(ReflectionTestUtils.getField(service, "bearerToken")).isNull();
+                assertThat(ReflectionTestUtils.getField(service, "tokenExpiresAt")).isNull();
+        }
+
+        @Test
+        @SuppressWarnings("unchecked")
+        void normalizePayloadCoversAlternateKeysAndFallbackDestination() {
+                GreaterAngliaService service = new GreaterAngliaService(new RestTemplateBuilder());
+
+                Map<String, Object> payload = Map.of(
+                                "services", List.of(Map.of("destination", Map.of(), "std", "10:00", "etd", "Delayed"))
+                );
+
+                List<Map<String, Object>> normalized =
+                                (List<Map<String, Object>>) ReflectionTestUtils.invokeMethod(service, "normalizePayload", payload);
+
+                assertThat(normalized).hasSize(1);
+                assertThat(normalized.get(0).get("destination")).isEqualTo(List.of(Map.of("locationName", "Unknown destination")));
+                assertThat(normalized.get(0).get("std")).isEqualTo("10:00");
+                assertThat(normalized.get(0).get("etd")).isEqualTo("Delayed");
+        }
 }
