@@ -23,6 +23,21 @@ class ParkingAvailabilityPublisherTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
+    void subscribeRemovesEmitterOnCompletion() {
+        ParkingAvailabilityPublisher publisher = new ParkingAvailabilityPublisher();
+        List<SseEmitter> emitters = (List<SseEmitter>) ReflectionTestUtils.getField(publisher, "emitters");
+
+        SseEmitter emitter = publisher.subscribe();
+        assertThat(emitters).isNotNull();
+        assertThat(emitters).contains(emitter);
+
+        emitter.complete();
+
+        assertThat(emitters).doesNotContain(emitter);
+    }
+
+    @Test
     void publishUpdateDoesNotThrow() {
         ParkingAvailabilityPublisher publisher = new ParkingAvailabilityPublisher();
         publisher.subscribe();
