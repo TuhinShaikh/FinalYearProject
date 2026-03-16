@@ -129,13 +129,13 @@
                 </configuration>
             </plugin>
 
-            <!-- Disable tests (your tests currently fail due to missing DB/Security) -->
+            <!-- Run tests by default so coverage can be generated consistently -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.3.0</version>
                 <configuration>
-                    <skipTests>true</skipTests>
+                    <skipTests>false</skipTests>
                 </configuration>
             </plugin>
 

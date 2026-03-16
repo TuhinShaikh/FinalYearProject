@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import java.util.*;
 
-// Combines the route planner and Greater Anglia trains so the UI can suggest the best next train
+// Combines the route planner and live train data so the UI can suggest the best next train
 @RestController
 @RequestMapping("/api/travel")
 public class JourneyController {
@@ -16,7 +16,7 @@ public class JourneyController {
     @Autowired
     private TrainController trainController;
 
-    // Build a journey recommendation and attach a recommended Greater Anglia service when possible
+    // Build a journey recommendation and attach a recommended train service when possible
     @GetMapping("/plan")
     public ResponseEntity<?> planJourney(
             @RequestParam String start,
@@ -26,7 +26,7 @@ public class JourneyController {
         ResponseEntity<?> routeResponse = travelController.route(start, goal);
         Map<String, Object> route = (Map<String, Object>) routeResponse.getBody();
 
-        ResponseEntity<?> trainResponse = trainController.getGreaterAnglia(station);
+        ResponseEntity<?> trainResponse = trainController.getLiveTrains(station);
         Map<String, Object> trains = (Map<String, Object>) trainResponse.getBody();
 
         List<Map<String, Object>> services =

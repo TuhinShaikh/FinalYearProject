@@ -76,10 +76,6 @@ public class AuthService {
         }
 
         String trimmed = fullName.trim();
-        if (trimmed.isEmpty()) {
-            return new String[]{"", ""};
-        }
-
         String[] parts = trimmed.split("\\s+", 2);
         String firstName = parts[0];
         String lastName = parts.length > 1 ? parts[1] : "";

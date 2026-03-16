@@ -25,8 +25,10 @@ public class TravelControllerTest {
                 .param("goal", "MILTON_KEYNES"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.nodes[0]").value("STADIUM"))
-            .andExpect(jsonPath("$.nodes[1]").value("SEVEN_SISTERS"))
+            .andExpect(jsonPath("$.nodes[1]").value("LIV_ST_INTERCHANGE"))
+            .andExpect(jsonPath("$.nodes[2]").value("MILTON_KEYNES"))
             .andExpect(jsonPath("$.nodes.length()").value(3))
+            .andExpect(jsonPath("$.totalCostMinutes").value(95.0))
             .andExpect(jsonPath("$.totalCostMinutes").isNumber())
             .andExpect(jsonPath("$.algorithm").value("DIJKSTRA"));
     }

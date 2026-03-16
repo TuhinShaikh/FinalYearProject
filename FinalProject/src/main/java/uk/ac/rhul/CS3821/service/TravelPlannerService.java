@@ -27,7 +27,7 @@ public class TravelPlannerService {
 
         options.add(Map.of(
                 "mode", "Train",
-                "provider", "Greater Anglia",
+                "provider", "National Rail",
                 "estimatedTime", 40,
                 "cost", 7.20,
                 "recommended", accessibilityNeeded
