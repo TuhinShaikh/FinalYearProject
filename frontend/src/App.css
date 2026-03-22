@@ -1135,6 +1135,56 @@ button:disabled {
   background: rgba(170, 199, 216, 0.6);
 }
 
+/* Register card mirrors login card so auth pages feel consistent. */
+.register-page {
+  max-width: 480px;
+  width: min(94vw, 480px);
+  margin: 3rem auto 0;
+  padding: 2.25rem 2rem;
+  border-radius: 30px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(17, 34, 82, 0.15);
+  box-shadow: 0 25px 60px rgba(41, 53, 60, 0.18);
+}
+
+.register-page h2 {
+  margin: 0 0 1rem;
+  font-size: 2rem;
+  color: var(--deep-navy);
+}
+
+.register-page form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.register-page input {
+  width: 100%;
+  border-radius: 14px;
+  border: 1px solid rgba(17, 34, 82, 0.15);
+  padding: 0.75rem 0.95rem;
+  font-size: 1rem;
+  background: var(--mist);
+}
+
+.register-page button {
+  align-self: flex-start;
+  margin-top: 0.4rem;
+  background: #0a1f3d;
+  color: #f8fbff;
+  border: 1px solid rgba(10, 31, 61, 0.85);
+}
+
+.register-page button:hover:not(:disabled) {
+  background: #163362;
+}
+
+.register-page button:disabled {
+  background: #3e4f6b;
+  border-color: #3e4f6b;
+}
+
 .event-list {
   margin-top: 2rem;
   display: grid;

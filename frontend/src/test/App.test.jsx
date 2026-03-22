@@ -4,6 +4,8 @@ import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import App from '../App';
 
+// Route-level tests use lightweight page mocks so failures point to router wiring, not page internals.
+
 vi.mock('../pages/BookingAndPaymentPage', () => ({
   default: () => <div>BookingAndPaymentPage</div>,
 }));
@@ -47,6 +49,7 @@ describe('App routes', () => {
   });
 
   it('renders each main route component', () => {
+    // Table-driven assertions keep route coverage broad without repeating render boilerplate.
     const routeExpectations = [
       ['/booking', 'BookingAndPaymentPage'],
       ['/transport', 'TransportPage'],

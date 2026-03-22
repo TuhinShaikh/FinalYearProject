@@ -29,7 +29,7 @@ export default function RegisterUser(): JSX.Element {
   };
 
   return (
-    <div className="register-page" style={{ maxWidth: "400px", margin: "auto" }}>
+    <div className="register-page">
       <h2>Register</h2>
       <form onSubmit={handleSubmit}>
         <input
