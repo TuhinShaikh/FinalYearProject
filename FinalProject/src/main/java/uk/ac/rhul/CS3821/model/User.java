@@ -11,7 +11,9 @@ import java.util.UUID;
 @Table(name = "users", uniqueConstraints = {
     @UniqueConstraint(columnNames = "email")
 })
-// I keep user accounts here so every booking and payment is tied to a real profile.
+/**
+ * Persistent user account entity used for authentication and ownership of bookings.
+ */
 public class User {
 
     @Id
@@ -52,9 +54,20 @@ public class User {
     @Column(name = "last_login")
     private Instant lastLogin;
 
-    // I keep both constructors so JPA can instantiate and the app can create populated users.
+    /**
+     * Default constructor required by JPA.
+     */
     public User() {}
 
+    /**
+     * Creates a user with essential profile and authentication fields.
+     *
+     * @param email unique login email
+     * @param password hashed password value
+     * @param firstName user's first name
+     * @param lastName user's last name
+     * @param phoneNumber optional phone number
+     */
     public User(String email, String password, String firstName, String lastName, String phoneNumber) {
         this.email = email;
         this.password = password;
