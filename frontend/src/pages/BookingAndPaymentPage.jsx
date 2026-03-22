@@ -152,6 +152,7 @@ function countStatuses(slots) {
 }
 
 export default function BookingAndPaymentPage() {
+  const squareAppId = (import.meta.env.VITE_SQUARE_APP_ID ?? "").trim();
   // I generate and freeze the AI slot pattern once per page load.
   const [slots] = useState(() => applyAiBlocks(createSlots()));
   const [selectedSlot, setSelectedSlot] = useState(null);
@@ -263,9 +264,12 @@ export default function BookingAndPaymentPage() {
         await loadSquareSdk();
         if (cancelled || !window.Square) return;
 
-        const payments = window.Square.payments(
-          "sandbox-sq0idb-I-lZ-tkY-jzemSkWMfBn-A"
-        );
+        if (!squareAppId) {
+          setStatus("❌ Square app id is not configured. Set VITE_SQUARE_APP_ID.");
+          return;
+        }
+
+        const payments = window.Square.payments(squareAppId);
 
         const card = await payments.card();
 
@@ -295,7 +299,7 @@ export default function BookingAndPaymentPage() {
       cancelled = true;
       teardown();
     };
-  }, [selectedSlot]);
+  }, [selectedSlot, squareAppId]);
 
   return (
     <main

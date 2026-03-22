@@ -10,6 +10,7 @@ export default function LoginPage(): JSX.Element {
   const [tottenhamId, setTottenhamId] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const isDemoIdAccessEnabled = import.meta.env.VITE_ENABLE_DEMO_ID_ACCESS === "true";
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -37,7 +38,12 @@ export default function LoginPage(): JSX.Element {
   };
 
   const handleTottenhamIdAccess = () => {
-    // I keep this shortcut for demo day: only the agreed code 1882 unlocks direct entry.
+    if (!isDemoIdAccessEnabled) {
+      setError("Season/Member ID access is currently disabled.");
+      return;
+    }
+
+    // I keep this shortcut only behind an explicit demo flag.
     if (tottenhamId.trim() === "1882") {
       setError(null);
       navigate("/booking", { replace: true });
@@ -79,20 +85,24 @@ export default function LoginPage(): JSX.Element {
           {loading ? "Signing in…" : "Login"}
         </button>
 
-        <label htmlFor="tottenham-id" style={{ display: "block", margin: "1rem 0 0.2rem" }}>
-          Season/Member ID
-        </label>
-        <input
-          id="tottenham-id"
-          type="text"
-          placeholder="Enter Season/Member ID"
-          value={tottenhamId}
-          onChange={(event) => setTottenhamId(event.target.value)}
-        />
+        {isDemoIdAccessEnabled && (
+          <>
+            <label htmlFor="tottenham-id" style={{ display: "block", margin: "1rem 0 0.2rem" }}>
+              Season/Member ID
+            </label>
+            <input
+              id="tottenham-id"
+              type="text"
+              placeholder="Enter Season/Member ID"
+              value={tottenhamId}
+              onChange={(event) => setTottenhamId(event.target.value)}
+            />
 
-        <button type="button" onClick={handleTottenhamIdAccess} style={{ marginTop: "0.5rem" }}>
-          Season/Member ID Access
-        </button>
+            <button type="button" onClick={handleTottenhamIdAccess} style={{ marginTop: "0.5rem" }}>
+              Season/Member ID Access
+            </button>
+          </>
+        )}
       </form>
       {error && (
         <p style={{ color: "#b00020", marginTop: "0.75rem" }} role="alert" aria-live="polite">

@@ -5,7 +5,7 @@ import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import LoginPage from '../../pages/LoginPage';
 
-// Login tests cover both normal auth and the demo-day Season/Member ID shortcut.
+// Login tests focus on secure default behavior and normal auth flow.
 
 const mockNavigate = vi.fn();
 const loginMock = vi.fn();
@@ -60,33 +60,14 @@ describe('LoginPage', () => {
     expect(mockNavigate).toHaveBeenCalledWith('/booking', { replace: true });
   });
 
-  it('supports season/member id access with code 1882', async () => {
-    const user = userEvent.setup();
-
+  it('keeps season/member id access hidden by default', () => {
     render(
       <MemoryRouter>
         <LoginPage />
       </MemoryRouter>
     );
 
-    await user.type(screen.getByLabelText('Season/Member ID'), '1882');
-    await user.click(screen.getByRole('button', { name: 'Season/Member ID Access' }));
-
-    expect(mockNavigate).toHaveBeenCalledWith('/booking', { replace: true });
-  });
-
-  it('shows INVALID when season/member id is wrong', async () => {
-    const user = userEvent.setup();
-
-    render(
-      <MemoryRouter>
-        <LoginPage />
-      </MemoryRouter>
-    );
-
-    await user.type(screen.getByLabelText('Season/Member ID'), '1234');
-    await user.click(screen.getByRole('button', { name: 'Season/Member ID Access' }));
-
-    expect(screen.getByRole('alert')).toHaveTextContent('INVALID');
+    expect(screen.queryByLabelText('Season/Member ID')).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Season/Member ID Access' })).not.toBeInTheDocument();
   });
 });

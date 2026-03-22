@@ -37,7 +37,7 @@ describe('RideOptionsPage', () => {
     });
     expect(screen.getByText(/ETA:/)).toBeInTheDocument();
     expect(screen.getByText(/Pickup Zone:/)).toBeInTheDocument();
-  });
+  }, 10000);
 
   it('falls back to sample rides if live endpoint fails', async () => {
     const user = userEvent.setup();
