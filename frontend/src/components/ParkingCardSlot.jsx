@@ -6,6 +6,7 @@ export default function ParkingCardSlot({ slot, onSelect }) {
   const { id, status } = slot;
 
   const getColor = () => {
+    // I map backend status values to quick visual colors so users can scan availability instantly.
     switch (status) {
       case "AVAILABLE": return "green";
       case "OCCUPIED": return "red";
@@ -26,6 +27,7 @@ export default function ParkingCardSlot({ slot, onSelect }) {
         color: "white",
         textAlign: "center"
       }}
+      // Whole card is clickable so mobile users don't have to target tiny text elements.
       onClick={() => onSelect(slot)}
     >
       <h4>Slot {id}</h4>

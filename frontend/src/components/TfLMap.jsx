@@ -80,6 +80,7 @@ function VisibleStadiumPolyline({ stadiums }) {
   });
 
   const dijkstraSegments = useMemo(() => {
+    // I recalculate these links for the current viewport only, so lines stay relevant and uncluttered.
     const activeBounds = bounds ?? map.getBounds();
     if (!activeBounds) return [];
 
@@ -185,6 +186,7 @@ export default function TfLMap({ tflStatus }) {
   useEffect(() => {
     let mounted = true;
 
+    // Pull stop points once so we can estimate line coverage and label data.
     axios
       .get("https://api.tfl.gov.uk/Line/Mode/tube/StopPoints")
       .then((res) => {
@@ -222,6 +224,7 @@ export default function TfLMap({ tflStatus }) {
         .filter((path) => path.length > 1);
     };
 
+    // Overground sequence is fetched separately because route geometry is a different TfL endpoint.
     axios
       .get("https://api.tfl.gov.uk/Line/london-overground/Route/Sequence/all")
       .then((res) => {

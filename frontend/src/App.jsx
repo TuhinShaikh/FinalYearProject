@@ -58,6 +58,7 @@ export default function App() {
             </Link>
             <div className="navbar-links">
               <Link to="/booking">
+                {/* I keep this first because parking is the primary user action before travel. */}
                 <button className="nav-pill">Book Parking</button>
               </Link>
               <Link to="/assistant">
@@ -70,6 +71,7 @@ export default function App() {
                 <button className="nav-pill">TfL</button>
               </Link>
               <Link to="/transport">
+                {/* Journey planning button opens the TfL-focused planner workspace. */}
                 <button className="nav-pill">Transport</button>
               </Link>
               <Link to="/accessibility">

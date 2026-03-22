@@ -36,6 +36,7 @@ export default function PaymentForm({ amountCents = 2000 }) {
   }, [appId, locationId]);
 
   async function handlePayment() {
+    // This button flow tokenizes card data first, then posts only token + amount to backend.
     try {
       if (!card) {
         setError("Card input is still initializing. Please wait a moment.");
@@ -81,6 +82,7 @@ export default function PaymentForm({ amountCents = 2000 }) {
       {error && <p style={{ color: "red" }}>{error}</p>}
 
       <button
+        // Disabled state prevents users from submitting before the Square card widget is ready.
         onClick={handlePayment}
         disabled={loading}
         style={{

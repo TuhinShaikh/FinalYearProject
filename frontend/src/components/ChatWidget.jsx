@@ -410,6 +410,7 @@ export default function ChatWidget() {
   };
 
   const sendMessage = async (text) => {
+    // Main chat pipeline: append user message, get assistant response, append bot output.
     const trimmed = text?.trim();
     if (!trimmed) return;
 
@@ -428,6 +429,7 @@ export default function ChatWidget() {
 
   const handleQuick = (prompt) => sendMessage(prompt);
 
+  // Send button uses the same path as Enter key so behavior stays consistent.
   const handleSend = () => sendMessage(draft);
 
   const handleKeyDown = (event) => {
@@ -470,6 +472,7 @@ export default function ChatWidget() {
 
       <div className="chat-widget__quick">
         {quickPrompts.map((prompt) => (
+          // Quick prompts reduce typing friction for first-time users.
           <button key={prompt} onClick={() => handleQuick(prompt)} type="button">
             {prompt}
           </button>
