@@ -1,6 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
+// I keep this compact nav component for alternative layouts and isolated router previews.
+
 export default function NavigationBar() {
   return (
     <nav className="navbar">
