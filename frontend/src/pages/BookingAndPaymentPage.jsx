@@ -425,7 +425,7 @@ export default function BookingAndPaymentPage() {
             <span>{weather.wind} wind</span>
           </div>
           <p style={{ marginTop: "0.8rem", fontSize: "0.75rem", opacity: 0.7 }}>
-            Forecast refreshed at {new Date(seed).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}.
+            Forecast refreshed for the current session.
           </p>
         </div>
       </section>
