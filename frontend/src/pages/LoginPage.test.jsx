@@ -5,6 +5,8 @@ import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import LoginPage from './LoginPage';
 
+// Login tests cover both normal auth and the demo-day Season/Member ID shortcut.
+
 const mockNavigate = vi.fn();
 const loginMock = vi.fn();
 
@@ -33,6 +35,7 @@ describe('LoginPage', () => {
       </MemoryRouter>
     );
 
+    // Submitting the form directly bypasses browser native required-field blocking in jsdom.
     fireEvent.submit(screen.getByRole('button', { name: 'Login' }).closest('form'));
 
     expect(screen.getByText('Please provide both an email and password.')).toBeInTheDocument();

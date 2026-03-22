@@ -5,6 +5,8 @@ import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import RegisterUser from './RegisterUser';
 
+// Registration tests prove we normalize input, handle API errors, and route users correctly.
+
 const mockNavigate = vi.fn();
 const registerMock = vi.fn();
 

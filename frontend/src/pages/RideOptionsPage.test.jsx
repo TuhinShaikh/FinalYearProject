@@ -4,6 +4,8 @@ import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import RideOptionsPage from './RideOptionsPage';
 
+// This suite keeps confidence in both the live-rides happy path and the fallback safety net.
+
 const fetchLiveRidesMock = vi.fn();
 
 vi.mock('../api', () => ({
