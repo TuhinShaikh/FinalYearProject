@@ -323,6 +323,8 @@ function generateAssistantResponse(message, stationZones) {
 }
 
 export default function ChatWidget() {
+  // I keep a simple incrementing id so message keys stay stable without time-based randomness.
+  const messageIdRef = useRef(0);
   const [messages, setMessages] = useState([
     { id: "welcome", sender: "bot", text: "Hi! I can help you plan journeys, check status, or book parking." },
   ]);
@@ -400,11 +402,16 @@ export default function ChatWidget() {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  const nextMessageId = (sender) => {
+    messageIdRef.current += 1;
+    return `${sender}-${messageIdRef.current}`;
+  };
+
   const sendMessage = async (text) => {
     const trimmed = text?.trim();
     if (!trimmed) return;
 
-    const userMessage = { id: `${Date.now()}-user`, sender: "user", text: trimmed };
+    const userMessage = { id: nextMessageId("user"), sender: "user", text: trimmed };
     setMessages((prev) => [...prev, userMessage]);
     setDraft("");
     setLoading(true);
@@ -413,7 +420,7 @@ export default function ChatWidget() {
       setTimeout(() => resolve(generateAssistantResponse(trimmed, stationZones)), 450)
     );
 
-    setMessages((prev) => [...prev, { id: `${Date.now()}-bot`, sender: "bot", text: assistantMessage }]);
+    setMessages((prev) => [...prev, { id: nextMessageId("bot"), sender: "bot", text: assistantMessage }]);
     setLoading(false);
   };
 
