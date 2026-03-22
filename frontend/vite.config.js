@@ -20,6 +20,16 @@ export default defineConfig(({ mode }) => {
 
   return {
     plugins: [react()],
+    test: {
+      environment: 'jsdom',
+      setupFiles: './src/test/setup.js',
+      coverage: {
+        provider: 'v8',
+        reporter: ['text', 'html'],
+        reportsDirectory: './coverage',
+        include: ['src/**/*.{js,jsx,ts,tsx}'],
+      },
+    },
     server: {
       port: 5173,
       host: 'localhost',
