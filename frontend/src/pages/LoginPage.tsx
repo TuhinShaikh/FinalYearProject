@@ -7,6 +7,7 @@ import { login } from "../api";
 export default function LoginPage(): JSX.Element {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [tottenhamId, setTottenhamId] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
@@ -33,6 +34,17 @@ export default function LoginPage(): JSX.Element {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleTottenhamIdAccess = () => {
+    // I keep this shortcut for demo day: only the agreed code 1882 unlocks direct entry.
+    if (tottenhamId.trim() === "1882") {
+      setError(null);
+      navigate("/booking", { replace: true });
+      return;
+    }
+
+    setError("Tottenham ID invalid. Use 1882.");
   };
 
   return (
@@ -65,6 +77,21 @@ export default function LoginPage(): JSX.Element {
 
         <button type="submit" disabled={loading} style={{ marginTop: "1rem" }}>
           {loading ? "Signing in…" : "Login"}
+        </button>
+
+        <label htmlFor="tottenham-id" style={{ display: "block", margin: "1rem 0 0.2rem" }}>
+          Tottenham ID
+        </label>
+        <input
+          id="tottenham-id"
+          type="text"
+          placeholder="Enter Tottenham ID (1882)"
+          value={tottenhamId}
+          onChange={(event) => setTottenhamId(event.target.value)}
+        />
+
+        <button type="button" onClick={handleTottenhamIdAccess} style={{ marginTop: "0.5rem" }}>
+          Tottenham ID Access
         </button>
       </form>
       {error && (

@@ -248,11 +248,13 @@ button:focus-visible {
 }
 
 .auth-buttons {
+  /* I stack these buttons vertically so the first interaction is clearer on desktop and mobile. */
   margin-top: 2rem;
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 1rem;
   justify-content: center;
+  align-items: center;
 }
 
 .hero button {
