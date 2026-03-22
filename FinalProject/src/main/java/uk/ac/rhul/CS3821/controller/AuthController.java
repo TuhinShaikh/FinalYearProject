@@ -7,7 +7,9 @@ import uk.ac.rhul.CS3821.dto.LoginRequest;
 import uk.ac.rhul.CS3821.dto.RegisterRequest;
 import uk.ac.rhul.CS3821.service.AuthService;
 
-// I keep auth endpoints here so registration/login stays simple for the frontend.
+/**
+ * REST controller for authentication endpoints.
+ */
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
@@ -18,14 +20,24 @@ public class AuthController {
         this.authService = authService;
     }
 
-    // I return a fresh token after registration so the user can continue as an authenticated session.
+    /**
+     * Registers a new user and returns an access token.
+     *
+     * @param request registration payload
+     * @return issued access token
+     */
     @PostMapping("/register")
     public ResponseEntity<AccessTokenResponse> register(@RequestBody RegisterRequest request) {
         AccessTokenResponse token = authService.register(request);
         return ResponseEntity.ok(token);
     }
 
-    // I validate credentials here and return a token for follow-up API calls.
+    /**
+     * Authenticates user credentials and returns an access token.
+     *
+     * @param request login payload
+     * @return issued access token
+     */
     @PostMapping("/login")
     public ResponseEntity<AccessTokenResponse> login(@RequestBody LoginRequest request) {
         AccessTokenResponse token = authService.login(request);

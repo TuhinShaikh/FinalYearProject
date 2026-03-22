@@ -16,7 +16,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-// I grouped user CRUD here so admin and profile flows can call one consistent API surface.
+/**
+ * REST controller exposing CRUD endpoints for users.
+ */
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -27,33 +29,58 @@ public class UserController {
         this.userService = userService;
     }
 
-    // I create users here first because booking and payment records depend on a valid account id.
+    /**
+     * Creates a user.
+     *
+     * @param user user payload
+     * @return saved user
+     */
     @PostMapping
     public ResponseEntity<User> createUser(@RequestBody User user) {
         return ResponseEntity.ok(userService.createUser(user));
     }
 
-    // I use UUID lookup so profile screens can request one exact user record.
+    /**
+     * Retrieves a user by id.
+     *
+     * @param id user identifier
+     * @return user if found
+     */
     @GetMapping("/{id}")
     public ResponseEntity<User> getUserById(@PathVariable UUID id) {
         Optional<User> user = userService.getUserById(id);
         return user.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
-    // I return all users here because admin pages need a full list view.
+    /**
+     * Retrieves all users.
+     *
+     * @return list of users
+     */
     @GetMapping
     public ResponseEntity<List<User>> getAllUsers() {
         return ResponseEntity.ok(userService.getAllUsers());
     }
 
-    // I pin the id from the path so the update always targets the intended user.
+    /**
+     * Updates an existing user.
+     *
+     * @param id user identifier
+     * @param updatedUser updated payload
+     * @return saved user
+     */
     @PutMapping("/{id}")
     public ResponseEntity<User> updateUser(@PathVariable UUID id, @RequestBody User updatedUser) {
         updatedUser.setUserId(id);
         return ResponseEntity.ok(userService.updateUser(updatedUser));
     }
 
-    // I return no-content after delete because there is nothing useful to serialize back.
+    /**
+     * Deletes a user by id.
+     *
+     * @param id user identifier
+     * @return empty response
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable UUID id) {
         userService.deleteUser(id);
