@@ -9,7 +9,9 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "parking_spots")
-// I keep each parking spot as an entity so the UI always reflects live availability.
+/**
+ * Persistent parking spot entity used for availability and reservation mapping.
+ */
 public class ParkingSpot {
 
     @Id
@@ -36,9 +38,18 @@ public class ParkingSpot {
     @Column(name = "updated_at")
     private Instant updatedAt;
 
-    // I keep both constructors for JPA and for explicit setup in service logic/tests.
+    /**
+     * Default constructor required by JPA.
+     */
     public ParkingSpot() {}
 
+    /**
+     * Creates a parking spot record.
+     *
+     * @param spotName display name of the slot
+     * @param spotDescription optional slot description
+     * @param isReserved current reservation state
+     */
     public ParkingSpot(String spotName, String spotDescription, boolean isReserved) {
         this.spotName = spotName;
         this.spotDescription = spotDescription;

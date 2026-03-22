@@ -13,6 +13,9 @@ import uk.ac.rhul.CS3821.model.ParkingSpot;
 
 @Entity
 @Table(name = "bookings")
+/**
+ * Persistent booking entity representing a reserved parking session.
+ */
 public class Booking {
 
     // I model one parking session per record so timing, payment, and ownership stay together.
@@ -68,9 +71,22 @@ public class Booking {
     @Column(name = "updated_at")
     private Instant updatedAt;
 
-    // I keep both constructors for JPA and for convenient service-layer object creation.
+    /**
+     * Default constructor required by JPA.
+     */
     public Booking() {}
 
+    /**
+     * Creates a booking with core reservation details.
+     *
+     * @param user booking owner
+     * @param spot reserved parking spot
+     * @param bookingDate date of reservation
+     * @param startTime reservation start timestamp
+     * @param endTime reservation end timestamp
+     * @param totalAmount total charge amount
+     * @param status lifecycle status of the booking
+     */
     public Booking(User user, ParkingSpot spot, LocalDate bookingDate,
                    Instant startTime, Instant endTime,
                    BigDecimal totalAmount, String status) {
