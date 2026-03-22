@@ -1,5 +1,6 @@
 /* I keep fallback/legacy navbar styles here for alternate layouts. */
 .navbar {
+  /* Fixed nav variant for pages that need always-visible top navigation. */
   position: fixed;
   top: 0;
   width: 100%;
@@ -22,6 +23,7 @@
 }
 
 .navbar-links a {
+  /* Minimal link style keeps visual hierarchy calm in compact nav bars. */
   margin-left: 30px;
   color: white;
   text-decoration: none;
