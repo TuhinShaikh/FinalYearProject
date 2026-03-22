@@ -154,3 +154,25 @@ Development Diary
 ***** 20/03/2026 ***** Dev Environment Recovery I resolved local dev server instability from duplicate Vite processes/port collisions and standardized frontend startup on a single secure localhost endpoint.
 
 ***** 22/03/2026 ***** Final QA and Diary Update I completed a final pass of backend/frontend verification, regression testing, and coverage review, then documented the full Term 2 development trajectory in this diary in reflective chronological format.
+
+***** 23/03/2026 ***** Frontend Test Framework Setup I set up Vitest + Testing Library (jsdom, setup file, coverage reporting) and integrated scripts for run/watch/coverage so frontend quality checks are now first-class like backend JUnit workflows.
+
+***** 24/03/2026 ***** Frontend Page and API Tests I added tests for core frontend behavior: app routing shell, login, registration, ride options fallback logic, and API helper token behavior. This closed a major testing gap against the mark-scheme expectation of broad functional verification.
+
+***** 25/03/2026 ***** Test Stability and Environment Fixes I diagnosed execution issues in the local runner, switched to a stable forked worker pool for Vitest, and fixed cleanup/selector issues to remove flaky failures and ensure deterministic results.
+
+***** 26/03/2026 ***** Accessibility/Status/Transport Test Expansion I expanded tests across additional pages (accessibility controls, TfL status map toggle, travel planner actions, transport journey flow) with mocked external dependencies to keep tests fast and repeatable.
+
+***** 27/03/2026 ***** Test Folder Restructure I reorganized frontend tests under a dedicated src/test hierarchy and removed test files from src/pages to keep production page folders clean and maintainable. I updated imports/mocks accordingly and revalidated the full suite.
+
+***** 28/03/2026 ***** Comment Quality Pass I reviewed source and test comments for readability and intent. I refined comments to be human, contextual, and concise (explaining why a block exists rather than narrating obvious syntax), improving maintainability and submission presentation.
+
+***** 29/03/2026 ***** Register UI Consistency I aligned register-page styling with login card conventions (rounded auth card behavior, consistent spacing and button treatment) so auth flows look coherent and polished across desktop/mobile.
+
+***** 30/03/2026 ***** Dependency and Tooling Hygiene I fixed frontend dependency drift (including local package alignment for test/runtime imports), reran lint/build/tests, and confirmed the toolchain remains stable after structural and test coverage changes.
+
+***** 31/03/2026 ***** Submission-Oriented Code Review I ran a strict coding review focused on risks and regressions (security posture, auth bypass risk, config hardcoding, validation strategy, and test completeness). I captured findings by severity for final hardening priorities.
+
+***** 01/04/2026 ***** Final Regression and Coverage Confirmation I re-executed frontend and backend test flows, confirmed green runs, and validated that the frontend test suite now covers key user journeys instead of only isolated helpers/components.
+
+***** 02/04/2026 ***** Pre-Submission Freeze and Evidence Pack I finalized diary updates, confirmed project structure cleanliness (production pages separate from tests), and prepared a final evidence snapshot of lint/build/tests/review outcomes for submission confidence.
