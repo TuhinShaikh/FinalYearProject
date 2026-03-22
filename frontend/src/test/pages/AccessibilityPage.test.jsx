@@ -42,8 +42,8 @@ describe('AccessibilityPage', () => {
     render(<AccessibilityPage />);
 
     expect(screen.getByRole('heading', { name: 'Accessibility Settings' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'A-' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'A+' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Decrease font size' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Increase font size' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Enable High Contrast' })).toBeInTheDocument();
   });
 
@@ -51,8 +51,8 @@ describe('AccessibilityPage', () => {
     const user = userEvent.setup();
     render(<AccessibilityPage />);
 
-    await user.click(screen.getByRole('button', { name: 'A-' }));
-    await user.click(screen.getByRole('button', { name: 'A+' }));
+    await user.click(screen.getByRole('button', { name: 'Decrease font size' }));
+    await user.click(screen.getByRole('button', { name: 'Increase font size' }));
     await user.click(screen.getByRole('button', { name: 'Enable High Contrast' }));
     await user.click(screen.getByRole('button', { name: 'Enable Assistive Reading' }));
     await user.click(screen.getByRole('button', { name: 'Enable Reduced Motion' }));
