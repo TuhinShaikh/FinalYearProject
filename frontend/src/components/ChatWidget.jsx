@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 
+// I keep chat logic local to this component so prompts, fare helpers, and UI stay tightly coupled.
+
 const quickPrompts = [
   "How do I plan a TfL journey?",
   "What is the live status?",
