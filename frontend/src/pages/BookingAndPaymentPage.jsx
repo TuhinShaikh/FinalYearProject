@@ -50,6 +50,7 @@ const filterOptions = [
 let squareSdkPromise;
 
 function loadSquareSdk() {
+  // I cache this promise so I never load the Square script twice during one visit.
   if (squareSdkPromise) return squareSdkPromise;
 
   squareSdkPromise = new Promise((resolve, reject) => {
@@ -87,6 +88,7 @@ function loadSquareSdk() {
 }
 
 function createSlots() {
+  // I generate a realistic spread of prices/statuses so the booking screen feels like a live lot.
   return Array.from({ length: 100 }, (_, idx) => {
     const id = idx + 1;
     let price = 15;
@@ -113,6 +115,7 @@ function createSlots() {
 }
 
 function applyAiBlocks(slots) {
+  // I add a random maintenance pattern to simulate AI safety checks on specific bays.
   const blocked = new Set();
   const patternSize = 6 + Math.floor(Math.random() * 6);
 
@@ -134,6 +137,7 @@ function applyAiBlocks(slots) {
 }
 
 function countStatuses(slots) {
+  // I compute compact counters so filter chips can show live totals beside each status.
   return slots.reduce(
     (acc, slot) => {
       acc[slot.status] = (acc[slot.status] ?? 0) + 1;
@@ -174,6 +178,7 @@ export default function BookingAndPaymentPage() {
   }, [status]);
 
   const handleSlotSelect = (slot) => {
+    // I only allow checkout from available slots so users cannot pay for blocked/occupied bays.
     if (slot.status !== "available") {
       setStatus(
         `❌ Slot ${slot.id} is ${statusLabelMap[slot.status]}; pick another space.`
@@ -199,6 +204,7 @@ export default function BookingAndPaymentPage() {
     }
 
     try {
+      // Tokenization happens in the browser; backend only receives a safe token + amount.
       const result = await cardRef.current.tokenize();
 
       if (result.status !== "OK") {
@@ -227,6 +233,7 @@ export default function BookingAndPaymentPage() {
   };
 
   useEffect(() => {
+    // I recreate the card widget whenever the selected slot changes so old payment state is cleared.
     const teardown = () => {
       try {
         if (cardRef.current?.destroy) cardRef.current.destroy();
@@ -344,6 +351,7 @@ export default function BookingAndPaymentPage() {
               <button
                 key={key}
                 type="button"
+                // These buttons let users focus quickly on available vs blocked spaces.
                 onClick={() => setFilter(key)}
                 style={{
                   padding: "0.5rem 0.9rem",
@@ -454,6 +462,7 @@ export default function BookingAndPaymentPage() {
                 <button
                   key={slot.id}
                   type="button"
+                  // One tap reserves this slot in UI and unlocks the payment panel.
                   onClick={() => handleSlotSelect(slot)}
                   aria-pressed={isSelected}
                   aria-label={`Slot ${slot.id}, ${statusLabelMap[slot.status]}`}
@@ -528,6 +537,7 @@ export default function BookingAndPaymentPage() {
           <button
             type="button"
             id="pay-button"
+            // Final checkout trigger once card fields are ready.
             onClick={handlePayment}
             disabled={cardLoading || !cardRef.current}
             style={{
