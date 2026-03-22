@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 
 export default function PaymentForm({ amountCents = 2000 }) {
   const [card, setCard] = useState(null);
-  const [payments, setPayments] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -17,8 +16,8 @@ export default function PaymentForm({ amountCents = 2000 }) {
           return;
         }
 
+        // I initialize once and keep only the card object because that is all we submit with.
         const paymentsInstance = window.Square.payments(appId, locationId);
-        setPayments(paymentsInstance);
 
         const cardInstance = await paymentsInstance.card();
         await cardInstance.attach("#card-container");
@@ -32,7 +31,7 @@ export default function PaymentForm({ amountCents = 2000 }) {
     }
 
     initSquare();
-  }, []);
+  }, [appId, locationId]);
 
   async function handlePayment() {
     try {

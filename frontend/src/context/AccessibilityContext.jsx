@@ -75,6 +75,7 @@ export function AccessibilityProvider({ children }) {
   );
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useAccessibility() {
   const context = useContext(AccessibilityContext);
   if (!context) {

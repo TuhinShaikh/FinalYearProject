@@ -70,18 +70,15 @@ const whiteHartLaneStation = {
 };
 
 function VisibleStadiumPolyline({ stadiums }) {
-  const [bounds, setBounds] = useState(null);
+  const [viewportVersion, setViewportVersion] = useState(0);
 
   const map = useMapEvents({
-    moveend: () => setBounds(map.getBounds()),
-    zoomend: () => setBounds(map.getBounds()),
+    moveend: () => setViewportVersion((prev) => prev + 1),
+    zoomend: () => setViewportVersion((prev) => prev + 1),
   });
 
-  useEffect(() => {
-    setBounds(map.getBounds());
-  }, [map]);
-
   const dijkstraSegments = useMemo(() => {
+    const bounds = map.getBounds();
     if (!bounds) return [];
 
     const visibleStadiums = stadiums.filter((stadium) =>
@@ -162,7 +159,7 @@ function VisibleStadiumPolyline({ stadiums }) {
         ];
       })
       .filter(Boolean);
-  }, [bounds, stadiums]);
+  }, [map, stadiums, viewportVersion]);
 
   if (dijkstraSegments.length === 0) return null;
 
