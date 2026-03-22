@@ -2,13 +2,15 @@ import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
 import fs from 'node:fs';
 import path from 'node:path';
+import process from 'node:process';
 
 export default defineConfig(({ mode }) => {
-  const env = loadEnv(mode, process.cwd(), '');
+  const cwd = process.cwd();
+  const env = loadEnv(mode, cwd, '');
   const rawApiUrl = (env.VITE_API_URL ?? '').trim();
   const apiTarget = rawApiUrl || 'http://localhost:8080';
-  const certPath = path.resolve(process.cwd(), 'cert', 'cert.pem');
-  const keyPath = path.resolve(process.cwd(), 'cert', 'key.pem');
+  const certPath = path.resolve(cwd, 'cert', 'cert.pem');
+  const keyPath = path.resolve(cwd, 'cert', 'key.pem');
   const httpsConfig = fs.existsSync(certPath) && fs.existsSync(keyPath)
     ? {
         cert: fs.readFileSync(certPath),
