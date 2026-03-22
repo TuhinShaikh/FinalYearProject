@@ -6,6 +6,7 @@ export default function RideOptionsPage() {
   const [rides, setRides] = useState([]);
 
   const fetchRides = () => {
+    // I keep mock ride cards for demo reliability when external ride APIs are unavailable.
     const mockData = [
       {
         provider: "UberX",
@@ -83,6 +84,7 @@ export default function RideOptionsPage() {
         </div>
 
         <button
+          // This button intentionally triggers data generation on demand to keep first render lightweight.
           onClick={fetchRides}
           style={{
             padding: "0.85rem 1.5rem",

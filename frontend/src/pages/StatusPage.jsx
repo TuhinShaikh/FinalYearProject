@@ -100,6 +100,7 @@ export default function StatusPage() {
             </p>
           </div>
           <button
+            // Map toggle keeps the page fast by rendering the heavy leaflet map only when requested.
             onClick={() => setShowMap((prev) => !prev)}
             style={{
               padding: "0.9rem 1.6rem",

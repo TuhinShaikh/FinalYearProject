@@ -67,6 +67,7 @@ export default function ChatbotPage() {
               </p>
               <nav className="chat-page__aside-links" aria-label="Quick navigation">
                 {shortcutLinks.map((link) => (
+                  // I keep page shortcuts near chat so users can act on assistant guidance instantly.
                   <Link key={link.label} to={link.to} className="chat-page__aside-link">
                     {link.label}
                   </Link>
