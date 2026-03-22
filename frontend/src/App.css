@@ -356,6 +356,18 @@ button:focus-visible {
 .login-page button {
   align-self: flex-start;
   margin-top: 0.4rem;
+  background: #0a1f3d;
+  color: #f8fbff;
+  border: 1px solid rgba(10, 31, 61, 0.85);
+}
+
+.login-page button:hover:not(:disabled) {
+  background: #163362;
+}
+
+.login-page button:disabled {
+  background: #3e4f6b;
+  border-color: #3e4f6b;
 }
 
 .home-hero {

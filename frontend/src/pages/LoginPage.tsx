@@ -44,7 +44,7 @@ export default function LoginPage(): JSX.Element {
       return;
     }
 
-    setError("Tottenham ID invalid. Use 1882.");
+    setError("INVALID");
   };
 
   return (
@@ -80,18 +80,18 @@ export default function LoginPage(): JSX.Element {
         </button>
 
         <label htmlFor="tottenham-id" style={{ display: "block", margin: "1rem 0 0.2rem" }}>
-          Tottenham ID
+          Season/Member ID
         </label>
         <input
           id="tottenham-id"
           type="text"
-          placeholder="Enter Tottenham ID (1882)"
+          placeholder="Enter Season/Member ID"
           value={tottenhamId}
           onChange={(event) => setTottenhamId(event.target.value)}
         />
 
         <button type="button" onClick={handleTottenhamIdAccess} style={{ marginTop: "0.5rem" }}>
-          Tottenham ID Access
+          Season/Member ID Access
         </button>
       </form>
       {error && (
