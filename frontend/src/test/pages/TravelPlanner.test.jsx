@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import axios from 'axios';
-import TravelPlanner from './TravelPlanner';
+import TravelPlanner from '../../pages/TravelPlanner';
 
 vi.mock('axios');
 

@@ -4,10 +4,10 @@ import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import axios from 'axios';
-import StatusPage from './StatusPage';
+import StatusPage from '../../pages/StatusPage';
 
 vi.mock('axios');
-vi.mock('../components/TfLMap', () => ({
+vi.mock('../../components/TfLMap', () => ({
   default: () => <div data-testid="tfl-map">TfLMap</div>,
 }));
 
