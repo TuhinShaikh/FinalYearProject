@@ -16,7 +16,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-// I keep spot management here so availability and admin tools share the same endpoints.
+/**
+ * REST controller exposing CRUD endpoints for parking spots.
+ */
 @RestController
 @RequestMapping("/spots")
 public class ParkingSpotController {
@@ -27,33 +29,58 @@ public class ParkingSpotController {
         this.parkingSpotService = parkingSpotService;
     }
 
-    // I return the created spot so the frontend can update its grid immediately.
+    /**
+     * Creates a parking spot.
+     *
+     * @param spot spot payload
+     * @return saved spot
+     */
     @PostMapping
     public ResponseEntity<ParkingSpot> createSpot(@RequestBody ParkingSpot spot) {
         return ResponseEntity.ok(parkingSpotService.createSpot(spot));
     }
 
-    // I added single-spot lookup for details pages and edit dialogs.
+    /**
+     * Retrieves a parking spot by id.
+     *
+     * @param id spot identifier
+     * @return spot if found
+     */
     @GetMapping("/{id}")
     public ResponseEntity<ParkingSpot> getSpotById(@PathVariable UUID id) {
         Optional<ParkingSpot> spot = parkingSpotService.getSpotById(id);
         return spot.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
-    // I expose full spot listing because the map/grid screens depend on all slots at once.
+    /**
+     * Retrieves all parking spots.
+     *
+     * @return list of parking spots
+     */
     @GetMapping
     public ResponseEntity<List<ParkingSpot>> getAllSpots() {
         return ResponseEntity.ok(parkingSpotService.getAllSpots());
     }
 
-    // I overwrite payload id with path id to avoid accidental mismatch updates.
+    /**
+     * Updates an existing parking spot.
+     *
+     * @param id spot identifier
+     * @param updatedSpot updated payload
+     * @return saved spot
+     */
     @PutMapping("/{id}")
     public ResponseEntity<ParkingSpot> updateSpot(@PathVariable UUID id, @RequestBody ParkingSpot updatedSpot) {
         updatedSpot.setSpotId(id);
         return ResponseEntity.ok(parkingSpotService.updateSpot(updatedSpot));
     }
 
-    // I return 204 for delete to keep the response lightweight.
+    /**
+     * Deletes a parking spot by id.
+     *
+     * @param id spot identifier
+     * @return empty response
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteSpot(@PathVariable UUID id) {
         parkingSpotService.deleteSpot(id);

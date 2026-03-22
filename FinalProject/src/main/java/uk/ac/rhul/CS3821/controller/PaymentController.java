@@ -8,7 +8,9 @@ import uk.ac.rhul.CS3821.dto.PaymentRequest;
 import uk.ac.rhul.CS3821.dto.SquareConfigResponse;
 import uk.ac.rhul.CS3821.service.PaymentService;
 
-// I use this controller as a safe proxy so card tokens never need direct backend secrets in the browser.
+/**
+ * REST controller exposing payment and refund endpoints.
+ */
 @RestController
 @RequestMapping("/payments")
 public class PaymentController {
@@ -19,6 +21,11 @@ public class PaymentController {
         this.paymentService = paymentService;
     }
 
+    /**
+     * Returns Square config information needed by frontend checkout.
+     *
+     * @return Square configuration payload
+     */
     @GetMapping("/config")
     public ResponseEntity<SquareConfigResponse> getConfig() {
         try {
@@ -29,7 +36,12 @@ public class PaymentController {
         }
     }
 
-    // I process card token + amount here because payment creation should stay on the server side.
+    /**
+     * Creates a payment using a tokenized card source.
+     *
+     * @param request payment request payload
+     * @return provider payment response or validation error
+     */
     @PostMapping
     public ResponseEntity<?> createPayment(@RequestBody PaymentRequest request) {
         try {
@@ -40,7 +52,13 @@ public class PaymentController {
         }
     }
 
-    // I kept refund logic here so support/admin actions use the same endpoint flow.
+    /**
+     * Refunds a payment by id and amount.
+     *
+     * @param id payment identifier
+     * @param amountCents refund amount in minor units
+     * @return provider refund response or validation error
+     */
     @PostMapping("/{id}/refund")
     public ResponseEntity<?> refundPayment(@PathVariable String id,
                                            @RequestParam int amountCents) {

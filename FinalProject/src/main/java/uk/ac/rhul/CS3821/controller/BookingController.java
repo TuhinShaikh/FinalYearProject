@@ -16,7 +16,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-// I kept booking endpoints together here because the UI needs one clear place for create/read/update/cancel flows.
+/**
+ * REST controller exposing CRUD and lookup endpoints for bookings.
+ */
 @RestController
 @RequestMapping("/bookings")
 public class BookingController {
@@ -27,39 +29,70 @@ public class BookingController {
         this.bookingService = bookingService;
     }
 
-    // I return the saved object directly so the frontend immediately gets the generated booking id.
+    /**
+     * Creates a booking.
+     *
+     * @param booking booking payload
+     * @return saved booking
+     */
     @PostMapping
     public ResponseEntity<Booking> createBooking(@RequestBody Booking booking) {
         return ResponseEntity.ok(bookingService.createBooking(booking));
     }
 
-    // I used UUID lookup here because bookings are referenced by id across several pages.
+    /**
+     * Retrieves a booking by id.
+     *
+     * @param id booking identifier
+     * @return booking if found
+     */
     @GetMapping("/{id}")
     public ResponseEntity<Booking> getBookingById(@PathVariable UUID id) {
         Optional<Booking> booking = bookingService.getBookingById(id);
         return booking.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
-    // I added this so user history can be loaded without pulling unrelated bookings.
+    /**
+     * Retrieves bookings for a user.
+     *
+     * @param userId user identifier
+     * @return user bookings
+     */
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<Booking>> getBookingsByUser(@PathVariable UUID userId) {
         return ResponseEntity.ok(bookingService.getBookingsByUser(userId));
     }
 
-    // I query by spot so availability screens can show exactly who reserved a slot and when.
+    /**
+     * Retrieves bookings for a parking spot.
+     *
+     * @param spotId spot identifier
+     * @return spot bookings
+     */
     @GetMapping("/spot/{spotId}")
     public ResponseEntity<List<Booking>> getBookingsBySpot(@PathVariable UUID spotId) {
         return ResponseEntity.ok(bookingService.getBookingsBySpot(spotId));
     }
 
-    // I force the path id onto the payload so clients cannot accidentally update the wrong booking.
+    /**
+     * Updates a booking by id.
+     *
+     * @param id booking identifier
+     * @param updatedBooking updated payload
+     * @return saved booking
+     */
     @PutMapping("/{id}")
     public ResponseEntity<Booking> updateBooking(@PathVariable UUID id, @RequestBody Booking updatedBooking) {
         updatedBooking.setBookingId(id);
         return ResponseEntity.ok(bookingService.updateBooking(updatedBooking));
     }
 
-    // I return 204 here because the action is complete and there is no response body to send back.
+    /**
+     * Cancels (deletes) a booking by id.
+     *
+     * @param id booking identifier
+     * @return empty response
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> cancelBooking(@PathVariable UUID id) {
         bookingService.cancelBooking(id);

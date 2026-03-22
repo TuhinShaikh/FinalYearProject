@@ -4,7 +4,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.*;
 
-// I kept route planning here so the UI can request shortest paths from one endpoint.
+/**
+ * REST controller exposing shortest-route travel planning endpoints.
+ */
 @RestController
 @RequestMapping("/api/travel")
 public class TravelController {
@@ -20,7 +22,14 @@ public class TravelController {
     }
     static class Route { List<String> path; double cost; Route(List<String> p,double c){path=p;cost=c;} }
 
-    // I run Dijkstra here because weights are positive and I need a predictable shortest path.
+    /**
+     * Computes the shortest path in the provided graph using Dijkstra's algorithm.
+     *
+     * @param g graph instance
+     * @param start start node id
+     * @param goal goal node id
+     * @return computed route
+     */
     static Route dijkstra(Graph g,String start,String goal){
         Map<String,Double> dist=new HashMap<>();
         Map<String,String> prev=new HashMap<>();
@@ -41,14 +50,27 @@ public class TravelController {
         return new Route(List.of(),Double.POSITIVE_INFINITY);
     }
 
-    // I rebuild the path from the predecessor map so the frontend gets ordered nodes.
+    /**
+     * Reconstructs an ordered path from predecessor links.
+     *
+     * @param prev predecessor map
+     * @param goal goal node id
+     * @param cost total route cost
+     * @return reconstructed route
+     */
     static Route reconstruct(Map<String,String> prev,String goal,double cost){
         List<String> path=new ArrayList<>(); String cur=goal;
         while(cur!=null){path.add(cur);cur=prev.get(cur);} Collections.reverse(path);
         return new Route(path,cost);
     }
 
-    // I return nodes + cost together because the client needs both for display and comparison.
+    /**
+     * Returns a shortest route between start and goal using a predefined demo graph.
+     *
+     * @param start start node id
+     * @param goal goal node id
+     * @return route payload containing nodes and total cost
+     */
     @GetMapping("/route")
     public ResponseEntity<?> route(@RequestParam String start,@RequestParam String goal){
         Graph g=new Graph();
