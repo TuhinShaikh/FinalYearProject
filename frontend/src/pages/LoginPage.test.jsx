@@ -27,8 +27,6 @@ describe('LoginPage', () => {
   });
 
   it('shows validation error when submit is missing credentials', async () => {
-    const user = userEvent.setup();
-
     render(
       <MemoryRouter>
         <LoginPage />
