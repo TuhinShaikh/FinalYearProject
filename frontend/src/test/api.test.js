@@ -1,6 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { clearAuthData, isAuthenticated, login, register } from '../api';
 
+// API tests focus on auth token persistence and payload normalization rules.
+
 describe('api module', () => {
   beforeEach(() => {
     vi.restoreAllMocks();
