@@ -1,6 +1,6 @@
 import React from 'react';
 import { describe, it, beforeEach, expect, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import LoginPage from './LoginPage';
@@ -35,7 +35,7 @@ describe('LoginPage', () => {
       </MemoryRouter>
     );
 
-    await user.click(screen.getByRole('button', { name: 'Login' }));
+    fireEvent.submit(screen.getByRole('button', { name: 'Login' }).closest('form'));
 
     expect(screen.getByText('Please provide both an email and password.')).toBeInTheDocument();
     expect(loginMock).not.toHaveBeenCalled();
