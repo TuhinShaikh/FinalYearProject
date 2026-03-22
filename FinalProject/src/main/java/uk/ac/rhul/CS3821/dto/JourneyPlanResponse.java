@@ -1,18 +1,28 @@
 package uk.ac.rhul.CS3821.dto;
 
-// I use this DTO to return a compact journey summary to the frontend.
+/**
+ * Compact response payload for journey-planning summaries.
+ */
 public class JourneyPlanResponse {
     private String origin;
     private String destination;
     private String duration;
 
+    /**
+     * Default constructor for serialization/deserialization.
+     */
     public JourneyPlanResponse() {}
 
+    /**
+     * Creates a journey summary response.
+     *
+     * @param origin journey origin
+     * @param destination journey destination
+     * @param duration journey duration string
+     */
     public JourneyPlanResponse(String origin, String destination, String duration) {
         this.origin = origin;
         this.destination = destination;
         this.duration = duration;
     }
-
-    // I keep this class minimal because it is just a response shape.
 }
