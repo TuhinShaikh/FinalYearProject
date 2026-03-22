@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 
+// I isolate Square card setup here so secure payment tokenization stays separated from booking UI.
+
 export default function PaymentForm({ amountCents = 2000 }) {
   const [card, setCard] = useState(null);
   const [loading, setLoading] = useState(true);

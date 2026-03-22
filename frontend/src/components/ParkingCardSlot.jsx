@@ -1,5 +1,7 @@
 import React from "react";
 
+// I use this card to show quick per-slot status with a simple click target.
+
 export default function ParkingCardSlot({ slot, onSelect }) {
   const { id, status } = slot;
 
