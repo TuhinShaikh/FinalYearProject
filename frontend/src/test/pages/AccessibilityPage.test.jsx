@@ -2,7 +2,7 @@ import React from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import AccessibilityPage from './AccessibilityPage';
+import AccessibilityPage from '../../pages/AccessibilityPage';
 
 // We mock the hook so these tests stay focused on page wiring, not context internals.
 const mockSetFontSize = vi.fn();
@@ -12,7 +12,7 @@ const mockToggleReduceMotion = vi.fn();
 const mockToggleStepFree = vi.fn();
 const mockResetAccessibility = vi.fn();
 
-vi.mock('../context/AccessibilityContext', () => ({
+vi.mock('../../context/AccessibilityContext', () => ({
   useAccessibility: () => ({
     fontSize: 16,
     highContrast: false,
