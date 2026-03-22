@@ -53,7 +53,9 @@ export default function RegisterUser(): JSX.Element {
           onChange={e => setPassword(e.target.value)}
           required
         />
-        <button type="submit">Register</button>
+        <button type="submit" disabled={loading}>
+          {loading ? "Creating account..." : "Register"}
+        </button>
       </form>
       {error && (
         <p style={{ color: "#b00020", marginTop: "0.75rem" }} role="alert" aria-live="polite">
