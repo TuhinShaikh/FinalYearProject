@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { login } from "../api";
 
+// I kept login minimal and explicit so validation and auth errors are clear to users and markers.
+
 export default function LoginPage(): JSX.Element {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");

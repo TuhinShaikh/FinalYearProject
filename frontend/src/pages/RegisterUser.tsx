@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import axios from "axios";
 
+// I made registration straightforward so users can join quickly before booking travel and parking.
+
 export default function RegisterUser(): JSX.Element {
   const [name, setName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
