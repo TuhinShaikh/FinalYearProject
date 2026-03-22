@@ -3,7 +3,7 @@ import { describe, it, beforeEach, expect, vi } from 'vitest';
 import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
-import LoginPage from './LoginPage';
+import LoginPage from '../../pages/LoginPage';
 
 // Login tests cover both normal auth and the demo-day Season/Member ID shortcut.
 
@@ -11,6 +11,10 @@ const mockNavigate = vi.fn();
 const loginMock = vi.fn();
 
 vi.mock('../api', () => ({
+  
+}));
+
+vi.mock('../../api', () => ({
   login: (...args) => loginMock(...args),
 }));
 
