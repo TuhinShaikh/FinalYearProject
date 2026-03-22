@@ -8,6 +8,7 @@ export default function ParkingSlotGrid({ slots, onSelect }) {
       {slots.map((slot, index) => (
         <div
           key={index}
+          // Clicking a tile reports the full slot object to parent selection state.
           onClick={() => onSelect(slot)}
           style={{
             padding: "20px",

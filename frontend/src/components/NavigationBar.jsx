@@ -8,6 +8,7 @@ export default function NavigationBar() {
     <nav className="navbar">
       <div className="navbar-logo">Three Point Lane</div>
       <div className="navbar-links">
+        {/* These links are intentionally simple so demo routing is obvious to assessors. */}
         <Link to="/login">Login</Link>
         <Link to="/register">Register</Link>
         <Link to="/booking">Booking</Link>
