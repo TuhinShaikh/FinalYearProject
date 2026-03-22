@@ -146,12 +146,12 @@ function countStatuses(slots) {
 }
 
 export default function BookingAndPaymentPage() {
-  const [slots, setSlots] = useState(() => applyAiBlocks(createSlots()));
+  // I generate and freeze the AI slot pattern once per page load.
+  const [slots] = useState(() => applyAiBlocks(createSlots()));
   const [selectedSlot, setSelectedSlot] = useState(null);
   const [filter, setFilter] = useState("all");
   const [status, setStatus] = useState("");
   const [cardLoading, setCardLoading] = useState(false);
-  const [seed, setSeed] = useState(Date.now());
 
   const cardRef = useRef(null);
 
@@ -162,10 +162,7 @@ export default function BookingAndPaymentPage() {
 
   const slotCounts = useMemo(() => countStatuses(slots), [slots]);
 
-  const weather = useMemo(
-    () => weatherScenarios[seed % weatherScenarios.length],
-    [seed]
-  );
+  const weather = weatherScenarios[0];
 
   const statusColor = useMemo(() => {
     if (!status) return "#1c3152";
@@ -289,7 +286,7 @@ export default function BookingAndPaymentPage() {
       cancelled = true;
       teardown();
     };
-  }, [selectedSlot?.id]);
+  }, [selectedSlot]);
 
   return (
     <main
