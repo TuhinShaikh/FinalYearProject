@@ -5,7 +5,9 @@ import uk.ac.rhul.CS3821.model.ParkingSpot;
 
 import java.util.UUID;
 
-// I keep spot persistence here so availability updates stay centralized.
+/**
+ * Repository for parking spot persistence operations.
+ */
 public interface ParkingSpotRepository extends JpaRepository<ParkingSpot, UUID> {
-    // I left this ready for future custom spot queries.
+    // Reserved for future custom parking-spot queries.
 }
