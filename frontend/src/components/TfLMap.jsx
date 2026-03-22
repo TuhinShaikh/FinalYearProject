@@ -77,7 +77,7 @@ function VisibleStadiumPolyline({ stadiums }) {
     zoomend: () => setViewportVersion((prev) => prev + 1),
   });
 
-  const bounds = useMemo(() => map.getBounds(), [map, viewportVersion]);
+  const bounds = map.getBounds();
 
   const dijkstraSegments = useMemo(() => {
     if (!bounds) return [];
@@ -160,7 +160,7 @@ function VisibleStadiumPolyline({ stadiums }) {
         ];
       })
       .filter(Boolean);
-  }, [bounds, stadiums]);
+  }, [bounds, stadiums, viewportVersion]);
 
   if (dijkstraSegments.length === 0) return null;
 

@@ -8,18 +8,23 @@ export default function StatusPage() {
   const [tflStatus, setTflStatus] = useState([]);
   const [showMap, setShowMap] = useState(false);
 
-  async function fetchTfL() {
-    try {
-      const res = await axios.get("https://api.tfl.gov.uk/Line/Mode/tube/Status");
-      setTflStatus(res.data);
-    } catch (err) {
-      console.error("TfL error", err);
-    }
-  }
-
   useEffect(() => {
     // Initial pull keeps dashboard content ready when the user lands.
-    fetchTfL();
+    let mounted = true;
+
+    axios
+      .get("https://api.tfl.gov.uk/Line/Mode/tube/Status")
+      .then((res) => {
+        if (!mounted) return;
+        setTflStatus(res.data);
+      })
+      .catch((err) => {
+        console.error("TfL error", err);
+      });
+
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   return (
