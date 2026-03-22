@@ -441,6 +441,7 @@ button:focus-visible {
 }
 
 body,
+body {
   line-height: 1.6;
 }
 
@@ -1451,6 +1452,8 @@ body, html, #root {
   border: 1px solid rgba(41, 53, 60, 0.12);
   box-shadow: 0 40px 70px rgba(41, 53, 60, 0.18);
 }
+
+.hero-overlay h1 {
   display: inline-block;
 }
 

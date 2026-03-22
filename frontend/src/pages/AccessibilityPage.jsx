@@ -1,6 +1,8 @@
 import React from "react";
 import { useAccessibility } from "../context/AccessibilityContext";
 
+// I use this page to centralize all accessibility toggles so users can tune the full experience in one place.
+
 export default function AccessibilityPage() {
   const {
     fontSize,

@@ -2,6 +2,8 @@ import React, { useMemo, useState, useEffect, useRef } from "react";
 import "../App.css";
 import logo from "../assets/image.jpg";
 
+// I designed this page to combine slot discovery and checkout so matchday booking stays in one smooth flow.
+
 const weatherScenarios = [
   {
     icon: "☀️",

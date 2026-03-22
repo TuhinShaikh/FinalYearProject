@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import "../App.css";
 import ChatWidget from "../components/ChatWidget";
 
+// I keep the assistant page separate so guidance, shortcuts, and chat context stay focused.
+
 const promptHighlights = [
   {
     title: "Plan a journey",
