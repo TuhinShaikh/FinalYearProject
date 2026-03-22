@@ -13,6 +13,8 @@ import LoginPage from "./pages/LoginPage";
 import RegisterUser from "./pages/RegisterUser";
 import ChatbotPage from "./pages/ChatbotPage";
 
+// I use App as the top-level shell that switches between landing mode and full in-app navigation.
+
 export default function App() {
   const location = useLocation();
   const isLoginPage = location.pathname === "/";

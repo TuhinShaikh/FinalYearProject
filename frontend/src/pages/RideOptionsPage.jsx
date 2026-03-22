@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 
+// I use this page to present quick ride-hailing comparisons near the stadium pickup zones.
+
 export default function RideOptionsPage() {
   const [rides, setRides] = useState([]);
 

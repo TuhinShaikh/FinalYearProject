@@ -4,6 +4,8 @@ import axios from "axios";
 import TfLMap from "../components/TfLMap";
 import stadiumImage from "../assets/stadium.jpg";
 
+// I built this dashboard to keep live TfL health, route entry points, and stadium context together.
+
 export default function StatusPage() {
   const [tflStatus, setTflStatus] = useState([]);
   const [showMap, setShowMap] = useState(false);

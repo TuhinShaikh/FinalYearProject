@@ -1,5 +1,7 @@
 import { useState } from "react";
 
+// I use this page as the main TfL journey workspace with disambiguation, save, and handoff actions.
+
 const defaultOrigin = "London Bridge";
 const defaultDestination = "King's Cross St. Pancras";
 

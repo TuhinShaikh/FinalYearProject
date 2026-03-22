@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import axios from "axios";
 
+// I kept this planner page focused on recommendation fetching so route comparison is easy to demo.
+
 export default function TravelPlanner() {
   const [options, setOptions] = useState([]);
   const [loading, setLoading] = useState(false);
