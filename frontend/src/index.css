@@ -1,4 +1,5 @@
 /* I keep global browser defaults and base typography here so the app starts from a consistent foundation. */
+/* Base root tokens for first paint before feature styles from App.css load. */
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -24,6 +25,7 @@ a:hover {
 }
 
 body {
+  /* Body baseline prevents layout jumps across pages with very different content sizes. */
   margin: 0;
   background-color: #e7f4ff;
   min-width: 320px;
@@ -37,6 +39,7 @@ h1 {
 }
 
 button {
+  /* Shared button defaults are intentionally neutral and then overridden per feature card/page. */
   border-radius: 8px;
   border: 1px solid transparent;
   padding: 0.6em 1.2em;
