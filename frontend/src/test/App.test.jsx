@@ -60,13 +60,14 @@ describe('App routes', () => {
     ];
 
     routeExpectations.forEach(([route, expectedText]) => {
-      render(
+      const { unmount } = render(
         <MemoryRouter initialEntries={[route]}>
           <App />
         </MemoryRouter>
       );
 
       expect(screen.getByText(expectedText)).toBeInTheDocument();
+      unmount();
     });
   });
 });
