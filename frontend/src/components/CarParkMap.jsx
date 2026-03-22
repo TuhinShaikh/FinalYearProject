@@ -1,5 +1,7 @@
 import React, { useMemo } from "react";
 
+// I use this component to visualize level-by-level parking layout and slot selection around the stadium.
+
 const areaLabels = {
   top: "North Plaza",
   right: "East Stands",
