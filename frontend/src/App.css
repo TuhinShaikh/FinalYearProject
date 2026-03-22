@@ -1,3 +1,4 @@
+/* I keep app-level layout, accessibility themes, and shared UI styling rules in this stylesheet. */
 :root {
   --deep-navy: #1c2333;
   --indigo: #3c4e6b;

@@ -1,3 +1,4 @@
+/* I keep global browser defaults and base typography here so the app starts from a consistent foundation. */
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
