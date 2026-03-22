@@ -10,10 +10,6 @@ import LoginPage from '../../pages/LoginPage';
 const mockNavigate = vi.fn();
 const loginMock = vi.fn();
 
-vi.mock('../api', () => ({
-  
-}));
-
 vi.mock('../../api', () => ({
   login: (...args) => loginMock(...args),
 }));

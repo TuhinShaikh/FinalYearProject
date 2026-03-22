@@ -3,14 +3,14 @@ import { describe, it, beforeEach, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
-import RegisterUser from './RegisterUser';
+import RegisterUser from '../../pages/RegisterUser';
 
 // Registration tests prove we normalize input, handle API errors, and route users correctly.
 
 const mockNavigate = vi.fn();
 const registerMock = vi.fn();
 
-vi.mock('../api', () => ({
+vi.mock('../../api', () => ({
   register: (...args) => registerMock(...args),
 }));
 
