@@ -7,18 +7,40 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-// I keep booking query methods here so service logic stays focused on business rules.
+/**
+ * Repository for booking persistence and booking-centric query operations.
+ */
 public interface BookingRepository extends JpaRepository<Booking, UUID> {
 
-    // I use this when showing a user's booking history.
+    /**
+     * Finds all bookings belonging to a user.
+     *
+     * @param userId user identifier
+     * @return bookings created by that user
+     */
     List<Booking> findByUser_UserId(UUID userId);
 
-    // I use this to inspect all bookings for a specific spot.
+    /**
+     * Finds all bookings for a specific parking spot.
+     *
+     * @param spotId parking spot identifier
+     * @return bookings associated with the spot
+     */
     List<Booking> findBySpot_SpotId(UUID spotId);
 
-    // I use this for dashboard-style status filtering.
+    /**
+     * Finds bookings by status.
+     *
+     * @param status booking lifecycle status
+     * @return bookings in the requested status
+     */
     List<Booking> findByStatus(String status);
 
-    // I use this for guest lookup flows with confirmation code.
+    /**
+     * Finds a booking by confirmation code.
+     *
+     * @param confirmationCode customer-facing booking confirmation code
+     * @return booking with the matching code, if present
+     */
     Optional<Booking> findByConfirmationCode(String confirmationCode);
 }
