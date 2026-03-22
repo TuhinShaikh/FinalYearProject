@@ -1,4 +1,5 @@
 // src/api.js
+// I keep all frontend HTTP calls here so auth, bookings, rides, and payments share one client style.
 const API_URL = (import.meta.env.VITE_API_URL ?? "").trim().replace(/\/$/, "");
 
 const ACCESS_TOKEN_KEY = "accessToken";

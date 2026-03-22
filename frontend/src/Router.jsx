@@ -7,6 +7,8 @@ import AccessibilityPage from "./pages/AccessibilityPage";
 import StatusPage from "./pages/StatusPage";
 import NavigationBar from "./components/NavigationBar";
 
+// I keep this lightweight router for isolated feature demos outside the main app shell.
+
 export default function AppRouter() {
   return (
     <Router>

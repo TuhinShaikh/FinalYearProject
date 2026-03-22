@@ -10,6 +10,7 @@ const defaultSettings = {
   stepFree: false,
 };
 
+// I store and expose accessibility preferences globally so every page reacts consistently.
 const AccessibilityContext = createContext(null);
 
 function loadSavedSettings() {
