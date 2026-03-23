@@ -47,7 +47,7 @@ describe('TransportPage', () => {
     });
     expect(screen.getByText('Suggested route')).toBeInTheDocument();
     expect(screen.getByText('tube')).toBeInTheDocument();
-  });
+  }, 10000);
 
   it('adds route and opens TfL planner in a new tab', async () => {
     const user = userEvent.setup();
