@@ -3,14 +3,6 @@
 
 Simple web app for matchday travel and parking.
 
-## What It Does
-
-- User login and registration
-- Journey planning and route suggestions
-- Ride and train options
-- Parking booking and payment flow
-- Accessibility preferences
-
 ## Project Folders
 
 - Backend: `FinalProject`
