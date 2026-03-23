@@ -53,15 +53,6 @@
 # ** Accessing the App**
 - Visit **http://localhost:5173**  
 - Frontend automatically proxies API requests to **http://localhost:8080**
+-
 
 ---
-
-# **Assessment Rubric**
-- The project markscheme and scoring breakdown are documented in `MARKSCHEME.md`.
-- This includes the revised 20-mark technical section split across:
-  - Technical complexity
-  - Library/framework usage
-  - Advanced feature range
-
----
-
