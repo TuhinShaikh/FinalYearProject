@@ -5,6 +5,9 @@ import org.springframework.stereotype.Service;
 import uk.ac.rhul.CS3821.dto.AccessTokenResponse;
 import uk.ac.rhul.CS3821.dto.LoginRequest;
 import uk.ac.rhul.CS3821.dto.RegisterRequest;
+import uk.ac.rhul.CS3821.exception.InvalidCredentialsException;
+import uk.ac.rhul.CS3821.exception.UserAlreadyExistsException;
+import uk.ac.rhul.CS3821.exception.UserNotFoundException;
 import uk.ac.rhul.CS3821.model.User;
 import uk.ac.rhul.CS3821.repository.UserRepository;
 import uk.ac.rhul.CS3821.security.JwtUtil;
@@ -32,7 +35,7 @@ public class AuthService {
      */
     public AccessTokenResponse register(RegisterRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new RuntimeException("A user with this email already exists.");
+            throw new UserAlreadyExistsException("A user with this email already exists.");
         }
 
         User user = new User();
@@ -54,10 +57,10 @@ public class AuthService {
      */
     public AccessTokenResponse login(LoginRequest request) {
         User existing = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         if (!passwordEncoder.matches(request.getPassword(), existing.getPassword())) {
-            throw new RuntimeException("Invalid credentials");
+            throw new InvalidCredentialsException("Invalid credentials");
         }
 
         existing.setLastLogin(Instant.now());

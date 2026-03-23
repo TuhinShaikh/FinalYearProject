@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">90.9% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/11</span>
+                <span class='fraction'>10/11</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">88.88% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/9</span>
+                <span class='fraction'>8/9</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/3</span>
+                <span class='fraction'>3/3</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">90.9% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/11</span>
+                <span class='fraction'>10/11</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -164,32 +164,31 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -223,7 +222,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -258,15 +258,15 @@ import axios from "axios";
 &nbsp;
 // I kept this planner page focused on recommendation fetching so route comparison is easy to demo.
 &nbsp;
-export default function <span class="fstat-no" title="function not covered" >TravelPlanner() {</span>
-  const [options, setOptions<span class="cstat-no" title="statement not covered" >] = useState([]);</span>
-  const [loading, setLoading<span class="cstat-no" title="statement not covered" >] = useState(false);</span>
+export default function TravelPlanner() {
+  const [options, setOptions] = useState([]);
+  const [loading, setLoading] = useState(false);
 &nbsp;
-  const fetchRecommendations = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >async () =&gt; {</span></span>
-<span class="cstat-no" title="statement not covered" >    try {</span>
-<span class="cstat-no" title="statement not covered" >      setLoading(true);</span>
+  const fetchRecommendations = async () =&gt; {
+    try {
+      setLoading(true);
 &nbsp;
-      const response = <span class="cstat-no" title="statement not covered" >await axios.post("/travel/recommend", null, {</span>
+      const response = await axios.post("/travel/recommend", null, {
         params: {
           origin: "Stratford",
           destination: "Liverpool Street",
@@ -275,15 +275,15 @@ export default function <span class="fstat-no" title="function not covered" >Tra
         },
       });
 &nbsp;
-<span class="cstat-no" title="statement not covered" >      setOptions(response.data || []);</span>
+      setOptions(response.data || <span class="branch-1 cbranch-no" title="branch not covered" >[])</span>;
     } catch (err) {
 <span class="cstat-no" title="statement not covered" >      console.error("Failed to fetch travel recommendations", err);</span>
     } finally {
-<span class="cstat-no" title="statement not covered" >      setLoading(false);</span>
+      setLoading(false);
     }
   };
 &nbsp;
-<span class="cstat-no" title="statement not covered" >  return (</span>
+  return (
     &lt;main
       role="main"
       aria-label="Travel Planner"
@@ -317,8 +317,8 @@ export default function <span class="fstat-no" title="function not covered" >Tra
           &lt;p style={{ opacity: 0.7 }}&gt;No recommendations yet. Click the button above.&lt;/p&gt;
         )}
 &nbsp;
-        {options.map(<span class="fstat-no" title="function not covered" >(o</span>pt, idx) =&gt; (
-<span class="cstat-no" title="statement not covered" >          &lt;div</span>
+        {options.map((opt, idx) =&gt; (
+          &lt;div
             key={idx}
             style={{
               backgroundColor: "#f8fbff",
@@ -355,7 +355,7 @@ export default function <span class="fstat-no" title="function not covered" >Tra
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-03-22T22:55:30.968Z
+                at 2026-03-23T17:55:28.370Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

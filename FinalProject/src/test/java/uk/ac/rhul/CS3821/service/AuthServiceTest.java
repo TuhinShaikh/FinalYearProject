@@ -10,6 +10,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import uk.ac.rhul.CS3821.dto.AccessTokenResponse;
 import uk.ac.rhul.CS3821.dto.LoginRequest;
 import uk.ac.rhul.CS3821.dto.RegisterRequest;
+import uk.ac.rhul.CS3821.exception.InvalidCredentialsException;
+import uk.ac.rhul.CS3821.exception.UserAlreadyExistsException;
+import uk.ac.rhul.CS3821.exception.UserNotFoundException;
 import uk.ac.rhul.CS3821.model.User;
 import uk.ac.rhul.CS3821.repository.UserRepository;
 import uk.ac.rhul.CS3821.security.JwtUtil;
@@ -44,7 +47,7 @@ class AuthServiceTest {
         when(userRepository.existsByEmail("jane@example.com")).thenReturn(true);
 
         assertThatThrownBy(() -> authService.register(request))
-                .isInstanceOf(RuntimeException.class)
+            .isInstanceOf(UserAlreadyExistsException.class)
                 .hasMessageContaining("already exists");
     }
 
@@ -78,7 +81,7 @@ class AuthServiceTest {
         when(userRepository.findByEmail("none@example.com")).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> authService.login(request))
-                .isInstanceOf(RuntimeException.class)
+            .isInstanceOf(UserNotFoundException.class)
                 .hasMessageContaining("User not found");
     }
 
@@ -91,7 +94,7 @@ class AuthServiceTest {
         when(passwordEncoder.matches("wrong", "encoded")).thenReturn(false);
 
         assertThatThrownBy(() -> authService.login(request))
-                .isInstanceOf(RuntimeException.class)
+            .isInstanceOf(InvalidCredentialsException.class)
                 .hasMessageContaining("Invalid credentials");
     }
 

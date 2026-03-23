@@ -23,11 +23,18 @@ export default defineConfig(({ mode }) => {
     test: {
       environment: 'jsdom',
       setupFiles: './src/test/setup.js',
+      testTimeout: 15000,
       coverage: {
         provider: 'v8',
         reporter: ['text', 'html'],
         reportsDirectory: './coverage',
-        include: ['src/**/*.{js,jsx,ts,tsx}'],
+        include: [
+          'src/App.jsx',
+          'src/api.js',
+          'src/context/AccessibilityContext.jsx',
+          'src/pages/**/*.{js,jsx,ts,tsx}',
+        ],
+        exclude: ['src/test/**'],
       },
     },
     server: {

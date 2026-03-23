@@ -1,58 +1,131 @@
 
+# Tottenham Hotspur Travel Assistant
 
-# **How to Run the Application**
+Final-year project web application for matchday travel and parking support.
 
-### ** Project Structure**
-- **Backend:** Spring Boot (Java 17) → `FinalProject/`
-- **Frontend:** React (Vite) → `frontend/`
-- **Both must run at the same time**
+The system includes:
+- Backend API built with Spring Boot (Java 17)
+- Frontend web app built with React and Vite
+- Authentication, journey planning, ride suggestions, accessibility settings, and payment integration
 
----
+## Project Structure
 
-#  **Prerequisites**
-- Java 17 (JDK)  
-- Maven  
-- Node.js v18+ & npm  
-- PostgreSQL (running on **port 5432**)  
+- Backend: FinalProject
+- Frontend: frontend
 
----
+Both services must run at the same time during development.
 
-#  **1. Run the Backend (Spring Boot)**
-- Open a terminal  
-- Navigate to backend:  
-  ```bash
-  cd FinalProject
-  ```
-- Start server:  
-  ```bash
-  mvn spring-boot:run
-  ```
-- Backend runs at: **http://localhost:8080**  
-- Ensure correct DB credentials in `application.properties`
+## Technology Stack
 
----
+### Backend
+- Java 17
+- Spring Boot
+- Spring Security
+- Spring Data JPA
+- PostgreSQL
+- JWT
+- JUnit and Mockito
+- JaCoCo
 
-#  **2. Run the Frontend (React + Vite)**
-- Open a second terminal  
-- Navigate to frontend:  
-  ```bash
-  cd frontend
-  ```
-- Install dependencies (first time only):  
-  ```bash
-  npm install
-  ```
-- Start dev server:  
-  ```bash
-  npm run dev
-  ```
-- Frontend runs at: **http://localhost:5173**
+### Frontend
+- React
+- Vite
+- React Router
+- Axios
+- Vitest and Testing Library
 
----
+## Prerequisites
 
-# ** Accessing the App**
-- Visit **http://localhost:5173**  
-- Frontend automatically proxies API requests to **http://localhost:8080**
--
+- Java 17 JDK
+- Maven
+- Node.js 18+ and npm
+- PostgreSQL (default local port 5432)
 
----
+## Configuration
+
+The backend reads sensitive values from environment variables.
+
+Required variables:
+- JWT_SECRET
+- SQUARE_ACCESS_TOKEN
+- DB_USERNAME
+- DB_PASSWORD
+
+Example values are provided in:
+- FinalProject/.env.example
+
+### Set Variables (Linux/macOS/WSL)
+
+```bash
+export JWT_SECRET="replace-with-32-byte-secret"
+export SQUARE_ACCESS_TOKEN="replace-with-square-token"
+export DB_USERNAME="postgres"
+export DB_PASSWORD="postgres"
+```
+
+### Set Variables (PowerShell)
+
+```powershell
+$env:JWT_SECRET = "replace-with-32-byte-secret"
+$env:SQUARE_ACCESS_TOKEN = "replace-with-square-token"
+$env:DB_USERNAME = "postgres"
+$env:DB_PASSWORD = "postgres"
+```
+
+## Run the Backend
+
+```bash
+cd FinalProject
+mvn spring-boot:run
+```
+
+Backend default URL:
+- http://localhost:8080
+
+## Run the Frontend
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Frontend default URL:
+- http://localhost:5173
+
+The frontend development server proxies API calls to the backend.
+
+## Testing
+
+### Backend Tests
+
+```bash
+cd FinalProject
+mvn test
+```
+
+### Frontend Tests
+
+```bash
+cd frontend
+npm test
+```
+
+### Frontend Coverage
+
+```bash
+cd frontend
+npm run test:coverage
+```
+
+## Notes for Assessment
+
+- Code is documented with Javadocs and focused inline comments.
+- Unit and integration tests are included for both backend and frontend.
+- Security-sensitive values are externalized via environment variables.
+
+## Troubleshooting
+
+- If backend startup fails, verify Java version is 17 and PostgreSQL is running.
+- If frontend cannot call APIs, confirm backend is running on port 8080.
+- If tests fail in Windows shell, run commands through WSL where project tooling is configured.
