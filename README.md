@@ -1,88 +1,32 @@
 
 # Tottenham Hotspur Travel Assistant
 
-Final-year project web application for matchday travel and parking support.
+Simple web app for matchday travel and parking.
 
-The system includes:
-- Backend API built with Spring Boot (Java 17)
-- Frontend web app built with React and Vite
-- Authentication, journey planning, ride suggestions, accessibility settings, and payment integration
+## Project Folders
 
-## Project Structure
+- Backend: `FinalProject`
+- Frontend: `frontend`
 
-- Backend: FinalProject
-- Frontend: frontend
+Run both for full local development.
 
-Both services must run at the same time during development.
+## Requirements
 
-## Technology Stack
-
-### Backend
 - Java 17
-- Spring Boot
-- Spring Security
-- Spring Data JPA
-- PostgreSQL
-- JWT
-- JUnit and Mockito
-- JaCoCo
-
-### Frontend
-- React
-- Vite
-- React Router
-- Axios
-- Vitest and Testing Library
-
-## Prerequisites
-
-- Java 17 JDK
 - Maven
 - Node.js 18+ and npm
-- PostgreSQL (default local port 5432)
+- PostgreSQL (default: `5432`)
 
-## Configuration
+## Run Locally
 
-The backend reads sensitive values from environment variables.
-
-Required variables:
-- JWT_SECRET
-- SQUARE_ACCESS_TOKEN
-- DB_USERNAME
-- DB_PASSWORD
-
-Example values are provided in:
-- FinalProject/.env.example
-
-### Set Variables (Linux/macOS/WSL)
-
-```bash
-export JWT_SECRET="replace-with-32-byte-secret"
-export SQUARE_ACCESS_TOKEN="replace-with-square-token"
-export DB_USERNAME="postgres"
-export DB_PASSWORD="postgres"
-```
-
-### Set Variables (PowerShell)
-
-```powershell
-$env:JWT_SECRET = "replace-with-32-byte-secret"
-$env:SQUARE_ACCESS_TOKEN = "replace-with-square-token"
-$env:DB_USERNAME = "postgres"
-$env:DB_PASSWORD = "postgres"
-```
-
-## Run the Backend
+Backend:
 
 ```bash
 cd FinalProject
 mvn spring-boot:run
 ```
 
-Backend default URL:
-- http://localhost:8080
-
-## Run the Frontend
+Frontend:
 
 ```bash
 cd frontend
@@ -90,42 +34,11 @@ npm install
 npm run dev
 ```
 
-Frontend default URL:
-- http://localhost:5173
+- Backend URL: `http://localhost:8080`
+- Frontend URL: `http://localhost:5173`
 
-The frontend development server proxies API calls to the backend.
+## Quick Fixes
 
-## Testing
-
-### Backend Tests
-
-```bash
-cd FinalProject
-mvn test
-```
-
-### Frontend Tests
-
-```bash
-cd frontend
-npm test
-```
-
-### Frontend Coverage
-
-```bash
-cd frontend
-npm run test:coverage
-```
-
-## Notes for Assessment
-
-- Code is documented with Javadocs and focused inline comments.
-- Unit and integration tests are included for both backend and frontend.
-- Security-sensitive values are externalized via environment variables.
-
-## Troubleshooting
-
-- If backend startup fails, verify Java version is 17 and PostgreSQL is running.
-- If frontend cannot call APIs, confirm backend is running on port 8080.
-- If tests fail in Windows shell, run commands through WSL where project tooling is configured.
+- Backend not starting: check Java is 17 and PostgreSQL is running.
+- Frontend API issues: make sure backend is running on port 8080.
+- Windows shell test issues: run commands in WSL.
