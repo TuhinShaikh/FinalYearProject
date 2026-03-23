@@ -1,40 +1,70 @@
 package uk.ac.rhul.CS3821.dto;
 
-// Captures the information required to create a new user account
+/**
+ * Payload used to register a new user account.
+ */
 public class RegisterRequest {
     private String name;
     private String email;
     private String password;
 
+    /**
+     * Default constructor for JSON deserialization.
+     */
     public RegisterRequest() {
     }
 
+    /**
+     * Creates a registration payload.
+     *
+     * @param name user's display name
+     * @param email user's unique email address
+     * @param password raw password provided by the client
+     */
     public RegisterRequest(String name, String email, String password) {
         this.name = name;
         this.email = email;
         this.password = password;
     }
 
+    /**
+     * @return user's display name
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * @param name user's display name
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * @return user's email address
+     */
     public String getEmail() {
         return email;
     }
 
+    /**
+     * @param email user's email address
+     */
     public void setEmail(String email) {
         this.email = email;
     }
 
+    /**
+     * @return raw password from the request payload
+     */
     public String getPassword() {
         return password;
     }
 
+    /**
+     * @param password raw password from the request payload
+     */
     public void setPassword(String password) {
         this.password = password;
     }

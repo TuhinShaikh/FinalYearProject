@@ -10,6 +10,7 @@ const defaultSettings = {
   stepFree: false,
 };
 
+// I store and expose accessibility preferences globally so every page reacts consistently.
 const AccessibilityContext = createContext(null);
 
 function loadSavedSettings() {
@@ -75,6 +76,7 @@ export function AccessibilityProvider({ children }) {
   );
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useAccessibility() {
   const context = useContext(AccessibilityContext);
   if (!context) {

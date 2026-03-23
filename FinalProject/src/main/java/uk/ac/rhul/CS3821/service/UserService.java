@@ -10,7 +10,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 /**
- * CRUD operations for users; transactions ensure replace/save happens within a consistent boundary.
+ * I keep user CRUD logic here so controllers stay thin and database work stays transactional.
  */
 @Service
 @Transactional
@@ -23,35 +23,35 @@ public class UserService {
     }
 
     /**
-     * Persists a new user entity into the database and returns the managed instance.
+     * I create and return the managed user entity in one place.
      */
     public User createUser(User user) {
         return userRepository.save(user);
     }
 
     /**
-     * Fetches a user by their identifier, using Optional to signal absence.
+     * I return Optional here so callers can handle missing users safely.
      */
     public Optional<User> getUserById(UUID userId) {
         return userRepository.findById(userId);
     }
 
     /**
-     * Lists every registered user; useful for admin views or diagnostics.
+     * I expose this list for admin views and quick diagnostics.
      */
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
     /**
-     * Updates an existing record by reusing save semantics with an attached entity.
+     * I reuse save for updates so persistence behavior stays consistent.
      */
     public User updateUser(User user) {
         return userRepository.save(user);
     }
 
     /**
-     * Removes a user by id; throws if the id is unknown.
+     * I delete by id directly because the repository already handles missing records correctly.
      */
     public void deleteUser(UUID userId) {
         userRepository.deleteById(userId);

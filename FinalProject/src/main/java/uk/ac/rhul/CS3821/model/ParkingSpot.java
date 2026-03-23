@@ -9,7 +9,9 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "parking_spots")
-// Catalog of parking positions that guests can reserve through the UI
+/**
+ * Persistent parking spot entity used for availability and reservation mapping.
+ */
 public class ParkingSpot {
 
     @Id
@@ -18,14 +20,14 @@ public class ParkingSpot {
     private UUID spotId;
 
     @Column(name = "spot_name", nullable = false, length = 100)
-    // Display name shown on the booking grid
+    // I store a friendly slot name so users can identify spaces quickly.
     private String spotName;
 
     @Column(name = "spot_description")
     private String spotDescription;
 
     @Column(name = "is_reserved", nullable = false)
-    // Tells the frontend whether a spot is currently held for a booking
+    // I keep this flag so availability checks stay simple and fast.
     private boolean isReserved;
 
     @CreationTimestamp
@@ -36,16 +38,25 @@ public class ParkingSpot {
     @Column(name = "updated_at")
     private Instant updatedAt;
 
-    // Constructors
+    /**
+     * Default constructor required by JPA.
+     */
     public ParkingSpot() {}
 
+    /**
+     * Creates a parking spot record.
+     *
+     * @param spotName display name of the slot
+     * @param spotDescription optional slot description
+     * @param isReserved current reservation state
+     */
     public ParkingSpot(String spotName, String spotDescription, boolean isReserved) {
         this.spotName = spotName;
         this.spotDescription = spotDescription;
         this.isReserved = isReserved;
     }
 
-    // Getters and Setters
+    // I expose standard accessors because this entity is mapped across layers.
     public UUID getSpotId() { return spotId; }
     public void setSpotId(UUID spotId) { this.spotId = spotId; }
 

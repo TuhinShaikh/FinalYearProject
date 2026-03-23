@@ -1,6 +1,8 @@
 import React from "react";
 import { useAccessibility } from "../context/AccessibilityContext";
 
+// I use this page to centralize all accessibility toggles so users can tune the full experience in one place.
+
 export default function AccessibilityPage() {
   const {
     fontSize,
@@ -17,6 +19,7 @@ export default function AccessibilityPage() {
   } = useAccessibility();
 
   const textColor = highContrast ? "#f8fbff" : "#0a1f3d";
+  // These derived colors keep controls readable when contrast mode flips.
   const cardBackground = highContrast ? "#163362" : "#ffffff";
   const toggleBackground = highContrast ? "#f9d74a" : "#c2e0ff";
   const controlButtonStyle = {
@@ -69,6 +72,7 @@ export default function AccessibilityPage() {
         <p>Increase or decrease text size across the site.</p>
         <p style={{ margin: "0.25rem 0 0.75rem", opacity: 0.75 }}>Current size: {fontSize}px</p>
         <button
+          // I cap the lower bound so text never becomes unreadably small.
           onClick={() => setFontSize((s) => Math.max(12, s - 2))}
           aria-label="Decrease font size"
           style={{ ...controlButtonStyle, marginRight: "1rem" }}
@@ -76,6 +80,7 @@ export default function AccessibilityPage() {
           A-
         </button>
         <button
+          // I cap the upper bound to avoid layout breakage on very large font sizes.
           onClick={() => setFontSize((s) => Math.min(28, s + 2))}
           aria-label="Increase font size"
           style={controlButtonStyle}
@@ -196,6 +201,7 @@ export default function AccessibilityPage() {
       </p>
 
       <button
+        // One reset button gives users a reliable way back to default settings.
         onClick={resetAccessibility}
         style={{
           marginTop: "1rem",

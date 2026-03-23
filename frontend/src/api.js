@@ -1,4 +1,5 @@
 // src/api.js
+// I keep all frontend HTTP calls here so auth, bookings, rides, and payments share one client style.
 const API_URL = (import.meta.env.VITE_API_URL ?? "").trim().replace(/\/$/, "");
 
 const ACCESS_TOKEN_KEY = "accessToken";
@@ -107,10 +108,12 @@ export async function login(email, password) {
   return data;
 }
 
-export async function register({ email, username, password }) {
+export async function register({ name, username, email, password }) {
+  // I normalize to `name` because backend registration currently expects that field.
+  const resolvedName = (name ?? username ?? "").trim();
   const body = JSON.stringify({
     ...(email ? { email } : {}),
-    ...(username ? { username } : {}),
+    ...(resolvedName ? { name: resolvedName } : {}),
     password,
   });
   const response = await fetch(buildUrl("/api/auth/register"), {

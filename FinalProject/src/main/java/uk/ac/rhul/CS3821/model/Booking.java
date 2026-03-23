@@ -8,14 +8,17 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.util.UUID;
 
-// Added missing import
+// I import ParkingSpot directly because this entity links each booking to one slot.
 import uk.ac.rhul.CS3821.model.ParkingSpot;
 
 @Entity
 @Table(name = "bookings")
+/**
+ * Persistent booking entity representing a reserved parking session.
+ */
 public class Booking {
 
-    // Represents a parking session booked by a user, including payment and timing data
+    // I model one parking session per record so timing, payment, and ownership stay together.
 
     @Id
     @GeneratedValue
@@ -24,12 +27,12 @@ public class Booking {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "user_id", nullable = false)
-    // Points back to the user that created this booking record
+    // I keep the user relation mandatory so every booking has a clear owner.
     private User user;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "spot_id", nullable = false)
-    // References the parking spot that is being held for the session
+    // I keep the spot relation mandatory so I can prevent double-booking the same slot.
     private ParkingSpot spot;
 
     @Column(name = "booking_date", nullable = false)
@@ -45,16 +48,16 @@ public class Booking {
     private BigDecimal totalAmount;
 
     @Column(name = "status", nullable = false, length = 20)
-    // Tracks whether the booking is pending, confirmed, or cancelled
+    // I store status to track the booking lifecycle from pending to confirmed/cancelled.
     private String status;
 
     @Version
     @Column(name = "version_number", nullable = false)
-    // Optimistic locking counter to prevent double-bookings
+    // I use optimistic locking so concurrent updates do not overwrite each other.
     private int versionNumber;
 
     @Column(name = "confirmation_code", unique = true, length = 20)
-    // Optional alphanumeric reference sent to the guest for this booking
+    // I keep a guest-friendly confirmation code for quick lookups and support queries.
     private String confirmationCode;
 
     @Column(name = "special_requirements")
@@ -68,9 +71,22 @@ public class Booking {
     @Column(name = "updated_at")
     private Instant updatedAt;
 
-    // Constructors
+    /**
+     * Default constructor required by JPA.
+     */
     public Booking() {}
 
+    /**
+     * Creates a booking with core reservation details.
+     *
+     * @param user booking owner
+     * @param spot reserved parking spot
+     * @param bookingDate date of reservation
+     * @param startTime reservation start timestamp
+     * @param endTime reservation end timestamp
+     * @param totalAmount total charge amount
+     * @param status lifecycle status of the booking
+     */
     public Booking(User user, ParkingSpot spot, LocalDate bookingDate,
                    Instant startTime, Instant endTime,
                    BigDecimal totalAmount, String status) {
@@ -83,7 +99,7 @@ public class Booking {
         this.status = status;
     }
 
-    // Getters and Setters
+    // I use standard accessors so controllers/services can read and update fields safely.
     public UUID getBookingId() { return bookingId; }
     public void setBookingId(UUID bookingId) { this.bookingId = bookingId; }
 

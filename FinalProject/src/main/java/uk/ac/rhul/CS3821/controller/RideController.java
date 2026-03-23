@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import uk.ac.rhul.CS3821.service.RideHailingService;
 
 /**
- * Exposes live nearby ride operator data for the frontend ride options page.
+ * I expose nearby ride operators so the ride options page can render live choices.
  */
 @RestController
 @RequestMapping("/api/rides")
@@ -27,7 +27,7 @@ public class RideController {
     }
 
     /**
-     * Returns live nearby operators around the provided coordinate.
+     * I return nearby operators by lat/lon because the user location drives this page.
      */
     @GetMapping("/live")
     public Map<String, Object> getLiveRides(

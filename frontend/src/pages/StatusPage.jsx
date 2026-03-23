@@ -4,22 +4,30 @@ import axios from "axios";
 import TfLMap from "../components/TfLMap";
 import stadiumImage from "../assets/stadium.jpg";
 
+// I built this dashboard to keep live TfL health, route entry points, and stadium context together.
+
 export default function StatusPage() {
   const [tflStatus, setTflStatus] = useState([]);
   const [showMap, setShowMap] = useState(false);
 
   useEffect(() => {
-    fetchTfL();
-  }, []);
+    // Initial pull keeps dashboard content ready when the user lands.
+    let mounted = true;
 
-  const fetchTfL = async () => {
-    try {
-      const res = await axios.get("https://api.tfl.gov.uk/Line/Mode/tube/Status");
-      setTflStatus(res.data);
-    } catch (err) {
-      console.error("TfL error", err);
-    }
-  };
+    axios
+      .get("https://api.tfl.gov.uk/Line/Mode/tube/Status")
+      .then((res) => {
+        if (!mounted) return;
+        setTflStatus(res.data);
+      })
+      .catch((err) => {
+        console.error("TfL error", err);
+      });
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   return (
     <main
@@ -92,6 +100,7 @@ export default function StatusPage() {
             </p>
           </div>
           <button
+            // Map toggle keeps the page fast by rendering the heavy leaflet map only when requested.
             onClick={() => setShowMap((prev) => !prev)}
             style={{
               padding: "0.9rem 1.6rem",

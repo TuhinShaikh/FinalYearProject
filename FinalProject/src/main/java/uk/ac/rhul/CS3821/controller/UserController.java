@@ -16,7 +16,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-// CRUD surface for managing user records directly from the frontend admin flows
+/**
+ * REST controller exposing CRUD endpoints for users.
+ */
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -27,33 +29,58 @@ public class UserController {
         this.userService = userService;
     }
 
-    // Create a user so other parts of the system can link bookings/payments to an account
+    /**
+     * Creates a user.
+     *
+     * @param user user payload
+     * @return saved user
+     */
     @PostMapping
     public ResponseEntity<User> createUser(@RequestBody User user) {
         return ResponseEntity.ok(userService.createUser(user));
     }
 
-    // Look up an individual user by UUID
+    /**
+     * Retrieves a user by id.
+     *
+     * @param id user identifier
+     * @return user if found
+     */
     @GetMapping("/{id}")
     public ResponseEntity<User> getUserById(@PathVariable UUID id) {
         Optional<User> user = userService.getUserById(id);
         return user.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
-    // Snapshot all users for the admin interface
+    /**
+     * Retrieves all users.
+     *
+     * @return list of users
+     */
     @GetMapping
     public ResponseEntity<List<User>> getAllUsers() {
         return ResponseEntity.ok(userService.getAllUsers());
     }
 
-    // Update user details while keeping the UUID stable
+    /**
+     * Updates an existing user.
+     *
+     * @param id user identifier
+     * @param updatedUser updated payload
+     * @return saved user
+     */
     @PutMapping("/{id}")
     public ResponseEntity<User> updateUser(@PathVariable UUID id, @RequestBody User updatedUser) {
         updatedUser.setUserId(id);
         return ResponseEntity.ok(userService.updateUser(updatedUser));
     }
 
-    // Remove a user record when requested
+    /**
+     * Deletes a user by id.
+     *
+     * @param id user identifier
+     * @return empty response
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable UUID id) {
         userService.deleteUser(id);

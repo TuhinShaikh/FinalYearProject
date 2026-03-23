@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * Wraps the Square SDK so our backend can create payments and refunds with consistent config.
+ * I wrapped Square SDK calls here so payment and refund behavior stays consistent across controllers.
  */
 @Service
 public class PaymentService {
@@ -31,9 +31,9 @@ public class PaymentService {
     private final SquareClient squareClient;
     private String cachedLocationId;
 
-    /**
-     * Configures the Square client from application properties and locks in the chosen environment.
-     */
+        /**
+         * I build the client from config so I can switch sandbox/production without touching business logic.
+         */
     public PaymentService(
             @Value("${square.accessToken}") String accessToken,
             @Value("${square.environment}") String environment) {
@@ -46,9 +46,9 @@ public class PaymentService {
                 .build();
     }
 
-    /**
-     * Builds a payment request for the supplied amount and source token.
-     */
+        /**
+         * I create the payment request from source token + amount because Square expects cents and currency.
+         */
     public CreatePaymentResponse createPayment(int amountCents, String sourceId)
             throws ApiException, IOException {
 
@@ -67,9 +67,9 @@ public class PaymentService {
         return paymentsApi.createPayment(request);
     }
 
-    /**
-     * Issues a refund for a completed payment, keeping amounts in cents to match Square's schema.
-     */
+        /**
+         * I keep refund amounts in cents so refund requests match Square's schema exactly.
+         */
     public RefundPaymentResponse refundPayment(String paymentId, int amountCents)
             throws ApiException, IOException {
 

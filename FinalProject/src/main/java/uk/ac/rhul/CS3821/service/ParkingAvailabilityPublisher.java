@@ -10,14 +10,14 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 @Service
 /**
- * Streams live parking spot updates via Server-Sent Events to any connected UI clients.
+ * I stream slot updates through SSE so connected clients get changes without polling.
  */
 public class ParkingAvailabilityPublisher {
 
     private final List<SseEmitter> emitters = new CopyOnWriteArrayList<>();
 
     /**
-     * Registers a new emitter and removes it when the client disconnects or times out.
+        * I register each emitter and remove it on completion/timeout to avoid stale listeners.
      */
     public SseEmitter subscribe() {
         SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);
@@ -28,7 +28,7 @@ public class ParkingAvailabilityPublisher {
     }
 
     /**
-     * Pushes a parking spot payload to every currently subscribed emitter.
+        * I broadcast each slot update to all active subscribers and drop broken emitters.
      */
     public void publishUpdate(ParkingSpot spot) {
         for (SseEmitter emitter : emitters) {

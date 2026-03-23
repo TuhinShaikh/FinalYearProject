@@ -1,5 +1,7 @@
 import React, { useMemo } from "react";
 
+// I use this component to visualize level-by-level parking layout and slot selection around the stadium.
+
 const areaLabels = {
   top: "North Plaza",
   right: "East Stands",
@@ -46,6 +48,7 @@ export default function CarParkMap({
   );
 
   const renderArea = (areaKey) => {
+    // I render each side of the stadium with one helper so slot behavior stays identical across areas.
     return (
       <div style={{ display: "flex", gap: "0.6rem", flexWrap: "wrap" }}>
         {slotLayout[areaKey].map((slotNumber) => {
@@ -55,6 +58,7 @@ export default function CarParkMap({
           return (
             <button
               key={`${areaKey}-${slotNumber}`}
+              // Selecting a slot passes both number and computed price back to parent booking state.
               onClick={() => onSelect(slotNumber, price)}
               style={{
                 ...slotStyle(isSelected),
@@ -101,6 +105,7 @@ export default function CarParkMap({
           {levels.map((level) => (
             <button
               key={level.id}
+              // Level buttons let users compare convenience vs cost quickly.
               onClick={() => onLevelChange(level.id)}
               style={{
                 padding: "0.5rem 1.3rem",

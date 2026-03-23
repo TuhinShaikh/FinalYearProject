@@ -104,3 +104,75 @@ Development Diary
 ***** 11/12/2025 ***** Video & Final Polish I recorded the demonstration video, proofread the report, and finalized the bibliography. This addressed the 'Bibliography' criteria for 'excellent evidence of background reading' and 'appropriate use of references'.
 
 ***** 12/12/2025 ***** Final Submission I packaged the code, reports, and video link and submitted the final deliverables for the Term 1 Interim Deadline, ensuring all 'Completion requirements' were met.
+
+***** 05/01/2026 ***** Term 2 Re-Planning I resumed development for Term 2, reviewed backlog items, and split work into algorithmic routing, transport integration, quality assurance, and test coverage objectives for March delivery.
+
+***** 07/01/2026 ***** Travel Graph Prototype I implemented a graph model and shortest-path prototype for travel routing to replace static-only logic, establishing the base for deterministic route recommendations.
+
+***** 10/01/2026 ***** Dijkstra Route Endpoint I finalized the Dijkstra route flow exposed through the travel controller and verified route + cost payload structure for frontend consumption.
+
+***** 13/01/2026 ***** Parking Pathfinding (A*) I implemented A* path search for parking navigation and validated Manhattan-heuristic behavior for grid-based slot traversal.
+
+***** 16/01/2026 ***** Journey Aggregation Logic I built journey orchestration logic that combines route output with live train-style service payloads and computes a recommended onward service.
+
+***** 20/01/2026 ***** Ride Data Normalization I improved ride-hailing normalization to handle upstream payload inconsistency (missing keys, type mismatches, sorting and limiting), improving robustness of live options.
+
+***** 23/01/2026 ***** Payment Workflow Hardening I reviewed the payment flow end-to-end, including create payment and refund operations, and tightened error handling so client responses are predictable.
+
+***** 27/01/2026 ***** Security Refactor Pass I revisited authentication and token flows, cleaned edge-case handling in auth service, and aligned login/register outcomes with current frontend expectations.
+
+***** 31/01/2026 ***** Controller Coverage Sprint I added and refined controller-level tests (auth, booking, payment, travel, train, journey, parking stream/path) to improve confidence in endpoint behavior.
+
+***** 03/02/2026 ***** Service Coverage Sprint I expanded service tests for auth, booking, user, parking spot, user-details, payment, ride and publisher components, with Mockito-based dependency isolation.
+
+***** 06/02/2026 ***** Model & DTO Validation Tests I added model/DTO tests for constructors, getters/setters, and serialization-aligned field behavior to reduce regressions from simple data-layer changes.
+
+***** 10/02/2026 ***** Repository Contract Tests I created repository contract tests to confirm expected JPA generic type bindings and interface wiring for booking, user, and parking repositories.
+
+***** 14/02/2026 ***** Concurrency and SSE Reliability I validated emitter lifecycle behavior and publisher cleanup paths, including error-path removal logic for disconnected or broken server-sent event streams.
+
+***** 18/02/2026 ***** JaCoCo Baseline Setup I standardized coverage generation workflow with Maven + JaCoCo and resolved test execution issues caused by skipped surefire configuration.
+
+***** 22/02/2026 ***** Failing Test Triage I diagnosed and fixed wildcard/generic Mockito stubbing issues (especially ResponseEntity<?> scenarios) that were preventing successful test compilation.
+
+***** 25/02/2026 ***** Route Assertion Corrections I corrected outdated route test expectations to match actual shortest-path results from updated graph weights and route computation logic.
+
+***** 28/02/2026 ***** Targeted Branch Coverage I added focused branch tests for payment configuration, token generation/validation, fallback handling, null-shape payloads, and exception branches.
+
+***** 03/03/2026 ***** Coverage Gap Review I used JaCoCo method/branch reports to identify persistent weak spots and iteratively wrote tests to cover untested branches rather than only line counts.
+
+***** 07/03/2026 ***** API Naming Cleanup I refactored train/live transport naming to be provider-neutral and updated dependent controllers/tests accordingly to avoid brittle provider-coupled assumptions.
+
+***** 10/03/2026 ***** Legacy Provider Removal I removed all remaining Greater Anglia references from main code, tests, and configuration to keep the service layer consistent with current project scope.
+
+***** 13/03/2026 ***** Test Suite Stabilization I fixed flaky unit assertions (notably async/completion semantics) and replaced non-deterministic checks with deterministic equivalents.
+
+***** 16/03/2026 ***** Frontend HTTPS Integration I configured Vite HTTPS using local cert/key files and removed hardcoded insecure backend URLs from payment and API helper flows.
+
+***** 18/03/2026 ***** Mixed-Content and Proxy Fixes I routed frontend requests through same-origin dev proxy for payments/bookings to eliminate insecure-call paths and browser autofill security warnings.
+
+***** 20/03/2026 ***** Dev Environment Recovery I resolved local dev server instability from duplicate Vite processes/port collisions and standardized frontend startup on a single secure localhost endpoint.
+
+***** 22/03/2026 ***** Final QA and Diary Update I completed a final pass of backend/frontend verification, regression testing, and coverage review, then documented the full Term 2 development trajectory in this diary in reflective chronological format.
+
+***** 23/03/2026 ***** Frontend Test Framework Setup I set up Vitest + Testing Library (jsdom, setup file, coverage reporting) and integrated scripts for run/watch/coverage so frontend quality checks are now first-class like backend JUnit workflows.
+
+***** 24/03/2026 ***** Frontend Page and API Tests I added tests for core frontend behavior: app routing shell, login, registration, ride options fallback logic, and API helper token behavior. This closed a major testing gap against the mark-scheme expectation of broad functional verification.
+
+***** 25/03/2026 ***** Test Stability and Environment Fixes I diagnosed execution issues in the local runner, switched to a stable forked worker pool for Vitest, and fixed cleanup/selector issues to remove flaky failures and ensure deterministic results.
+
+***** 26/03/2026 ***** Accessibility/Status/Transport Test Expansion I expanded tests across additional pages (accessibility controls, TfL status map toggle, travel planner actions, transport journey flow) with mocked external dependencies to keep tests fast and repeatable.
+
+***** 27/03/2026 ***** Test Folder Restructure I reorganized frontend tests under a dedicated src/test hierarchy and removed test files from src/pages to keep production page folders clean and maintainable. I updated imports/mocks accordingly and revalidated the full suite.
+
+***** 28/03/2026 ***** Comment Quality Pass I reviewed source and test comments for readability and intent. I refined comments to be human, contextual, and concise (explaining why a block exists rather than narrating obvious syntax), improving maintainability and submission presentation.
+
+***** 29/03/2026 ***** Register UI Consistency I aligned register-page styling with login card conventions (rounded auth card behavior, consistent spacing and button treatment) so auth flows look coherent and polished across desktop/mobile.
+
+***** 30/03/2026 ***** Dependency and Tooling Hygiene I fixed frontend dependency drift (including local package alignment for test/runtime imports), reran lint/build/tests, and confirmed the toolchain remains stable after structural and test coverage changes.
+
+***** 31/03/2026 ***** Submission-Oriented Code Review I ran a strict coding review focused on risks and regressions (security posture, auth bypass risk, config hardcoding, validation strategy, and test completeness). I captured findings by severity for final hardening priorities.
+
+***** 01/04/2026 ***** Final Regression and Coverage Confirmation I re-executed frontend and backend test flows, confirmed green runs, and validated that the frontend test suite now covers key user journeys instead of only isolated helpers/components.
+
+***** 02/04/2026 ***** Pre-Submission Freeze and Evidence Pack I finalized diary updates, confirmed project structure cleanliness (production pages separate from tests), and prepared a final evidence snapshot of lint/build/tests/review outcomes for submission confidence.

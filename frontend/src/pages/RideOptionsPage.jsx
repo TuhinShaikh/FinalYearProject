@@ -1,43 +1,77 @@
 import React, { useState } from "react";
+import { fetchLiveRides } from "../api";
+
+// I use this page to present quick ride-hailing comparisons near the stadium pickup zones.
 
 export default function RideOptionsPage() {
   const [rides, setRides] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const fetchRides = () => {
-    const mockData = [
-      {
-        provider: "UberX",
-        eta: 4,
-        price: 18,
-        zone: "South Stand Pickup Zone A",
-      },
-      {
-        provider: "UberXL",
-        eta: 6,
-        price: 28,
-        zone: "South Stand Pickup Zone A",
-      },
-      {
-        provider: "Uber Exec",
-        eta: 8,
-        price: 42,
-        zone: "West Stand VIP Zone",
-      },
-      {
-        provider: "Lyft",
-        eta: 5,
-        price: 20,
-        zone: "North Stand Pickup Zone C",
-      },
-      {
-        provider: "Bolt",
-        eta: 3,
-        price: 16,
-        zone: "East Stand Pickup Zone B",
-      },
-    ];
+  const fallbackRides = [
+    {
+      provider: "UberX",
+      eta: 4,
+      price: 18,
+      zone: "South Stand Pickup Zone A",
+    },
+    {
+      provider: "UberXL",
+      eta: 6,
+      price: 28,
+      zone: "South Stand Pickup Zone A",
+    },
+    {
+      provider: "Uber Exec",
+      eta: 8,
+      price: 42,
+      zone: "West Stand VIP Zone",
+    },
+    {
+      provider: "Lyft",
+      eta: 5,
+      price: 20,
+      zone: "North Stand Pickup Zone C",
+    },
+    {
+      provider: "Bolt",
+      eta: 3,
+      price: 16,
+      zone: "East Stand Pickup Zone B",
+    },
+  ];
 
-    setRides(mockData);
+  const normalizeLiveRides = (payload) => {
+    if (!Array.isArray(payload)) return [];
+
+    return payload.map((ride, index) => ({
+      provider: ride.operatorName || ride.companyName || `Local Operator ${index + 1}`,
+      eta: Number(ride.minutesUntil || ride.waitTimeMinutes || 0),
+      price: Number(ride.estimatedFare || ride.price || 0) || 0,
+      zone: ride.pickupPoint || ride.placeName || "Nearby pickup zone",
+    }));
+  };
+
+  const fetchRides = async () => {
+    setError("");
+    setLoading(true);
+    try {
+      const live = await fetchLiveRides();
+      const normalized = normalizeLiveRides(live);
+
+      if (normalized.length > 0) {
+        setRides(normalized);
+      } else {
+        setRides(fallbackRides);
+        setError("Live rides were empty, so fallback sample rides are shown.");
+      }
+    } catch {
+      // Fallback keeps the page demonstrable even when live endpoint is unavailable.
+      setRides(fallbackRides);
+      setError("Live rides are unavailable right now; showing fallback sample rides.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -81,7 +115,9 @@ export default function RideOptionsPage() {
         </div>
 
         <button
+          // This button intentionally triggers data generation on demand to keep first render lightweight.
           onClick={fetchRides}
+          disabled={loading}
           style={{
             padding: "0.85rem 1.5rem",
             backgroundColor: "#0f4fff",
@@ -91,10 +127,17 @@ export default function RideOptionsPage() {
             color: "white",
             fontWeight: 600,
             boxShadow: "0 12px 20px rgba(15, 79, 255, 0.2)",
+            opacity: loading ? 0.65 : 1,
           }}
         >
-          Show Available Rides
+          {loading ? "Loading rides..." : "Show Available Rides"}
         </button>
+
+        {error && (
+          <p role="status" aria-live="polite" style={{ marginTop: "0.75rem", color: "#8a2c2c" }}>
+            {error}
+          </p>
+        )}
 
         <div
           style={{

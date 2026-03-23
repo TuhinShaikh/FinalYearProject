@@ -40,4 +40,24 @@ class JwtUtilTest {
         assertThat(claims.getSubject()).isEqualTo("user-refresh");
         assertThat(jwtUtil.validateToken(refresh, "user-refresh")).isTrue();
     }
+
+    @Test
+    void validateTokenReturnsFalseWhenSubjectDoesNotMatch() {
+        String secret = "01234567890123456789012345678901";
+        JwtUtil jwtUtil = new JwtUtil(secret, 60000L, 120000L);
+
+        String token = jwtUtil.generateAccessToken("user-1");
+
+        assertThat(jwtUtil.validateToken(token, "someone-else")).isFalse();
+    }
+
+    @Test
+    void validateTokenReturnsFalseWhenExpiredEvenWithMatchingSubject() {
+        String secret = "01234567890123456789012345678901";
+        JwtUtil jwtUtil = new JwtUtil(secret, -1L, 120000L);
+
+        String expiredToken = jwtUtil.generateAccessToken("user-expired");
+
+        assertThat(jwtUtil.validateToken(expiredToken, "user-expired")).isFalse();
+    }
 }

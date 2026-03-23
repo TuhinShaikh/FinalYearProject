@@ -6,7 +6,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.*;
 import java.util.function.ToDoubleBiFunction;
 
-// Offers a simple A* planner so we can trace the best path through the parking grid
+/**
+ * REST controller exposing A* pathfinding for parking navigation.
+ */
 @RestController
 @RequestMapping("/api/parking")
 public class ParkingPathController {
@@ -22,8 +24,15 @@ public class ParkingPathController {
     }
     static class Route { List<String> path; double cost; Route(List<String> p,double c){path=p;cost=c;} }
 
-    // --- A* only ---
-    // Navigate from start to goal using A* and the provided heuristic
+    /**
+     * Computes an A* route between two nodes.
+     *
+     * @param g graph instance
+     * @param start start node id
+     * @param goal goal node id
+     * @param h heuristic function
+     * @return computed route
+     */
     static Route aStar(Graph g,String start,String goal,ToDoubleBiFunction<Node,Node> h){
         Map<String,Double> gScore=new HashMap<>(),fScore=new HashMap<>();
         Map<String,String> came=new HashMap<>();
@@ -45,28 +54,42 @@ public class ParkingPathController {
         }
         return new Route(List.of(),Double.POSITIVE_INFINITY);
     }
+
+    /**
+     * Reconstructs an ordered path from predecessor links.
+     *
+     * @param came predecessor map
+     * @param goal goal node id
+     * @param cost total route cost
+     * @return reconstructed route
+     */
     static Route reconstruct(Map<String,String> came,String goal,double cost){
         List<String> path=new ArrayList<>(); String cur=goal;
         while(cur!=null){path.add(cur);cur=came.get(cur);} Collections.reverse(path);
         return new Route(path,cost);
     }
 
-    // Manhattan heuristic for grid
-    // Manhattan distance assumes grid-based slots for the estimator
+    // I use Manhattan distance because parking slots are arranged as a grid.
     static ToDoubleBiFunction<Node,Node> manhattan = (n,g)->Math.abs(n.x-g.x)+Math.abs(n.y-g.y);
 
-    // Expose the computed node path and step cost so the frontend can animate a route
+    /**
+     * Returns a path between parking nodes using a demo 3x3 graph.
+     *
+     * @param start start node id
+     * @param goal goal node id
+     * @return route payload containing node sequence and step count
+     */
     @GetMapping("/path")
     public ResponseEntity<?> path(@RequestParam String start,@RequestParam String goal){
         Graph g=new Graph();
-        // Build a small 3x3 parking grid for the demo
+        // I build a small 3x3 grid here because it is easy to verify visually during development.
         for(int i=0;i<3;i++){
             for(int j=0;j<3;j++){
                 String id="S"+i+j;
                 g.addNode(new Node(id,i,j));
             }
         }
-        // Wire the grid so neighbors are reachable from each other
+        // I connect neighboring slots only, which matches real movement between adjacent spaces.
         for(int i=0;i<3;i++){
             for(int j=0;j<3;j++){
                 String id="S"+i+j;

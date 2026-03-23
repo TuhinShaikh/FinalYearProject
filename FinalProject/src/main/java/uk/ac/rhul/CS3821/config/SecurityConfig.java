@@ -10,14 +10,14 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 /**
- * Development security rules that disable CSRF and keep auth/API endpoints public for the UI.
+ * I keep these development security rules so the frontend can call auth/api endpoints without friction.
  */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
     /**
-     * Disables CSRF and allows anonymous access to the auth/api endpoints needed by the frontend.
+     * I disable CSRF and allow auth/api routes so local UI testing works end-to-end.
      */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -31,7 +31,7 @@ public class SecurityConfig {
     }
 
     /**
-     * Provides a BCrypt password encoder for hashing and verifying credentials consistently.
+     * I expose BCrypt to keep password hashing and verification consistent across auth flows.
      */
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -39,7 +39,7 @@ public class SecurityConfig {
     }
 
     /**
-     * Exposes the authentication manager so services can programmatically validate credentials when needed.
+     * I expose the authentication manager so services can validate credentials programmatically.
      */
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {

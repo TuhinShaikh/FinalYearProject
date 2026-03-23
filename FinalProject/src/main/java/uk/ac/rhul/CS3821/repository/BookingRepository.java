@@ -7,18 +7,40 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-// Repository for Booking aggregates so services can query by user, spot, or status
+/**
+ * Repository for booking persistence and booking-centric query operations.
+ */
 public interface BookingRepository extends JpaRepository<Booking, UUID> {
 
-    // Fetch bookings that belong to the provided user UUID
+    /**
+     * Finds all bookings belonging to a user.
+     *
+     * @param userId user identifier
+     * @return bookings created by that user
+     */
     List<Booking> findByUser_UserId(UUID userId);
 
-    // Retrieve bookings attached to a parking spot
+    /**
+     * Finds all bookings for a specific parking spot.
+     *
+     * @param spotId parking spot identifier
+     * @return bookings associated with the spot
+     */
     List<Booking> findBySpot_SpotId(UUID spotId);
 
-    // Allow filtering by status for dashboards
+    /**
+     * Finds bookings by status.
+     *
+     * @param status booking lifecycle status
+     * @return bookings in the requested status
+     */
     List<Booking> findByStatus(String status);
 
-    // Support lookups via a confirmation code delivered to guests
+    /**
+     * Finds a booking by confirmation code.
+     *
+     * @param confirmationCode customer-facing booking confirmation code
+     * @return booking with the matching code, if present
+     */
     Optional<Booking> findByConfirmationCode(String confirmationCode);
 }

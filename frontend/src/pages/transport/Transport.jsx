@@ -1,5 +1,7 @@
 import { useState } from "react";
 
+// I use this page as the main TfL journey workspace with disambiguation, save, and handoff actions.
+
 const defaultOrigin = "London Bridge";
 const defaultDestination = "King's Cross St. Pancras";
 
@@ -35,6 +37,7 @@ export default function TransportPage() {
   const encodeInput = (value) => encodeURIComponent(value.trim());
 
   const planJourney = async () => {
+    // This is the core planner action: validate input, call TfL, then normalize whatever response shape comes back.
     if (!origin.trim() || !destination.trim()) {
       setStatus("Enter both an origin and a destination before planning.");
       return;
@@ -51,6 +54,7 @@ export default function TransportPage() {
       const data = await response.json();
 
       const normalizeOptions = (block) =>
+        // TfL disambiguation can be noisy; I keep only a few options so users can decide quickly.
         (block?.disambiguationOptions ?? [])
           .slice(0, 3)
           .map((option, index) => ({
@@ -103,6 +107,7 @@ export default function TransportPage() {
   };
 
   const handleSuggestionSelect = (target, suggestion) => {
+    // When TfL asks for clarification, this writes the picked station back into the form.
     const displayValue = suggestion.name;
     if (target === "origin") {
       setOrigin(displayValue);
@@ -115,6 +120,7 @@ export default function TransportPage() {
   };
 
   const addAndGo = () => {
+    // I save recent plans locally first, then open TfL in a new tab so users keep context in this app.
     if (!journey) {
       setStatus("Plan a journey first so you know what you are adding.");
       return;
@@ -236,6 +242,7 @@ export default function TransportPage() {
                   color: "white",
                   boxShadow: "0 12px 20px rgba(15, 79, 255, 0.2)",
                 }}
+                // Main planning button users hit after entering origin + destination.
                 onClick={planJourney}
                 disabled={journeyLoading}
               >
@@ -249,6 +256,7 @@ export default function TransportPage() {
                   color: "#0f4fff",
                   border: "1px solid #0f4fff",
                 }}
+                // Shortcut button to commit the route and hand off to TfL journey website.
                 onClick={addAndGo}
               >
                 Add & go to TfL

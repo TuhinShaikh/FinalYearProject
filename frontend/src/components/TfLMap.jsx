@@ -15,6 +15,8 @@ import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
 import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
 
+// I use this map to overlay live TfL context with football stadium landmarks for journey awareness.
+
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: markerIcon2x,
   iconUrl: markerIcon,
@@ -77,15 +79,13 @@ function VisibleStadiumPolyline({ stadiums }) {
     zoomend: () => setBounds(map.getBounds()),
   });
 
-  useEffect(() => {
-    setBounds(map.getBounds());
-  }, [map]);
-
   const dijkstraSegments = useMemo(() => {
-    if (!bounds) return [];
+    // I recalculate these links for the current viewport only, so lines stay relevant and uncluttered.
+    const activeBounds = bounds ?? map.getBounds();
+    if (!activeBounds) return [];
 
     const visibleStadiums = stadiums.filter((stadium) =>
-      bounds.contains([stadium.lat, stadium.lon])
+      activeBounds.contains([stadium.lat, stadium.lon])
     );
 
     if (visibleStadiums.length < 2) return [];
@@ -162,7 +162,7 @@ function VisibleStadiumPolyline({ stadiums }) {
         ];
       })
       .filter(Boolean);
-  }, [bounds, stadiums]);
+  }, [bounds, map, stadiums]);
 
   if (dijkstraSegments.length === 0) return null;
 
@@ -186,6 +186,7 @@ export default function TfLMap({ tflStatus }) {
   useEffect(() => {
     let mounted = true;
 
+    // Pull stop points once so we can estimate line coverage and label data.
     axios
       .get("https://api.tfl.gov.uk/Line/Mode/tube/StopPoints")
       .then((res) => {
@@ -223,6 +224,7 @@ export default function TfLMap({ tflStatus }) {
         .filter((path) => path.length > 1);
     };
 
+    // Overground sequence is fetched separately because route geometry is a different TfL endpoint.
     axios
       .get("https://api.tfl.gov.uk/Line/london-overground/Route/Sequence/all")
       .then((res) => {

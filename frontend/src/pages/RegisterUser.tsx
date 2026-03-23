@@ -1,24 +1,35 @@
 import React, { useState } from "react";
-import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { register } from "../api";
+
+// I made registration straightforward so users can join quickly before booking travel and parking.
 
 export default function RegisterUser(): JSX.Element {
   const [name, setName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setError(null);
+    setLoading(true);
+
     try {
-      await axios.post("/api/auth/register", { name, email, password });
-      alert("Registration successful!");
-      window.location.href = "/login";
-    } catch {
-      alert("Registration failed.");
+      await register({ name: name.trim(), email: email.trim(), password });
+      navigate("/login", { replace: true });
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Registration failed.";
+      setError(message);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="register-page" style={{ maxWidth: "400px", margin: "auto" }}>
+    <div className="register-page">
       <h2>Register</h2>
       <form onSubmit={handleSubmit}>
         <input
@@ -42,8 +53,15 @@ export default function RegisterUser(): JSX.Element {
           onChange={e => setPassword(e.target.value)}
           required
         />
-        <button type="submit">Register</button>
+        <button type="submit" disabled={loading}>
+          {loading ? "Creating account..." : "Register"}
+        </button>
       </form>
+      {error && (
+        <p style={{ color: "#b00020", marginTop: "0.75rem" }} role="alert" aria-live="polite">
+          {error}
+        </p>
+      )}
     </div>
   );
 }

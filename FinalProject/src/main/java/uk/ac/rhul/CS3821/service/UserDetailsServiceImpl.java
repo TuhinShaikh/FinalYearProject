@@ -10,7 +10,7 @@ import uk.ac.rhul.CS3821.repository.UserRepository;
 import java.util.Collections;
 
 /**
- * Provides Spring Security with user lookup logic backed by our UserRepository.
+ * I wired this class so Spring Security can load credentials from our user table.
  */
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
@@ -23,7 +23,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     /**
-     * Loads credentials for the provided email so authentication mechanisms can validate them.
+     * I load a user by email and map it to Spring Security's UserDetails model.
      */
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         uk.ac.rhul.CS3821.model.User user = userRepository.findByEmail(email)

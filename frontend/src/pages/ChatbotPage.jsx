@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import "../App.css";
 import ChatWidget from "../components/ChatWidget";
 
+// I keep the assistant page separate so guidance, shortcuts, and chat context stay focused.
+
 const promptHighlights = [
   {
     title: "Plan a journey",
@@ -65,6 +67,7 @@ export default function ChatbotPage() {
               </p>
               <nav className="chat-page__aside-links" aria-label="Quick navigation">
                 {shortcutLinks.map((link) => (
+                  // I keep page shortcuts near chat so users can act on assistant guidance instantly.
                   <Link key={link.label} to={link.to} className="chat-page__aside-link">
                     {link.label}
                   </Link>

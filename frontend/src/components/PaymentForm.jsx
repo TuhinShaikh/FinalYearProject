@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 
+// I isolate Square card setup here so secure payment tokenization stays separated from booking UI.
+
 export default function PaymentForm({ amountCents = 2000 }) {
   const [card, setCard] = useState(null);
-  const [payments, setPayments] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -17,8 +18,8 @@ export default function PaymentForm({ amountCents = 2000 }) {
           return;
         }
 
+        // I initialize once and keep only the card object because that is all we submit with.
         const paymentsInstance = window.Square.payments(appId, locationId);
-        setPayments(paymentsInstance);
 
         const cardInstance = await paymentsInstance.card();
         await cardInstance.attach("#card-container");
@@ -32,9 +33,10 @@ export default function PaymentForm({ amountCents = 2000 }) {
     }
 
     initSquare();
-  }, []);
+  }, [appId, locationId]);
 
   async function handlePayment() {
+    // This button flow tokenizes card data first, then posts only token + amount to backend.
     try {
       if (!card) {
         setError("Card input is still initializing. Please wait a moment.");
@@ -80,6 +82,7 @@ export default function PaymentForm({ amountCents = 2000 }) {
       {error && <p style={{ color: "red" }}>{error}</p>}
 
       <button
+        // Disabled state prevents users from submitting before the Square card widget is ready.
         onClick={handlePayment}
         disabled={loading}
         style={{

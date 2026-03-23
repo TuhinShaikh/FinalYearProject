@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 
+// I keep chat logic local to this component so prompts, fare helpers, and UI stay tightly coupled.
+
 const quickPrompts = [
   "How do I plan a TfL journey?",
   "What is the live status?",
@@ -323,6 +325,8 @@ function generateAssistantResponse(message, stationZones) {
 }
 
 export default function ChatWidget() {
+  // I keep a simple incrementing id so message keys stay stable without time-based randomness.
+  const messageIdRef = useRef(0);
   const [messages, setMessages] = useState([
     { id: "welcome", sender: "bot", text: "Hi! I can help you plan journeys, check status, or book parking." },
   ]);
@@ -400,11 +404,17 @@ export default function ChatWidget() {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  const nextMessageId = (sender) => {
+    messageIdRef.current += 1;
+    return `${sender}-${messageIdRef.current}`;
+  };
+
   const sendMessage = async (text) => {
+    // Main chat pipeline: append user message, get assistant response, append bot output.
     const trimmed = text?.trim();
     if (!trimmed) return;
 
-    const userMessage = { id: `${Date.now()}-user`, sender: "user", text: trimmed };
+    const userMessage = { id: nextMessageId("user"), sender: "user", text: trimmed };
     setMessages((prev) => [...prev, userMessage]);
     setDraft("");
     setLoading(true);
@@ -413,12 +423,13 @@ export default function ChatWidget() {
       setTimeout(() => resolve(generateAssistantResponse(trimmed, stationZones)), 450)
     );
 
-    setMessages((prev) => [...prev, { id: `${Date.now()}-bot`, sender: "bot", text: assistantMessage }]);
+    setMessages((prev) => [...prev, { id: nextMessageId("bot"), sender: "bot", text: assistantMessage }]);
     setLoading(false);
   };
 
   const handleQuick = (prompt) => sendMessage(prompt);
 
+  // Send button uses the same path as Enter key so behavior stays consistent.
   const handleSend = () => sendMessage(draft);
 
   const handleKeyDown = (event) => {
@@ -461,6 +472,7 @@ export default function ChatWidget() {
 
       <div className="chat-widget__quick">
         {quickPrompts.map((prompt) => (
+          // Quick prompts reduce typing friction for first-time users.
           <button key={prompt} onClick={() => handleQuick(prompt)} type="button">
             {prompt}
           </button>

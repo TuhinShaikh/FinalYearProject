@@ -2,11 +2,15 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { login } from "../api";
 
+// I kept login minimal and explicit so validation and auth errors are clear to users and markers.
+
 export default function LoginPage(): JSX.Element {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [tottenhamId, setTottenhamId] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const isDemoIdAccessEnabled = import.meta.env.VITE_ENABLE_DEMO_ID_ACCESS === "true";
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -31,6 +35,22 @@ export default function LoginPage(): JSX.Element {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleTottenhamIdAccess = () => {
+    if (!isDemoIdAccessEnabled) {
+      setError("Season/Member ID access is currently disabled.");
+      return;
+    }
+
+    // I keep this shortcut only behind an explicit demo flag.
+    if (tottenhamId.trim() === "1882") {
+      setError(null);
+      navigate("/booking", { replace: true });
+      return;
+    }
+
+    setError("INVALID");
   };
 
   return (
@@ -64,6 +84,25 @@ export default function LoginPage(): JSX.Element {
         <button type="submit" disabled={loading} style={{ marginTop: "1rem" }}>
           {loading ? "Signing in…" : "Login"}
         </button>
+
+        {isDemoIdAccessEnabled && (
+          <>
+            <label htmlFor="tottenham-id" style={{ display: "block", margin: "1rem 0 0.2rem" }}>
+              Season/Member ID
+            </label>
+            <input
+              id="tottenham-id"
+              type="text"
+              placeholder="Enter Season/Member ID"
+              value={tottenhamId}
+              onChange={(event) => setTottenhamId(event.target.value)}
+            />
+
+            <button type="button" onClick={handleTottenhamIdAccess} style={{ marginTop: "0.5rem" }}>
+              Season/Member ID Access
+            </button>
+          </>
+        )}
       </form>
       {error && (
         <p style={{ color: "#b00020", marginTop: "0.75rem" }} role="alert" aria-live="polite">

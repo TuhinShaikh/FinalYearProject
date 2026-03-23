@@ -17,7 +17,7 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.util.UriComponentsBuilder;
 
 /**
- * Fetches live nearby private-hire and minicab operators from TfL Cabwise.
+ * I pull nearby operators from TfL Cabwise and normalize the payload for the UI.
  */
 @Service
 public class RideHailingService {
@@ -27,7 +27,7 @@ public class RideHailingService {
     private final RestTemplate restTemplate = new RestTemplate();
 
     /**
-     * Returns live nearby operators for a map coordinate and radius (in meters).
+     * I query by coordinate + radius because the ride page is location-driven.
      */
     @SuppressWarnings("unchecked")
     public List<Map<String, Object>> getNearbyOperators(double lat, double lon, int radiusMeters) {
@@ -51,7 +51,7 @@ public class RideHailingService {
             );
             payload = response.getBody();
         } catch (RestClientException ignored) {
-            // Upstream outages/rate-limits should not break the frontend page.
+            // I return an empty list here because upstream outages should not crash the page.
             return List.of();
         }
 

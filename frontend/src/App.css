@@ -1,5 +1,7 @@
+/* I keep app-level layout, accessibility themes, and shared UI styling rules in this stylesheet. */
+/* Global theme tokens shared across hero, navigation, cards, and utility components. */
 :root {
-  --deep-navy: #1c2333;
+  --deep-navy: #29353c;
   --indigo: #3c4e6b;
   --slate-blue: #5f738c;
   --pale-blue: #dce8f5;
@@ -17,6 +19,7 @@
 
 html,
 body {
+  /* Baseline document styles so every route starts from the same typography and background. */
   margin: 0;
   padding: 0;
   min-height: 100%;
@@ -27,6 +30,7 @@ body {
 }
 
 body.a11y-high-contrast {
+  /* High-contrast mode is activated from accessibility controls. */
   background: #0a1f3d;
   color: #f8fbff;
 }
@@ -55,6 +59,7 @@ body.a11y-screen-reader .app {
 body.a11y-reduce-motion *,
 body.a11y-reduce-motion *::before,
 body.a11y-reduce-motion *::after {
+  /* Motion reduction intentionally disables transitions/animations globally. */
   animation: none !important;
   transition: none !important;
   scroll-behavior: auto !important;
@@ -84,6 +89,7 @@ body.a11y-reduce-motion *::after {
 }
 
 .skip-link {
+  /* Skip-link stays off-canvas until focused for keyboard accessibility. */
   position: absolute;
   left: -999px;
   top: 0.5rem;
@@ -135,6 +141,7 @@ button:focus-visible {
 }
 
 .navbar {
+  /* Sticky top nav keeps key actions reachable on long pages. */
   position: sticky;
   top: 0;
   display: flex;
@@ -208,6 +215,7 @@ button:focus-visible {
 }
 
 .hero {
+  /* Landing hero frames authentication choices for first-time visitors. */
   min-height: 70vh;
   display: flex;
   align-items: center;
@@ -240,11 +248,13 @@ button:focus-visible {
 }
 
 .auth-buttons {
+  /* I stack these buttons vertically so the first interaction is clearer on desktop and mobile. */
   margin-top: 2rem;
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 1rem;
   justify-content: center;
+  align-items: center;
 }
 
 .hero button {
@@ -262,6 +272,7 @@ button:focus-visible {
 }
 
 .content {
+  /* Shared content wrapper used by non-landing routes. */
   flex: 1;
   padding: 2.5rem 1rem 3rem;
   display: flex;
@@ -345,6 +356,18 @@ button:focus-visible {
 .login-page button {
   align-self: flex-start;
   margin-top: 0.4rem;
+  background: #0a1f3d;
+  color: #f8fbff;
+  border: 1px solid rgba(10, 31, 61, 0.85);
+}
+
+.login-page button:hover:not(:disabled) {
+  background: #163362;
+}
+
+.login-page button:disabled {
+  background: #3e4f6b;
+  border-color: #3e4f6b;
 }
 
 .home-hero {
@@ -441,6 +464,7 @@ button:focus-visible {
 }
 
 body,
+body {
   line-height: 1.6;
 }
 
@@ -606,6 +630,7 @@ button:disabled {
 }
 
 .chat-page {
+  /* Chat page split layout: assistant panel + side guidance cards. */
   padding: 3rem 1rem 4rem;
   min-height: calc(100vh - 130px);
   background: linear-gradient(180deg, rgba(242, 246, 255, 0.95), #e8efff 70%);
@@ -1110,6 +1135,56 @@ button:disabled {
   background: rgba(170, 199, 216, 0.6);
 }
 
+/* Register card mirrors login card so auth pages feel consistent. */
+.register-page {
+  max-width: 480px;
+  width: min(94vw, 480px);
+  margin: 3rem auto 0;
+  padding: 2.25rem 2rem;
+  border-radius: 30px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(17, 34, 82, 0.15);
+  box-shadow: 0 25px 60px rgba(41, 53, 60, 0.18);
+}
+
+.register-page h2 {
+  margin: 0 0 1rem;
+  font-size: 2rem;
+  color: var(--deep-navy);
+}
+
+.register-page form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.register-page input {
+  width: 100%;
+  border-radius: 14px;
+  border: 1px solid rgba(17, 34, 82, 0.15);
+  padding: 0.75rem 0.95rem;
+  font-size: 1rem;
+  background: var(--mist);
+}
+
+.register-page button {
+  align-self: flex-start;
+  margin-top: 0.4rem;
+  background: #0a1f3d;
+  color: #f8fbff;
+  border: 1px solid rgba(10, 31, 61, 0.85);
+}
+
+.register-page button:hover:not(:disabled) {
+  background: #163362;
+}
+
+.register-page button:disabled {
+  background: #3e4f6b;
+  border-color: #3e4f6b;
+}
+
 .event-list {
   margin-top: 2rem;
   display: grid;
@@ -1451,6 +1526,8 @@ body, html, #root {
   border: 1px solid rgba(41, 53, 60, 0.12);
   box-shadow: 0 40px 70px rgba(41, 53, 60, 0.18);
 }
+
+.hero-overlay h1 {
   display: inline-block;
 }
 

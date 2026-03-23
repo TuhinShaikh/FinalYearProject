@@ -8,7 +8,9 @@ import uk.ac.rhul.CS3821.dto.PaymentRequest;
 import uk.ac.rhul.CS3821.dto.SquareConfigResponse;
 import uk.ac.rhul.CS3821.service.PaymentService;
 
-// Proxy for the Square payment service so the UI can charge cards and issue refunds
+/**
+ * REST controller exposing payment and refund endpoints.
+ */
 @RestController
 @RequestMapping("/payments")
 public class PaymentController {
@@ -19,6 +21,11 @@ public class PaymentController {
         this.paymentService = paymentService;
     }
 
+    /**
+     * Returns Square config information needed by frontend checkout.
+     *
+     * @return Square configuration payload
+     */
     @GetMapping("/config")
     public ResponseEntity<SquareConfigResponse> getConfig() {
         try {
@@ -29,7 +36,12 @@ public class PaymentController {
         }
     }
 
-    // Charge the provided source token for a parking slot
+    /**
+     * Creates a payment using a tokenized card source.
+     *
+     * @param request payment request payload
+     * @return provider payment response or validation error
+     */
     @PostMapping
     public ResponseEntity<?> createPayment(@RequestBody PaymentRequest request) {
         try {
@@ -40,7 +52,13 @@ public class PaymentController {
         }
     }
 
-    // Trigger a refund on an existing charge if the UI asks for it
+    /**
+     * Refunds a payment by id and amount.
+     *
+     * @param id payment identifier
+     * @param amountCents refund amount in minor units
+     * @return provider refund response or validation error
+     */
     @PostMapping("/{id}/refund")
     public ResponseEntity<?> refundPayment(@PathVariable String id,
                                            @RequestParam int amountCents) {

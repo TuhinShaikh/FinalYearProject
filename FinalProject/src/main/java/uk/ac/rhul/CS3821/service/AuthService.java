@@ -12,7 +12,7 @@ import uk.ac.rhul.CS3821.security.JwtUtil;
 import java.time.Instant;
 
 /**
- * Handles authentication flows: user registration, credential verification, and token creation.
+ * I keep auth logic here so registration, login checks, and token creation stay in one place.
  */
 @Service
 public class AuthService {
@@ -28,7 +28,7 @@ public class AuthService {
     }
 
     /**
-     * Creates a new user record if the email is unused and returns a JWT for the new account.
+     * I create the user only when the email is free, then return a token so the client can log in immediately.
      */
     public AccessTokenResponse register(RegisterRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
@@ -50,7 +50,7 @@ public class AuthService {
     }
 
     /**
-     * Validates login credentials, updates the last login timestamp, and issues a token.
+     * I verify password first, update last login, and then issue a fresh token for the session.
      */
     public AccessTokenResponse login(LoginRequest request) {
         User existing = userRepository.findByEmail(request.getEmail())
@@ -68,7 +68,7 @@ public class AuthService {
     }
 
     /**
-     * Splits the provided display name into a first/last pair, guarding against blank input.
+     * I split display name into first/last because user input usually comes in one text field.
      */
     private static String[] splitName(String fullName) {
         if (fullName == null || fullName.isBlank()) {
