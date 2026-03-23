@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">81.81% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/11</span>
+                <span class='fraction'>9/11</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">50% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/24</span>
+                <span class='fraction'>12/24</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">60% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/5</span>
+                <span class='fraction'>3/5</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/9</span>
+                <span class='fraction'>9/9</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -297,23 +297,21 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -354,7 +352,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -362,7 +362,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -500,7 +500,7 @@ import { useAccessibility } from "../context/AccessibilityContext";
 &nbsp;
 // I use this page to centralize all accessibility toggles so users can tune the full experience in one place.
 &nbsp;
-export default function <span class="fstat-no" title="function not covered" >AccessibilityPage() {</span>
+export default function AccessibilityPage() {
   const {
     fontSize,
     highContrast,
@@ -513,21 +513,21 @@ export default function <span class="fstat-no" title="function not covered" >Acc
     toggleReduceMotion,
     toggleStepFree,
     resetAccessibility,
-<span class="cstat-no" title="statement not covered" >  } = useAccessibility();</span>
+  } = useAccessibility();
 &nbsp;
-  const textColor = <span class="cstat-no" title="statement not covered" >highContrast ? "#f8fbff" : "#0a1f3d";</span>
+  const textColor = highContrast ? <span class="branch-0 cbranch-no" title="branch not covered" >"#f8fbff" : "</span>#0a1f3d";
   // These derived colors keep controls readable when contrast mode flips.
-  const cardBackground = <span class="cstat-no" title="statement not covered" >highContrast ? "#163362" : "#ffffff";</span>
-  const toggleBackground = <span class="cstat-no" title="statement not covered" >highContrast ? "#f9d74a" : "#c2e0ff";</span>
-  const controlButtonStyle = <span class="cstat-no" title="statement not covered" >{</span>
+  const cardBackground = highContrast ? <span class="branch-0 cbranch-no" title="branch not covered" >"#163362" : "</span>#ffffff";
+  const toggleBackground = highContrast ? <span class="branch-0 cbranch-no" title="branch not covered" >"#f9d74a" : "</span>#c2e0ff";
+  const controlButtonStyle = {
     minHeight: "44px",
     minWidth: "44px",
     padding: "0.75rem 1rem",
   };
 &nbsp;
-  const statusSummary = <span class="cstat-no" title="statement not covered" >`Font size ${fontSize}px. High contrast ${highContrast ? "on" : "off"}. Assistive reading mode ${screenReader ? "on" : "off"}. Reduced motion ${reduceMotion ? "on" : "off"}. Step-free route filter ${stepFree ? "on" : "off"}.`;</span>
+  const statusSummary = `Font size ${fontSize}px. High contrast ${highContrast ? <span class="branch-0 cbranch-no" title="branch not covered" >"on" : "</span>off"}. Assistive reading mode ${screenReader ? <span class="branch-0 cbranch-no" title="branch not covered" >"on" : "</span>off"}. Reduced motion ${reduceMotion ? <span class="branch-0 cbranch-no" title="branch not covered" >"on" : "</span>off"}. Step-free route filter ${stepFree ? <span class="branch-0 cbranch-no" title="branch not covered" >"on" : "</span>off"}.`;
 &nbsp;
-<span class="cstat-no" title="statement not covered" >  return (</span>
+  return (
     &lt;main
       role="main"
       id="main-content"
@@ -540,7 +540,7 @@ export default function <span class="fstat-no" title="function not covered" >Acc
         margin: "auto",
         lineHeight: "1.6",
         fontSize: `${fontSize}px`,
-        backgroundColor: highContrast ? "#0a1f3d" : "#f4f8ff",
+        backgroundColor: highContrast ? <span class="branch-0 cbranch-no" title="branch not covered" >"#0a1f3d" : "</span>#f4f8ff",
         borderRadius: "20px",
         boxShadow: "0 25px 50px rgba(10, 31, 61, 0.08)",
         border: "1px solid rgba(10, 31, 61, 0.1)",
@@ -570,7 +570,7 @@ export default function <span class="fstat-no" title="function not covered" >Acc
         &lt;p style={{ margin: "0.25rem 0 0.75rem", opacity: 0.75 }}&gt;Current size: {fontSize}px&lt;/p&gt;
         &lt;button
           // I cap the lower bound so text never becomes unreadably small.
-          onClick={<span class="fstat-no" title="function not covered" >() =&gt; <span class="cstat-no" title="statement not covered" >s</span>etFontSize(<span class="fstat-no" title="function not covered" >(s</span>) =&gt; <span class="cstat-no" title="statement not covered" >Math.max(12, s - 2))</span>}</span>
+          onClick={() =&gt; setFontSize(<span class="fstat-no" title="function not covered" >(s</span>) =&gt; <span class="cstat-no" title="statement not covered" >Math.max(12, s - 2))</span>}
           aria-label="Decrease font size"
           style={{ ...controlButtonStyle, marginRight: "1rem" }}
         &gt;
@@ -578,7 +578,7 @@ export default function <span class="fstat-no" title="function not covered" >Acc
         &lt;/button&gt;
         &lt;button
           // I cap the upper bound to avoid layout breakage on very large font sizes.
-          onClick={<span class="fstat-no" title="function not covered" >() =&gt; <span class="cstat-no" title="statement not covered" >s</span>etFontSize(<span class="fstat-no" title="function not covered" >(s</span>) =&gt; <span class="cstat-no" title="statement not covered" >Math.min(28, s + 2))</span>}</span>
+          onClick={() =&gt; setFontSize(<span class="fstat-no" title="function not covered" >(s</span>) =&gt; <span class="cstat-no" title="statement not covered" >Math.min(28, s + 2))</span>}
           aria-label="Increase font size"
           style={controlButtonStyle}
         &gt;
@@ -608,7 +608,7 @@ export default function <span class="fstat-no" title="function not covered" >Acc
             ...controlButtonStyle,
           }}
         &gt;
-          {highContrast ? "Disable High Contrast" : "Enable High Contrast"}
+          {highContrast ? <span class="branch-0 cbranch-no" title="branch not covered" >"Disable High Contrast" : "</span>Enable High Contrast"}
         &lt;/button&gt;
       &lt;/section&gt;
 &nbsp;
@@ -634,7 +634,7 @@ export default function <span class="fstat-no" title="function not covered" >Acc
             ...controlButtonStyle,
           }}
         &gt;
-          {screenReader ? "Disable Assistive Reading" : "Enable Assistive Reading"}
+          {screenReader ? <span class="branch-0 cbranch-no" title="branch not covered" >"Disable Assistive Reading" : "</span>Enable Assistive Reading"}
         &lt;/button&gt;
       &lt;/section&gt;
 &nbsp;
@@ -660,7 +660,7 @@ export default function <span class="fstat-no" title="function not covered" >Acc
             ...controlButtonStyle,
           }}
         &gt;
-          {reduceMotion ? "Disable Reduced Motion" : "Enable Reduced Motion"}
+          {reduceMotion ? <span class="branch-0 cbranch-no" title="branch not covered" >"Disable Reduced Motion" : "</span>Enable Reduced Motion"}
         &lt;/button&gt;
       &lt;/section&gt;
 &nbsp;
@@ -686,7 +686,7 @@ export default function <span class="fstat-no" title="function not covered" >Acc
             ...controlButtonStyle,
           }}
         &gt;
-          {stepFree ? "Disable Step-Free Filter" : "Enable Step-Free Filter"}
+          {stepFree ? <span class="branch-0 cbranch-no" title="branch not covered" >"Disable Step-Free Filter" : "</span>Enable Step-Free Filter"}
         &lt;/button&gt;
       &lt;/section&gt;
 &nbsp;
@@ -718,7 +718,7 @@ export default function <span class="fstat-no" title="function not covered" >Acc
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-03-22T22:55:30.968Z
+                at 2026-03-23T17:55:28.370Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

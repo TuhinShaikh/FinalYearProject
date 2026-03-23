@@ -2,6 +2,7 @@ package uk.ac.rhul.CS3821.controller;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.http.ResponseEntity;
+import uk.ac.rhul.CS3821.service.RouteService;
 
 import java.util.List;
 import java.util.Map;
@@ -13,7 +14,7 @@ class TravelControllerUnitTest {
     @Test
     @SuppressWarnings("unchecked")
     void routeReturnsExpectedPayload() {
-        TravelController controller = new TravelController();
+        TravelController controller = new TravelController(new RouteService());
 
         ResponseEntity<?> response = controller.route("STADIUM", "MILTON_KEYNES");
 
@@ -27,7 +28,7 @@ class TravelControllerUnitTest {
     @Test
     @SuppressWarnings("unchecked")
     void routeReturnsEmptyPathWhenStartNodeUnknown() {
-        TravelController controller = new TravelController();
+        TravelController controller = new TravelController(new RouteService());
 
         ResponseEntity<?> response = controller.route("UNKNOWN", "MILTON_KEYNES");
 

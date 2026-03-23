@@ -6,8 +6,10 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 /**
  * I keep these development security rules so the frontend can call auth/api endpoints without friction.
@@ -22,11 +24,15 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .csrf().disable()
+            .csrf(csrf -> csrf
+                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                .ignoringRequestMatchers("/auth/**", "/api/auth/**", "/api/**")
+            )
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/auth/**", "/api/**").permitAll()
+                .requestMatchers("/auth/**", "/api/auth/**", "/api/travel/**", "/api/trains/**", "/api/rides/**").permitAll()
                 .anyRequest().authenticated()
-            );
+            )
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         return http.build();
     }
 

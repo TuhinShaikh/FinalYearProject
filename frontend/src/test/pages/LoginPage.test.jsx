@@ -1,5 +1,5 @@
 import React from 'react';
-import { describe, it, beforeEach, expect, vi } from 'vitest';
+import { describe, it, beforeEach, afterEach, expect, vi } from 'vitest';
 import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
@@ -24,8 +24,13 @@ vi.mock('react-router-dom', async () => {
 
 describe('LoginPage', () => {
   beforeEach(() => {
+    vi.stubEnv('VITE_ENABLE_DEMO_ID_ACCESS', 'false');
     mockNavigate.mockReset();
     loginMock.mockReset();
+  });
+
+  afterEach(() => {
+    vi.unstubAllEnvs();
   });
 
   it('shows validation error when submit is missing credentials', async () => {

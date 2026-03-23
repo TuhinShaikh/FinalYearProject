@@ -32,25 +32,38 @@ export default function RegisterUser(): JSX.Element {
     <div className="register-page">
       <h2>Register</h2>
       <form onSubmit={handleSubmit}>
+        <label htmlFor="register-name" style={{ display: "block", marginBottom: "0.2rem" }}>
+          Name
+        </label>
         <input
+          id="register-name"
           type="text"
           placeholder="Name"
           value={name}
           onChange={e => setName(e.target.value)}
           required
         />
+        <label htmlFor="register-email" style={{ display: "block", margin: "0.75rem 0 0.2rem" }}>
+          Email address
+        </label>
         <input
+          id="register-email"
           type="email"
           placeholder="Email"
           value={email}
           onChange={e => setEmail(e.target.value)}
           required
         />
+        <label htmlFor="register-password" style={{ display: "block", margin: "0.75rem 0 0.2rem" }}>
+          Password
+        </label>
         <input
+          id="register-password"
           type="password"
           placeholder="Password"
           value={password}
           onChange={e => setPassword(e.target.value)}
+          minLength={8}
           required
         />
         <button type="submit" disabled={loading}>
