@@ -56,3 +56,12 @@
 
 ---
 
+# **Assessment Rubric**
+- The project markscheme and scoring breakdown are documented in `MARKSCHEME.md`.
+- This includes the revised 20-mark technical section split across:
+  - Technical complexity
+  - Library/framework usage
+  - Advanced feature range
+
+---
+
