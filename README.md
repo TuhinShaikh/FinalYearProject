@@ -1,100 +1,48 @@
 # Tottenham Hotspur Travel Planner
 
-Matchday travel and parking app with:
-- Frontend (React + Vite + Nginx)
-- Backend (Spring Boot)
-- Database (PostgreSQL)
+Frontend + backend + database project.
 
-## Project Structure
+## Submitted Directory Structure
 
-- `FinalProject` -> Spring Boot backend
-- `frontend` -> React frontend
-- `docker-compose.yml` -> Runs frontend + backend + db together
-
-## Run With Docker (Step by Step)
-
-Use WSL terminal from the project root:
-
-```bash
-cd ~/PROJECT
+```text
+PROJECT/
+	README.md
+	docker-compose.yml
+	FinalProject/        # Spring Boot backend
+		pom.xml
+		src/
+	frontend/            # React + Vite frontend
+		package.json
+		src/
+	Documents/
 ```
 
-### 1. Build and start all services
+## Run Locally (Simple)
+
+From the project root, use two terminals.
+
+Terminal 1 (frontend):
 
 ```bash
-sudo docker compose up --build -d
+cd frontend
+npm install
+npm run dev
 ```
 
-### 2. Check status
+Terminal 2 (backend):
 
 ```bash
-sudo docker compose ps
+cd FinalProject
+mvn spring-boot:run
 ```
 
-You should see:
-- `finalproject-frontend` up
-- `finalproject-backend` up
-- `finalproject-db` up
+Default URLs:
+- Frontend: http://localhost:5173
+- Backend: http://localhost:8080
 
-### 3. Open the app
-
-- Frontend: `http://localhost:5173`
-- Backend: `http://localhost:8080`
-
-### 4. View logs
+## Run With Docker (2 commands)
 
 ```bash
-sudo docker compose logs -f
-```
-
-### 5. Stop services
-
-```bash
-sudo docker compose down
-```
-
-### 6. Full reset (containers + network + volumes)
-
-```bash
-sudo docker compose down -v
-```
-
-## Docker Commands
-
-Rebuild only backend:
-
-```bash
-sudo docker compose build --no-cache backend
-```
-
-Rebuild only frontend:
-
-```bash
-sudo docker compose build --no-cache frontend
-```
-
-Restart one service:
-
-```bash
-sudo docker compose restart backend
-```
-
-Check running containers quickly:
-
-```bash
-sudo docker ps
-```
-
-## Run Backend Locally (Without Docker)
-
-From the backend folder:
-
-```bash
-cd ~/PROJECT/FinalProject
-```
-
-Run Spring Boot on port 8081:
-
-```bash
-mvn spring-boot:run -Dspring-boot.run.arguments=--server.port=8081
+docker compose up --build
+docker compose down
 ```
