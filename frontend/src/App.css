@@ -630,7 +630,7 @@ button:disabled {
 }
 
 .chat-page {
-  /* Chat page split layout: assistant panel + side guidance cards. */
+  /* Chat page split layout: main panel + side guidance cards. */
   padding: 3rem 1rem 4rem;
   min-height: calc(100vh - 130px);
   background: linear-gradient(180deg, rgba(242, 246, 255, 0.95), #e8efff 70%);

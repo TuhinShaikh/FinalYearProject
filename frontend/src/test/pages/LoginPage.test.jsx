@@ -65,14 +65,96 @@ describe('LoginPage', () => {
     expect(mockNavigate).toHaveBeenCalledWith('/booking', { replace: true });
   });
 
-  it('keeps season/member id access hidden by default', () => {
+  it('shows season/member id access controls', () => {
     render(
       <MemoryRouter>
         <LoginPage />
       </MemoryRouter>
     );
 
-    expect(screen.queryByLabelText('Season/Member ID')).not.toBeInTheDocument();
-    expect(screen.queryByRole('button', { name: 'Season/Member ID Access' })).not.toBeInTheDocument();
+    expect(screen.getByLabelText('Season/Member ID')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Season/Member ID Access' })).toBeInTheDocument();
+  });
+
+  it('shows backend message when login fails', async () => {
+    const user = userEvent.setup();
+    loginMock.mockRejectedValue(new Error('Invalid credentials'));
+
+    render(
+      <MemoryRouter>
+        <LoginPage />
+      </MemoryRouter>
+    );
+
+    await user.type(screen.getByLabelText('Email address'), 'fan@example.com');
+    await user.type(screen.getByLabelText('Password'), 'wrong');
+    await user.click(screen.getByRole('button', { name: 'Login' }));
+
+    expect(await screen.findByRole('alert')).toHaveTextContent('Invalid credentials');
+  });
+
+  it('shows error when login returns no token', async () => {
+    const user = userEvent.setup();
+    loginMock.mockResolvedValue({});
+
+    render(
+      <MemoryRouter>
+        <LoginPage />
+      </MemoryRouter>
+    );
+
+    await user.type(screen.getByLabelText('Email address'), 'fan@example.com');
+    await user.type(screen.getByLabelText('Password'), 'secret123');
+    await user.click(screen.getByRole('button', { name: 'Login' }));
+
+    expect(await screen.findByRole('alert')).toHaveTextContent('Login succeeded but no token was returned.');
+  });
+
+  it('routes to admin when season/member id is admin code', async () => {
+    const user = userEvent.setup();
+
+    render(
+      <MemoryRouter>
+        <LoginPage />
+      </MemoryRouter>
+    );
+
+    await user.type(screen.getByLabelText('Season/Member ID'), '2025');
+    await user.click(screen.getByRole('button', { name: 'Season/Member ID Access' }));
+
+    expect(localStorage.getItem('adminAccessGranted')).toBe('true');
+    expect(mockNavigate).toHaveBeenCalledWith('/admin', { replace: true });
+  });
+
+  it('routes to booking and clears admin access for public id code', async () => {
+    const user = userEvent.setup();
+    localStorage.setItem('adminAccessGranted', 'true');
+
+    render(
+      <MemoryRouter>
+        <LoginPage />
+      </MemoryRouter>
+    );
+
+    await user.type(screen.getByLabelText('Season/Member ID'), '1882');
+    await user.click(screen.getByRole('button', { name: 'Season/Member ID Access' }));
+
+    expect(localStorage.getItem('adminAccessGranted')).toBeNull();
+    expect(mockNavigate).toHaveBeenCalledWith('/booking', { replace: true });
+  });
+
+  it('shows INVALID for unknown id code', async () => {
+    const user = userEvent.setup();
+
+    render(
+      <MemoryRouter>
+        <LoginPage />
+      </MemoryRouter>
+    );
+
+    await user.type(screen.getByLabelText('Season/Member ID'), '9999');
+    await user.click(screen.getByRole('button', { name: 'Season/Member ID Access' }));
+
+    expect(await screen.findByRole('alert')).toHaveTextContent('INVALID');
   });
 });

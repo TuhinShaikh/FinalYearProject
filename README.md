@@ -1,44 +1,100 @@
+# Tottenham Hotspur Travel Planner
 
-# Tottenham Hotspur Travel Assistant
+Matchday travel and parking app with:
+- Frontend (React + Vite + Nginx)
+- Backend (Spring Boot)
+- Database (PostgreSQL)
 
-Simple web app for matchday travel and parking.
+## Project Structure
 
-## Project Folders
+- `FinalProject` -> Spring Boot backend
+- `frontend` -> React frontend
+- `docker-compose.yml` -> Runs frontend + backend + db together
 
-- Backend: `FinalProject`
-- Frontend: `frontend`
+## Run With Docker (Step by Step)
 
-Run both for full local development.
-
-## Requirements
-
-- Java 17
-- Maven
-- Node.js 18+ and npm
-- PostgreSQL (default: `5432`)
-
-## Run Locally
-
-Backend:
+Use WSL terminal from the project root:
 
 ```bash
-cd FinalProject
-mvn spring-boot:run
+cd ~/PROJECT
 ```
 
-Frontend:
+### 1. Build and start all services
 
 ```bash
-cd frontend
-npm install
-npm run dev
+sudo docker compose up --build -d
 ```
 
-- Backend URL: `http://localhost:8080`
-- Frontend URL: `http://localhost:5173`
+### 2. Check status
 
-## Quick Fixes
+```bash
+sudo docker compose ps
+```
 
-- Backend not starting: check Java is 17 and PostgreSQL is running.
-- Frontend API issues: make sure backend is running on port 8080.
-- Windows shell test issues: run commands in WSL.
+You should see:
+- `finalproject-frontend` up
+- `finalproject-backend` up
+- `finalproject-db` up
+
+### 3. Open the app
+
+- Frontend: `http://localhost:5173`
+- Backend: `http://localhost:8080`
+
+### 4. View logs
+
+```bash
+sudo docker compose logs -f
+```
+
+### 5. Stop services
+
+```bash
+sudo docker compose down
+```
+
+### 6. Full reset (containers + network + volumes)
+
+```bash
+sudo docker compose down -v
+```
+
+## Docker Commands
+
+Rebuild only backend:
+
+```bash
+sudo docker compose build --no-cache backend
+```
+
+Rebuild only frontend:
+
+```bash
+sudo docker compose build --no-cache frontend
+```
+
+Restart one service:
+
+```bash
+sudo docker compose restart backend
+```
+
+Check running containers quickly:
+
+```bash
+sudo docker ps
+```
+
+## Run Backend Locally (Without Docker)
+
+From the backend folder:
+
+```bash
+cd ~/PROJECT/FinalProject
+```
+
+Run Spring Boot on port 8081:
+
+```bash
+mvn spring-boot:run -Dspring-boot.run.arguments=--server.port=8081
+```

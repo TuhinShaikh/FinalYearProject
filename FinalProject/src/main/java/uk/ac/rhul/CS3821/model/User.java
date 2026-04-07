@@ -43,6 +43,10 @@ public class User {
     // I use this flag to quickly disable an account when needed.
     private boolean isDisabled = false;
 
+    @Column(name = "role", nullable = false, length = 20)
+    // I keep role on the user so admin-only capabilities can be enforced in code.
+    private String role = "USER";
+
     @CreationTimestamp
     @Column(name = "created_at", updatable = false, nullable = false)
     private Instant createdAt;
@@ -97,6 +101,9 @@ public class User {
 
     public boolean isDisabled() { return isDisabled; }
     public void setDisabled(boolean disabled) { isDisabled = disabled; }
+
+    public String getRole() { return role; }
+    public void setRole(String role) { this.role = role; }
 
     public Instant getCreatedAt() { return createdAt; }
     public Instant getUpdatedAt() { return updatedAt; }

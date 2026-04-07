@@ -21,6 +21,7 @@
 
     <properties>
         <java.version>17</java.version>
+        <skipTests>false</skipTests>
     </properties>
 
     <dependencies>
@@ -135,7 +136,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.3.0</version>
                 <configuration>
-                    <skipTests>false</skipTests>
+                    <skipTests>${skipTests}</skipTests>
                 </configuration>
             </plugin>
 

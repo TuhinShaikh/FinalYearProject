@@ -223,3 +223,40 @@ export async function fetchLiveRides({ lat = 51.6048, lon = -0.066, radiusMeters
     throw error;
   }
 }
+
+// ===============================
+// Admin dashboard
+// ===============================
+function adminHeaders(adminEmail) {
+  return {
+    ...getAuthHeaders(),
+    "X-Admin-Email": adminEmail,
+    "Content-Type": "application/json",
+  };
+}
+
+export async function fetchAdminDashboard(adminEmail) {
+  const response = await fetch(buildUrl("/api/admin/dashboard"), {
+    method: "GET",
+    headers: adminHeaders(adminEmail),
+  });
+  return handleResponse(response);
+}
+
+export async function setAdminSectionStatus(adminEmail, section, closed) {
+  const action = closed ? "close" : "open";
+  const response = await fetch(buildUrl(`/api/admin/sections/${encodeURIComponent(section)}/${action}`), {
+    method: "POST",
+    headers: adminHeaders(adminEmail),
+  });
+  return handleResponse(response);
+}
+
+export async function promoteUserToAdmin(adminEmail, email) {
+  const response = await fetch(buildUrl("/api/admin/users/promote"), {
+    method: "POST",
+    headers: adminHeaders(adminEmail),
+    body: JSON.stringify({ email }),
+  });
+  return handleResponse(response);
+}

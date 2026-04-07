@@ -4,14 +4,19 @@ import { login } from "../api";
 
 // I kept login minimal and explicit so validation and auth errors are clear to users and markers.
 
-export default function LoginPage(): JSX.Element {
+export default function LoginPage() {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [tottenhamId, setTottenhamId] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const isDemoIdAccessEnabled = import.meta.env.VITE_ENABLE_DEMO_ID_ACCESS === "true";
+  const demoIdAccessEnv =
+    (import.meta as any).env?.VITE_ENABLE_DEMO_ID_ACCESS ??
+    ((globalThis as any).process?.env?.VITE_ENABLE_DEMO_ID_ACCESS as string | undefined) ??
+    "true";
+  const isDemoIdAccessEnabled = demoIdAccessEnv === "true";
   const navigate = useNavigate();
+  const ADMIN_ACCESS_KEY = "adminAccessGranted";
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -44,7 +49,17 @@ export default function LoginPage(): JSX.Element {
     }
 
     // I keep this shortcut only behind an explicit demo flag.
-    if (tottenhamId.trim() === "1882") {
+    const id = tottenhamId.trim();
+    if (id === "2025" || id === "2005") {
+      localStorage.setItem(ADMIN_ACCESS_KEY, "true");
+      setError(null);
+      navigate("/admin", { replace: true });
+      return;
+    }
+
+    // 1882 is the general-public shortcut and should not unlock admin.
+    if (id === "1882") {
+      localStorage.removeItem(ADMIN_ACCESS_KEY);
       setError(null);
       navigate("/booking", { replace: true });
       return;

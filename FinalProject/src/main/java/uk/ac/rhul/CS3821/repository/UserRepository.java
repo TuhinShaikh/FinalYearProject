@@ -36,4 +36,12 @@ public interface UserRepository extends JpaRepository<User, UUID> {
      */
     List<User> findByIsDisabled(boolean isDisabled);
 
+    /**
+     * Finds users by role value.
+     *
+     * @param role role name such as USER or ADMIN
+     * @return users assigned to the role
+     */
+    List<User> findByRole(String role);
+
 }

@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import "../App.css";
 import ChatWidget from "../components/ChatWidget";
 
-// I keep the assistant page separate so guidance, shortcuts, and chat context stay focused.
+// I keep this help page separate so guidance, shortcuts, and chat context stay focused.
 
 const promptHighlights = [
   {
@@ -35,9 +35,9 @@ export default function ChatbotPage() {
     <main className="chat-page">
       <section className="chat-page__panel">
         <header className="chat-page__header">
-          <h1>Travel Copilot</h1>
+          <h1>Travel Helper</h1>
           <p className="chat-page__intro">
-            This assistant references the same TfL data and planner as the rest of the app—just type your question
+            This helper references the same TfL data and planner as the rest of the app-just type your question
             about journeys, status, or parking and I will surface the next best page.
           </p>
         </header>
@@ -67,7 +67,7 @@ export default function ChatbotPage() {
               </p>
               <nav className="chat-page__aside-links" aria-label="Quick navigation">
                 {shortcutLinks.map((link) => (
-                  // I keep page shortcuts near chat so users can act on assistant guidance instantly.
+                  // I keep page shortcuts near chat so users can act on guidance instantly.
                   <Link key={link.label} to={link.to} className="chat-page__aside-link">
                     {link.label}
                   </Link>

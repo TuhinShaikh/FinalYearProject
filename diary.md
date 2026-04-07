@@ -1,22 +1,22 @@
 Development Diary
 
 ***** 01/10/2025 ***** Project Initialization & Scope Definition
-I defined the primary scope for the "Stadium Transport & Parking Planner" and identified the core problem of congestion at Tottenham Hotspur Stadium. I drafted the high-level functional requirements to ensure I had a clear baseline for development. This addressed the 'Software Engineering' requirement for clear requirement analysis.
+I defined the main scope for the "Stadium Transport & Parking Planner" and identified congestion at Tottenham Hotspur Stadium as the core problem. I wrote the first set of functional requirements so I had a clear baseline before building anything.
 
 ***** 02/10/2025 ***** Requirements Gathering
-I detailed specific user stories for the three main pillars: Authentication, Real-Time Parking, and Payments. I explicitly defined non-functional requirements, including WCAG 2.1 AA compliance and sub-2-second latency. This further satisfied the 'Software Engineering' criteria for detailed requirement elicitation.
+I wrote detailed user stories for the three core areas: Authentication, Real-Time Parking, and Payments. I also set non-functional targets, including WCAG 2.1 AA compliance and sub-2-second response time.
 
 ***** 03/10/2025 ***** Technology Stack Selection
-I finalized the decision to use N-Tier architecture. I selected Spring Boot for the backend (justifying it via ACID compliance) and React/Vite for the frontend (justifying it via Virtual DOM performance). This demonstrated the 'Background Theory' criteria by providing evidence of understanding architectural trade-offs.
+I chose an N-Tier architecture. I selected Spring Boot for the backend and React/Vite for the frontend after comparing trade-offs around reliability, speed, and developer workflow.
 
 ***** 06/10/2025 ***** Database Design (ERD)
-I designed the Entity Relationship Diagram (ERD), defining the User, Booking, and ParkingSpot entities and their One-to-Many relationships. This directly addressed the 'Software Engineering' requirement for the inclusion of UML diagrams.
+I designed the ERD and defined User, Booking, and ParkingSpot with their One-to-Many relationships.
 
 ***** 07/10/2025 ***** Database Environment Setup
 I installed PostgreSQL locally and created the initial database instance. I configured user roles and permissions to prepare for the Spring Boot connection, ensuring a robust environment for the data layer.
 
 ***** 08/10/2025 ***** Backend Project Init
-I initialized the Spring Boot project using Maven and set up the pom.xml file with dependencies for Spring Web, Spring Data JPA, and the PostgreSQL driver. This established the foundation for an 'engineering approach' to software development.
+I initialized the Spring Boot project with Maven and set up pom.xml with Spring Web, Spring Data JPA, and PostgreSQL dependencies.
 
 ***** 09/10/2025 ***** Entity Implementation
 I implemented the Java entity classes (User.java, ParkingSpot.java) and added standard JPA annotations (@Entity, @Table) to define column constraints, ensuring strict data modeling.
@@ -25,19 +25,19 @@ I implemented the Java entity classes (User.java, ParkingSpot.java) and added st
 I implemented the Booking.java entity, focusing on defining foreign keys and timestamp fields (startTime, endTime) required for the reservation logic.
 
 ***** 13/10/2025 ***** Repository Layer
-I created repository interfaces (UserRepository, BookingRepository) extending JpaRepository. This established the Data Access Layer without needing manual SQL queries, streamlining the data interaction.
+I created UserRepository and BookingRepository with JpaRepository so I could use a clean data access layer without writing manual SQL.
 
 ***** 14/10/2025 ***** Service Layer Skeleton
-I created the service classes (UserService, BookingService) and defined interface contracts for business logic before implementing the actual methods. This adhered to standard 'Software Engineering' principles of separation of concerns.
+I created UserService and BookingService and defined clear service contracts before implementing business methods.
 
 ***** 15/10/2025 ***** Database Connection Testing
 I configured application.properties and ran the application to verify the connection to PostgreSQL. I successfully auto-generated the database schema using Hibernate ddl-auto.
 
 ***** 16/10/2025 ***** Basic CRUD Testing
-I wrote a simple CommandLineRunner to seed the database with dummy parking spots and verified that data persistence is working correctly. This served as an initial 'proof of concept' program, relevant to the 'Background Theory' mark.
+I wrote a simple CommandLineRunner to seed dummy parking spots and verified that CRUD persistence worked end-to-end.
 
 ***** 17/10/2025 ***** Security Architecture Planning
-I researched Spring Security implementation and decided on a stateless architecture using JSON Web Tokens (JWT) rather than server-side sessions. This evidenced 'independent thought' and 'Background Theory' regarding modern security architectures.
+I researched Spring Security options and chose a stateless JWT approach instead of server-side sessions.
 
 ***** 20/10/2025 ***** Security Dependencies
 I added spring-boot-starter-security and jjwt dependencies and began implementing the SecurityConfig class to define the filter chain.
@@ -46,13 +46,13 @@ I added spring-boot-starter-security and jjwt dependencies and began implementin
 I implemented JwtUtil.java, writing methods to generate signed tokens upon login and validate tokens on incoming API requests using a secret key.
 
 ***** 22/10/2025 ***** Registration Logic
-I implemented the AuthService registration method and integrated BCryptPasswordEncoder to ensure user passwords are always hashed. This addressed security best practices within the 'Software Engineering' scope.
+I implemented registration in AuthService and integrated BCryptPasswordEncoder so passwords are always stored as hashes.
 
 ***** 23/10/2025 ***** Login Endpoint
 I built the /auth/login endpoint in the AuthController. It now accepts credentials, authenticates via the AuthenticationManager, and returns a Bearer Token.
 
 ***** 24/10/2025 ***** Postman API Testing
-I spent the day testing the Auth endpoints using Postman, verifying that protected routes return 403 Forbidden without a token and 200 OK with a valid token. This was part of the 'good test strategy' required by the 'Software Engineering' marking grid.
+I tested the auth endpoints with Postman and confirmed protected routes returned 403 without a token and 200 with a valid token.
 
 ***** 27/10/2025 ***** Frontend Initialization
 I initialized the React project using Vite, cleaned up boilerplate code, and established the folder structure (components, pages, context) to ensure a maintainable codebase.
@@ -70,7 +70,7 @@ I implemented a React Context to store the JWT token in localStorage upon succes
 I built the Registration page, connected it to the backend /auth/register endpoint, and added basic form validation (e.g., password matching).
 
 ***** 03/11/2025 ***** Real-Time SSE Research
-I researched Server-Sent Events vs. WebSockets and confirmed SSE is the better choice for primarily uni-directional data flow. This comparison demonstrated 'Background Theory' understanding.
+I compared Server-Sent Events and WebSockets, then chose SSE because my use case mostly pushes data one way from server to client.
 
 ***** 04/11/2025 ***** SSE Backend Controller
 I implemented the ParkingStreamController and configured it to return an SseEmitter object, keeping the HTTP connection open for updates.
@@ -91,10 +91,10 @@ I registered for a Square Developer account, generated Sandbox API credentials, 
 I implemented the PaymentService in Java, using the Square SDK to build the CreatePaymentRequest object.
 
 ***** 12/11/2025 ***** Payment Controller
-I exposed the /api/payment/process endpoint. This acts as a secure proxy, receiving the token from the frontend and communicating with Square.
+I exposed the /api/payment/process endpoint. I used it as a secure proxy that receives the token from the frontend and sends the request to Square.
 
 ***** 13/11/2025 ***** Frontend Payment Form
-I created the CheckoutForm component using the Square Web Payments SDK, implementing iframe injection to securely capture card details. This adhered to the 'Software Engineering' requirement for secure, standard-compliant (PCI-DSS) implementation.
+I created the CheckoutForm with the Square Web Payments SDK and used the iframe flow so card data stayed in the secure provider widget.
 
 ***** 14/11/2025 ***** End-to-End Payment Test
 I successfully performed a full test transaction in the Sandbox environment and verified the database updates the booking status to "PAID".
@@ -103,13 +103,13 @@ I successfully performed a full test transaction in the Sandbox environment and 
 I encountered CORS errors when the frontend (port 5173) tried to talk to the backend (port 8080) with the Authorization header.
 
 ***** 18/11/2025 ***** Security Configuration Fix
-I refactored the SecurityConfig in Spring Boot to explicitly allow the specific headers and origins required for the JWT and Payment flows. This demonstrated problem-solving within the 'Software Engineering' process.
+I refactored SecurityConfig to allow the exact headers and origins needed for JWT and payment flows.
 
 ***** 19/11/2025 ***** JWT Filter Debugging
 I fixed a bug in the JWT filter chain where the Bearer string wasn't being correctly parsed, causing 401 errors on valid requests.
 
 ***** 20/11/2025 ***** Stubbing Transport Data
-Since the A* algorithm is a Term 2 task, I implemented the TravelPlannerService with stubbed (mock) data for TfL and Greater Anglia to allow frontend development. This evidenced an understanding of 'Background Theory' by isolating algorithmic complexity.
+I implemented TravelPlannerService with stubbed TfL and Greater Anglia data so frontend work could continue while advanced routing was still in progress.
 
 ***** 21/11/2025 ***** Transport UI Implementation
 I built the "Transport Status" page in React and connected it to the stubbed backend endpoints to display line status (Good Service/Delays).
@@ -118,43 +118,43 @@ I built the "Transport Status" page in React and connected it to the stubbed bac
 I integrated the Parking Grid, Transport Status, and Navigation into a unified Dashboard layout.
 
 ***** 25/11/2025 ***** Accessibility Audit
-I ran Google Lighthouse and identified low contrast issues on the "Occupied" (Red) parking slots and missing labels on form inputs. This was crucial for checking the 'Structure and presentation' and Non-Functional Requirements.
+I ran Google Lighthouse and found low-contrast issues on occupied slots and missing labels on form inputs.
 
 ***** 26/11/2025 ***** Accessibility Refactoring
-I updated CSS variables to darker shades for better contrast and added aria-label attributes to all interactive elements. This ensured compliance with the WCAG standards mentioned in the 'Software Engineering' requirements.
+I updated CSS colors for better contrast and added aria-label attributes across interactive elements.
 
 ***** 27/11/2025 ***** Mobile Responsiveness
-I adjusted the CSS Grid media queries and verified that the parking grid reflows correctly from 20 columns on desktop to 5 columns on mobile devices. This improved the 'Presentation' score of the final artifact.
+I adjusted CSS Grid media queries and verified the parking grid reflowed from 20 columns on desktop to 5 columns on mobile.
 
 ***** 28/11/2025 ***** Optimistic Locking
-I added the @Version annotation to the ParkingSpot entity to enable Optimistic Locking. This demonstrated 'Background Theory' understanding of concurrency control.
+I added @Version to ParkingSpot to enable optimistic locking and reduce overwrite issues during concurrent updates.
 
 ***** 01/12/2025 ***** Backend Unit Testing
-I wrote JUnit tests for the BookingService and PaymentService, utilizing Mockito to mock database and Square API dependencies. This directly addressed the 'Software Engineering' criteria for a 'good test strategy'.
+I wrote JUnit tests for BookingService and PaymentService, and I used Mockito to mock database and Square API dependencies.
 
 ***** 02/12/2025 ***** Frontend Component Testing
 I wrote basic tests for the ParkingSlotGrid component to ensure it renders the correct number of slots based on the state array.
 
 ***** 03/12/2025 ***** Integration Testing
-I performed full system integration testing (Happy Path), verifying the flow: Login -> View Grid -> Select Spot -> Pay -> Confirmation. This validated the 'Software Engineering' requirement for comprehensive testing.
+I ran full integration testing for the happy path: Login -> View Grid -> Select Spot -> Pay -> Confirmation.
 
 ***** 04/12/2025 ***** Concurrency Testing
-I manually tested concurrency by opening two browsers, verifying that when User A books a spot, User B sees it turn red within 500ms via SSE. This served as evidence of the 'proof of concept' required for 'Background Theory'.
+I manually tested concurrency with two browsers and confirmed that when User A booked a spot, User B saw it change to red within 500ms through SSE.
 
 ***** 05/12/2025 ***** Code Cleanup
-I refactored the backend code, removed System.out.println debug statements, and added proper SLF4J logging. This ensured the 'Quality of Writing' and code presentation met professional standards.
+I refactored backend code, removed System.out.println debug statements, and replaced them with proper SLF4J logging.
 
 ***** 08/12/2025 ***** Documentation Drafting
-I began drafting the Interim Report, writing the Introduction and Technical Background chapters to justify the choice of Spring Boot and React. This started the process for the 'Structure and presentation' and 'Background Theory' marking grids.
+I started drafting the Interim Report and wrote the Introduction and Technical Background chapters to explain why I chose Spring Boot and React.
 
 ***** 09/12/2025 ***** Diagram Generation
-I created the System Architecture Diagram, ERD, and Payment Sequence Diagram for the report and exported them to high-resolution PNGs. This fulfilled the 'Software Engineering' requirement for UML diagrams and 'Structure and presentation' criteria for appropriate figures.
+I created the System Architecture Diagram, ERD, and Payment Sequence Diagram for the report and exported them as high-resolution PNGs.
 
 ***** 10/12/2025 ***** Retrospective & Gantt
-I wrote the Retrospective Report and generated the final Gantt Chart to visualize the Term 1 timeline and delays. This directly addressed the 'Project Diary' marking criteria for a 'Reflective diary showing strong evidence of analysis of process'.
+I wrote the retrospective report and generated the final Gantt chart to show the Term 1 timeline and delays clearly.
 
 ***** 11/12/2025 ***** Video & Final Polish
-I recorded the demonstration video, proofread the report, and finalized the bibliography. This addressed the 'Bibliography' criteria for 'excellent evidence of background reading' and 'appropriate use of references'.
+I recorded the demo video, proofread the report, and finalized the bibliography.
 
 ***** 12/12/2025 ***** Final Submission
 I packaged the code, reports, and video link and submitted the final deliverables for the Term 1 Interim Deadline, ensuring all 'Completion requirements' were met.
@@ -219,10 +219,6 @@ I reviewed the previous two months of progress and mapped what was done vs what 
 ***** 02/03/2026 ***** Workstream Split
 I split the work into backend hardening, frontend quality, accessibility, test depth, and report evidence so each day had a clear target.
 
-***** 01/03/2026 ***** March Planning Reset I reviewed everything built in January and February and created a realistic final-month plan. I mapped what was complete, what was weak, and what evidence I still needed for the marking rubric.
-
-***** 02/03/2026 ***** Workstream Breakdown I split the work into clear tracks: backend hardening, frontend quality, accessibility, testing, and report evidence. This helped me organize effort daily and avoid last-minute random fixes.
-
 ***** 03/03/2026 ***** Coverage Gap Review I used JaCoCo method/branch reports to identify persistent weak spots and iteratively wrote tests to cover untested branches rather than only line counts.
 
 ***** 04/03/2026 ***** Architecture Cleanup Pass I reviewed controller/service boundaries and noted where business logic should be extracted out of controllers for cleaner design and easier testing.
@@ -265,10 +261,9 @@ I split the work into backend hardening, frontend quality, accessibility, test d
 
 ***** 23/03/2026 ***** Frontend Test Framework Setup I set up Vitest + Testing Library (jsdom, setup file, coverage reporting) and integrated scripts for run/watch/coverage so frontend quality checks are now first-class like backend JUnit workflows.
 
-***** 24/03/2026 ***** Report Writing and Evidence I spent most of today writing report sections (architecture, testing, security decisions) and preparing evidence screenshots/charts to support claims clearly.
+***** 24/03/2026 ***** Report Writing and Evidence I focused on writing final report sections (architecture, testing, security, and evaluation) and preparing evidence tables/figures to support each claim.
 
-***** 25/03/2026 ***** Demo and YouTube Preparation I worked on final report polish and prepared the YouTube demo flow, including script, screen order, and key talking points so the presentation sounds natural and human.
-I prepared final report polish, evidence screenshots, and YouTube/demo script/recording flow in a clear, human presentation style.
+***** 25/03/2026 ***** Demonstration Planning I completed final report polish and structured the demonstration flow so it follows the implemented feature order clearly.
 
 
 ***** 26/03/2026 ***** Accessibility/Status/Transport Test Expansion
@@ -294,4 +289,19 @@ I re-executed frontend and backend test flows, confirmed green runs, and validat
 
 ***** 02/04/2026 ***** Pre-Submission Freeze and Evidence Pack
 I finalized diary updates, confirmed project structure cleanliness (production pages separate from tests), and prepared a final evidence snapshot of lint/build/tests/review outcomes for submission confidence.
+
+***** 03/04/2026 ***** Docker Build Failure Recovery
+I resolved a backend container build blocker by tracing Maven packaging failures and adjusting configuration so Docker builds matched local Maven runs. I documented the root cause and corrective actions in the report evidence notes.
+
+***** 04/04/2026 ***** Environment and Port Conflict Resolution
+I fixed deployment friction caused by service startup conflicts, including host-port contention and compose startup ordering issues. I updated report notes with a reproducible startup/teardown sequence and rationale for the final compose configuration.
+
+***** 05/04/2026 ***** Quality and Security Hardening Pass
+I addressed high-priority code issues identified during review, focusing on fragile behavior, security posture, and API error-path consistency. I linked each improvement to quality, structure, stability, and testing evidence in the report.
+
+***** 06/04/2026 ***** Full-System Verification and Documentation
+I fixed remaining integration issues discovered during full-system checks, especially backend/frontend contract alignment and predictable runtime behavior. I completed a final report editing pass to refine technical wording and improve evidence traceability.
+
+***** 07/04/2026 ***** Final Consolidation and Submission Readiness
+I completed and finalized the demo video for submission, ensuring the walkthrough covers the full implemented feature flow clearly and in the correct order.
 

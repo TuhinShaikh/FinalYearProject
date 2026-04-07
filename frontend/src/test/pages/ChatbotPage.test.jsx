@@ -10,14 +10,14 @@ vi.mock('../../components/ChatWidget', () => ({
 
 // Chat page tests validate visible guidance and quick-link navigation text.
 describe('ChatbotPage', () => {
-  it('renders assistant panel, prompts, and quick links', () => {
+  it('renders helper panel, prompts, and quick links', () => {
     render(
       <MemoryRouter>
         <ChatbotPage />
       </MemoryRouter>
     );
 
-    expect(screen.getByRole('heading', { name: 'Travel Copilot' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Travel Helper' })).toBeInTheDocument();
     expect(screen.getByTestId('chat-widget')).toBeInTheDocument();
     expect(screen.getByText('Plan a journey')).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Reserve parking' })).toHaveAttribute('href', '/booking');

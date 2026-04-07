@@ -29,7 +29,7 @@ public class SecurityConfig {
                 .ignoringRequestMatchers("/auth/**", "/api/auth/**", "/api/**")
             )
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/auth/**", "/api/auth/**", "/api/travel/**", "/api/trains/**", "/api/rides/**").permitAll()
+                .requestMatchers("/auth/**", "/api/auth/**", "/api/travel/**", "/api/trains/**", "/api/rides/**", "/api/admin/**").permitAll()
                 .anyRequest().authenticated()
             )
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
