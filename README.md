@@ -5,16 +5,20 @@ Frontend + backend + database project.
 ## Submitted Directory Structure
 
 ```text
-PROJECT/
-	README.md
-	docker-compose.yml
-	FinalProject/        # Spring Boot backend
-		pom.xml
-		src/
-	frontend/            # React + Vite frontend
-		package.json
-		src/
-	Documents/
+Tuhin_Shaikh.Submission/
+	Tuhin Shaikh.professional
+	Tuhin Shaikh.final
+	Tuhin Shaikh.demovideo
+	Tuhin_Shaikh.code/
+		README.md
+		docker-compose.yml
+		FinalProject/        # Spring Boot backend
+			pom.xml
+			src/
+		frontend/            # React + Vite frontend
+			package.json
+			src/
+		Documents/
 ```
 
 ## Run Locally (Simple)
