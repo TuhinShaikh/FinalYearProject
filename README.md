@@ -30,9 +30,7 @@ Royal Holloway, University of London
 
 April 07, 2026 
 
-Tottenham Hotspur Stadium Travel and Parking Assistant 
 
-Tuhin Shaikh 
 
 ## **Declaration** 
 
@@ -50,11 +48,8 @@ Signature:  TUHIN SHAIKH
 ![](Documents/report-assets/Tuhin_Shaikh.final.pdf-0002-08.png)
 
 
-2 
 
-Tottenham Hotspur Stadium Travel and Parking Assistant 
 
-Tuhin Shaikh 
 
 ## **Table of Contents** 
 
@@ -90,11 +85,8 @@ Tuhin Shaikh
 
 
 
-3 
 
-Tottenham Hotspur Stadium Travel and Parking Assistant 
 
-Tuhin Shaikh 
 
 |4.4|Testing Strategy ..................................................................................................45|
 |---|---|
@@ -112,11 +104,8 @@ Tuhin Shaikh
 
 
 
-4 
 
-Tottenham Hotspur Stadium Travel and Parking Assistant 
 
-Tuhin Shaikh 
 
 ## **Abstract** 
 
@@ -130,11 +119,8 @@ The frontend is built with React and Vite. React was selected primarily for its 
 
 Testing spans JUnit 5 and Mockito backend suites across controllers, services, models, repositories, DTOs, and security utilities, and Vitest with React Testing Library across pages, components, and context state, achieving 116 tests passing with 98% instruction coverage. This report covers technology selection rationale, architectural decisions informed by established enterprise patterns [4], security and privacy obligations aligned with OWASP [27] and PCI-DSS requirements, algorithm analysis, testing strategy, process reflection across both terms, and a transparent assessment of current limitations with a concrete improvement roadmap. 
 
-5 
 
-Tottenham Hotspur Stadium Travel and Parking Assistant 
 
-Tuhin Shaikh 
 
 ## Chapter 1: **Introduction, Background Theory, and Literature Review** 
 
@@ -152,11 +138,8 @@ The project had four primary aims. The first was to deliver a stable, working fu
 
 In terms of career relevance, this project gave me practical experience that maps directly onto fullstack and platform engineering roles. During my internship at Dojo, I worked with payment APIs 
 
-6 
 
-Tottenham Hotspur Stadium Travel and Parking Assistant 
 
-Tuhin Shaikh 
 
 and SDK integrations, and this project extended that experience significantly. Integrating Square under PCI-DSS constraints [20], implementing Server-Sent Events for live data propagation [26], building JWT-based authentication [28], and designing a relational schema with concurrency control [25] are all standard requirements in fintech and platform engineering. In addition, implementing Dijkstra [1] and A* [6] from scratch gave me applied data structures experience that is directly relevant to navigation, logistics, and optimisation roles. 
 
@@ -172,11 +155,8 @@ Several professional obligations were directly relevant to this project. The sys
 
 Payment security required some deliberate decisions on my part. I chose Square's Web SDK [20] iframe injection model so card numbers, expiry dates, and CVV values are captured and tokenised directly by Square's servers rather than passing through my application. The backend only ever receives a single-use nonce, meaning raw Primary Account Numbers never touch my server or my database. I chose this specifically because it reduces PCI-DSS [20] compliance scope substantially and removes the risk of sensitive card data ending up somewhere it should not be. 
 
-7 
 
-Tottenham Hotspur Stadium Travel and Parking Assistant 
 
-Tuhin Shaikh 
 
 ### **1.2 Background Theory: Technology Selection** 
 
@@ -196,11 +176,8 @@ Vue 3 came down to two issues. At the time of choosing, its map library ecosyste
 
 _Figure 1. Frontend technology comparison — React with Vite selected for SSE rendering efficiency, ecosystem maturity, and Vitest alignment._ 
 
-8 
 
-Tottenham Hotspur Stadium Travel and Parking Assistant 
 
-Tuhin Shaikh 
 
 #### **1.2.2 Backend Framework Comparison** 
 
@@ -218,11 +195,8 @@ Node.js with NestJS was ruled out because TypeScript's type checking only applie
 
 _Figure 2. Backend technology comparison — Spring Boot selected for type safety, security ecosystem depth, and native JPA optimistic locking._ 
 
-9 
 
-Tottenham Hotspur Stadium Travel and Parking Assistant 
 
-Tuhin Shaikh 
 
 #### **1.2.3 Database Comparison** 
 
@@ -242,11 +216,8 @@ Three architectural approaches were looked at before deciding on one.
 
 N-tier layered architecture [4] was chosen because it was the most practically justified fit for this project's structure, consistent with Fowler's (2002) argument that layered systems enforce separation of concerns in a way that makes each layer independently testable and replaceable — a property that proved directly valuable when adding the admin dashboard in Term 2 without modifying any existing controller or service class. It splits the application into layers where each one has a specific job. The controller layer deals with incoming HTTP requests and maps them to responses. The service layer is where business logic lives, features like validating a booking or processing a payment. I designed the repository layer to handle all database communication through typed JPA interfaces, keeping data access cleanly separated from everything else. The 
 
-10 
 
-Tottenham Hotspur Stadium Travel and Parking Assistant 
 
-Tuhin Shaikh 
 
 model and DTO layer defines what the data looks like internally and what gets sent back through the API. I went with this structure because it makes everything traceable, you can follow any feature from a user story straight through to an endpoint, a service method, a repository query, and a test. Spring's dependency injection also keeps things honest because a controller cannot bypass the service layer and go straight to the database. This has also enabled me to make the testing significantly easier and stops business logic from ending up somewhere it should not be. 
 
@@ -264,11 +235,8 @@ _Figure 3. Architectural paradigm comparison — N-tier layered architecture sel
 
 Six design patterns were applied throughout the codebase, each chosen to solve a specific engineering problem rather than just to tick a box. 
 
-11 
 
-Tottenham Hotspur Stadium Travel and Parking Assistant 
 
-Tuhin Shaikh 
 
 - The **Repository pattern** is used through UserRepository, BookingRepository, and ParkingSpotRepository, all of which extend JpaRepository [26]. The reason for this is that it isolates all persistence logic behind typed interfaces, which makes unit testing much cleaner since service tests can swap in Mockito mock repositories without needing a real database connection. 
 
@@ -288,11 +256,8 @@ Tuhin Shaikh
 
 _Figure 4. The Controller-Service-Repository pattern as implemented in the Spring Boot backend with real class names from the codebase._ 
 
-12 
 
-Tottenham Hotspur Stadium Travel and Parking Assistant 
 
-Tuhin Shaikh 
 
 ### **1.4 Security and Privacy** 
 
@@ -306,11 +271,8 @@ On successful authentication, JwtUtil.generateAccessToken() creates a signed HS2
 
 `// JwtUtil.java — generateAccessToken and validateToken public String generateAccessToken(String subject) { return Jwts.builder() .setSubject(subject)         // userId, not email .setIssuedAt(new Date()) .setExpiration(new Date(System.currentTimeMillis() + accessTokenExpiration)) .signWith(key, SignatureAlgorithm.HS256) .compact(); } public boolean validateToken(String token, String subject) { try { Claims claims = extractClaims(token); return claims.getSubject().equals(subject) && claims.getExpiration().after(new Date()); } catch (ExpiredJwtException ex) { return false; } }` _Code Snippet 1. JwtUtil.java — HS256 token generation using userId as subject, and expiry-aware validation used by the Spring Security filter chain._ 
 
-13 
 
-Tottenham Hotspur Stadium Travel and Parking Assistant 
 
-Tuhin Shaikh 
 
 #### **1.4.2 SQL Injection, XSS, and CORS** 
 
@@ -351,11 +313,8 @@ _Code Snippet 2. SecurityConfig.java — stateless session policy, JWT filter ch
 
 Payment card data is handled entirely through the Square Web SDK [20], which injects a sandboxed iframe into the frontend checkout form. Card numbers, expiry dates, and CVV values entered by the user are captured and tokenised by Square's servers, returning a single-use nonce 
 
-14 
 
-Tottenham Hotspur Stadium Travel and Parking Assistant 
 
-Tuhin Shaikh 
 
 (called sourceId in the codebase). Only this nonce and the amount in pence are sent from the React frontend to POST /payments. 
 
@@ -377,11 +336,8 @@ Data minimisation principles were applied throughout the system. No location tra
 
 This design supports a right-to-erasure pattern by ensuring that all dependent records are automatically removed upon user deletion that aligns with GDPR Article 17, giving users a clean exit from the system rather than leaving orphaned data behind. Full GDPR compliance, covering things like lawful basis documentation, data subject access request workflows, and a data protection impact assessment, falls outside my academic scope but is explicitly identified as a requirement before any production deployment. 
 
-15 
 
-Tottenham Hotspur Stadium Travel and Parking Assistant 
 
-Tuhin Shaikh 
 
 
 ![](Documents/report-assets/Tuhin_Shaikh.final.pdf-0016-02.png)
@@ -399,11 +355,8 @@ On the frontend, the React project was set up with Vite and the React template, 
 
 Moreover, the first complete vertical slice built was user registration, login, JWT issuance, and an authenticated GET request to the bookings endpoint. This was fully validated before any other feature work started, because this one slice touched every layer of the system. Getting this working first meant that CORS configuration, JWT filter ordering, and React Router navigation were all 
 
-16 
 
-Tottenham Hotspur Stadium Travel and Parking Assistant 
 
-Tuhin Shaikh 
 
 confirmed to be correctly integrated before anything else was built on top of them. This sequencing reduced early-stage uncertainty and enabled a more stable and predictable development process. 
 
@@ -425,11 +378,8 @@ JustPark, ParkingEye, and RingGo all cover slot discovery, reservation, and paym
 
 Moreover, the problem in a matchday context is that they have no awareness of transport at all. A fan who completes a JustPark booking has no way of knowing within that same app whether their planned route to the car park is still viable if a TfL disruption happens after payment has gone through [21]. There is nothing to prompt the user to consider ride alternatives if a line suspension suddenly makes driving the only realistic option. The parking decision and the transport decision live in completely separate information environments, so every time something changes the fan has 
 
-17 
 
-Tottenham Hotspur Stadium Travel and Parking Assistant 
 
-Tuhin Shaikh 
 
 to manually switch between apps to reassess their plan. That kind of reactive switching is exactly what creates stress on matchday when time is short and conditions are changing quickly. 
 
@@ -447,11 +397,8 @@ Where they fall short is that their scope is very narrow. They only address the 
 
 _Figure 6. Feature comparison between this project and comparable existing systems — integration across all domains is the primary contribution._ 
 
-18 
 
-Tottenham Hotspur Stadium Travel and Parking Assistant 
 
-Tuhin Shaikh 
 
 ### **1.7 Features Delivered, Limitations, and Planned Improvements** 
 
@@ -489,11 +436,8 @@ The SecurityConfig CSRF configuration currently uses ignoringRequestMatchers on 
 
 Finally, the Load testing under realistic stadium-scale concurrent booking traffic has not been carried out, so while the optimistic locking and SSE architecture provide correctness guarantees, the actual performance bounds under heavy load have not been measured. 
 
-19 
 
-Tottenham Hotspur Stadium Travel and Parking Assistant 
 
-Tuhin Shaikh 
 
 #### **1.7.3  Planned Improvements** 
 
@@ -505,11 +449,8 @@ In the long run there are several directions I would like to take this project i
 
 Push notifications for departure reminders and booking confirmations would also add real practical value, since a fan who booked parking two hours before kick-off benefits from a timely reminder rather than having to remember to check the app themselves. On the accessibility side I would want to go further than the current controls by introducing a simplified language mode and dyslexia friendly font options, because the current implementation covers visual preferences well but cognitive accessibility is an area that deserves more attention. 
 
-20 
 
-Tottenham Hotspur Stadium Travel and Parking Assistant 
 
-Tuhin Shaikh 
 
 ## Chapter 2: **Web Application Features and User Stories** 
 
@@ -539,11 +480,8 @@ Table 2.1 presents all 22 user stories with actor, need, priority, and completio
 
 The reason for covering all 22 rather than a smaller subset comes down to how the application is structured. With eight feature domains and multiple distinct user facing behaviours within each 
 
-21 
 
-Tottenham Hotspur Stadium Travel and Parking Assistant 
 
-Tuhin Shaikh 
 
 one, collapsing them into fewer stories would have meant losing the granularity needed to write meaningful acceptance criteria. Each story represents a behaviour that a user can actually observe and interact with, so keeping them separate made testing and validation much more straightforward. 
 
@@ -558,11 +496,8 @@ one, collapsing them into fewer stories would have meant losing the granularity 
 
 
 
-22 
 
-Tottenham Hotspur Stadium Travel and Parking Assistant 
 
-Tuhin Shaikh 
 
 |**ID**|**Actor**|**Need**|**Priority**|**Status**|
 |---|---|---|---|---|
@@ -576,11 +511,8 @@ Tuhin Shaikh
 
 
 
-23 
 
-Tottenham Hotspur Stadium Travel and Parking Assistant 
 
-Tuhin Shaikh 
 
 |**ID**|**Actor**|**Need**|**Priority**|**Status**|
 |---|---|---|---|---|
@@ -594,11 +526,8 @@ Tuhin Shaikh
 
 
 
-24 
 
-Tottenham Hotspur Stadium Travel and Parking Assistant 
 
-Tuhin Shaikh 
 
 |**ID**|**Actor**|**Need**|**Priority**|**Status**|
 |---|---|---|---|---|
@@ -621,11 +550,8 @@ Requirements came from mapping the full matchday user journey from start to fini
 
 Three things shaped what made it into scope. First, how critical the feature was to the core journey. Second, dependency order, auth had to work before booking could be built, and booking had to work before payment made sense to tackle. Third, API risk, the Cabwise integration was left until later with a fallback in place because the response structure turned out to be inconsistent, whereas TfL disambiguation was handled from day one because ambiguous station names are something 
 
-25 
 
-Tottenham Hotspur Stadium Travel and Parking Assistant 
 
-Tuhin Shaikh 
 
 you can predict will happen rather than a rare edge case. Thinking about it this way kept the work ordered and stopped less important features from eating into time that needed to go on the core ones. 
 
@@ -646,11 +572,8 @@ _Figure 7. Complete matchday user journey showing how all eight feature domains 
 
 
 
-26 
 
-Tottenham Hotspur Stadium Travel and Parking Assistant 
 
-Tuhin Shaikh 
 
 |**Attribute**|**Requirement and Implementation**|
 |---|---|
@@ -683,11 +606,8 @@ useEffect(() => {
 
 > `document.documentElement.style.setProperty("--app-font-size", `${size}px`); document.body.classList.toggle("a11y-high-contrast", settings.highContrast); document.body.classList.toggle("a11y-screen-reader", settings.screenReader);` 
 
-27 
 
-Tottenham Hotspur Stadium Travel and Parking Assistant 
 
-Tuhin Shaikh 
 
 ```
   document.body.classList.toggle("a11y-reduce-motion",
@@ -709,11 +629,8 @@ _Figure 8. AccessibilityContext propagation model — preferences flow from user
 
 Finally, the implementation maps directly to WCAG 2.1 success criteria: SC 1.4.4 for text resizing, SC 1.4.11 for non-text contrast, SC 2.3.3 for reduced motion, and Guideline 1.3 for screen reader adaptability. I have chosen to do this objective as it its persistent cross-cutting preferences rather than per-page toggles which makes accessibility an architectural property of the whole interface rather than a feature bolted onto individual pages. 
 
-28 
 
-Tottenham Hotspur Stadium Travel and Parking Assistant 
 
-Tuhin Shaikh 
 
 ## Chapter 3: **Implementation and Technical Realisation** 
 
@@ -753,11 +670,8 @@ _Code Snippet 4 AuthService.java — registration using email (not username), BC
 
 When a user registers, I built the service to check whether the email is already in use before doing anything else. If it is, a 409 conflict response goes back to the client. If not, the password gets hashed with BCrypt, the user record is saved, and a JWT is issued using the userId as the subject. Login works similarly, the service finds the user by email, checks the password matches the stored hash, updates the last login timestamp for audit purposes, and returns a token. If the email does not exist the client gets a 404, and if the password is wrong it gets a 401, so there is never an ambiguous or unhandled error response. 
 
-29 
 
-Tottenham Hotspur Stadium Travel and Parking Assistant 
 
-Tuhin Shaikh 
 
 
 ![](Documents/report-assets/Tuhin_Shaikh.final.pdf-0030-02.png)
@@ -767,11 +681,8 @@ _Figure 9. Login page showing the email/password authentication form with inline
 
 On the frontend, the login call sends the email and password to the API, checks the response for errors, and on success stores the token in localStorage. Every subsequent request that needs authentication pulls that token out and attaches it as a Bearer header automatically, so individual pages do not need to handle that themselves. 
 
-30 
 
-Tottenham Hotspur Stadium Travel and Parking Assistant 
 
-Tuhin Shaikh 
 
 
 ![](Documents/report-assets/Tuhin_Shaikh.final.pdf-0031-02.png)
@@ -802,11 +713,8 @@ disconnect
 cleanup
 ```
 
-31 
 
-Tottenham Hotspur Stadium Travel and Parking Assistant 
 
-Tuhin Shaikh 
 
 ```
     return emitter;
@@ -838,11 +746,8 @@ When a browser connects to the stream, a new emitter is created and added to a l
 
 _Figure 11. Real-time parking slot grid driven by SSE updates from GET /spots/stream, showing slot 98 selected with payment form below._ 
 
-32 
 
-Tottenham Hotspur Stadium Travel and Parking Assistant 
 
-Tuhin Shaikh 
 
 ### **3.3 Payment Processing with Square SDK** 
 
@@ -888,11 +793,8 @@ export async function pay(amountCents, sourceId) {
 
 _Code Snippet 7. api.js — pay() function posting amountCents (pence integer) and sourceId nonce to POST /payments with JWT Bearer header._ 
 
-33 
 
-Tottenham Hotspur Stadium Travel and Parking Assistant 
 
-Tuhin Shaikh 
 
 
 ![](Documents/report-assets/Tuhin_Shaikh.final.pdf-0034-02.png)
@@ -931,11 +833,8 @@ ALGORITHM);
 }
 ```
 
-34 
 
-Tottenham Hotspur Stadium Travel and Parking Assistant 
 
-Tuhin Shaikh 
 
 _Code Snippet 8. RouteService.java — Dijkstra priority-queue relaxation loop with predecessor map reconstruction. Complexity O((V+E)logV)._ 
 
@@ -953,11 +852,8 @@ ParkingPathController at GET /api/parking/path runs A* search on a 3x3 grid repr
 
 The Manhattan distance heuristic — calculated as the sum of absolute differences in x and y coordinates between a node and the goal — is the provably correct choice for this grid topology because it satisfies the admissibility condition defined by Russell and Norvig (2020): it never overestimates the true cost to reach the goal, since diagonal moves are disallowed and every step costs exactly one unit, meaning the heuristic estimate is always a lower bound on actual path cost, which guarantees A* returns an optimal solution. 
 
-35 
 
-Tottenham Hotspur Stadium Travel and Parking Assistant 
 
-Tuhin Shaikh 
 
 Admissibility is what guarantees A* finds the optimal path. The algorithm scores each node using the actual cost from the start plus the heuristic estimate to the goal, always processing the lowest scoring node next. The key advantage over Dijkstra’s algorithm is that the heuristic directs the search toward the goal, reducing unnecessary node exploration rather than expanding outward in all directions, so fewer nodes get explored on the way to the answer. 
 
@@ -991,11 +887,8 @@ _Code Snippet 9. ParkingPathController.java — A* with admissible Manhattan heu
 
 _Figure 14. Dijkstra uninformed radial expansion versus A* heuristic-directed search — the Manhattan admissible heuristic ensures optimality while exploring fewer nodes._ 
 
-36 
 
-Tottenham Hotspur Stadium Travel and Parking Assistant 
 
-Tuhin Shaikh 
 
 ### **3.6 Live Transport Status and TfL Integration** 
 
@@ -1011,11 +904,8 @@ When TfL returns multiple station matches for an ambiguous input, for example if
 
 _Figure 15. TfL Status Dashboard with conditional Leaflet map showing the London Overground route and White Hart Lane stadium marker._ 
 
-37 
 
-Tottenham Hotspur Stadium Travel and Parking Assistant 
 
-Tuhin Shaikh 
 
 ### **3.7 Data Model and Persistence** 
 
@@ -1039,11 +929,8 @@ I chose Third Normal Form because it eliminates redundant data and keeps the sch
 
 _Figure 16. Entity Relationship Diagram — five tables in 3NF with cascade delete supporting rightto-erasure and @Version columns for optimistic locking concurrency control._ 
 
-38 
 
-Tottenham Hotspur Stadium Travel and Parking Assistant 
 
-Tuhin Shaikh 
 
 ### **3.8 Term 2 Roadmap Delivery: Admin Dashboard and Containerised Deployment** 
 
@@ -1057,11 +944,8 @@ The admin role is stored as a string field on the User entity, either USER or AD
 
 _is returned._ 
 
-39 
 
-Tottenham Hotspur Stadium Travel and Parking Assistant 
 
-Tuhin Shaikh 
 
 
 ![](Documents/report-assets/Tuhin_Shaikh.final.pdf-0040-02.png)
@@ -1071,11 +955,8 @@ _Figure 17. dashboard showing aggregate metrics, recent booking transactions, an
 
 Docker containerisation was the second roadmap item. The backend uses a multi-stage Dockerfile that compiles the Spring Boot application with Maven then copies only the JAR into a slim JRE-17 runtime image, keeping the final image small and free of build tooling. The frontend builds with Node.js and serves static output through Nginx. Docker Compose orchestrates all three services, PostgreSQL, backend, and frontend, with healthcheck-gated startup ordering so nothing starts before its dependency is ready. I have chosen to do this objective as all credentials are injected as environment variables, meaning the same image runs in sandbox or production just by changing the environment configuration with no code changes or rebuilds needed. The full stack starts with a single command: docker compose up --build. 
 
-40 
 
-Tottenham Hotspur Stadium Travel and Parking Assistant 
 
-Tuhin Shaikh 
 
 ## Chapter 4: **Software Engineering Process and Quality Strategy** 
 
@@ -1095,11 +976,8 @@ External API risk meant Cabwise was staged after TfL because its response struct
 
 _Figure 18. Scope decision matrix — features prioritised by user journey impact versus implementation complexity, with out-of-scope items clearly marked. Admin Dashboard and Docker are shown as Term 2 delivered items._ 
 
-41 
 
-Tottenham Hotspur Stadium Travel and Parking Assistant 
 
-Tuhin Shaikh 
 
 ### **4.2 Architectural Design** 
 
@@ -1113,11 +991,8 @@ The frontend follows the same logic. Router.jsx defines routes, page components 
 
 _Figure 19. Complete layered architecture with all named controller, service, and repository classes from the real codebase including Term 2 additions (AdminController, AdminService, AdminAuthorizationService)._ 
 
-42 
 
-Tottenham Hotspur Stadium Travel and Parking Assistant 
 
-Tuhin Shaikh 
 
 
 ![](Documents/report-assets/Tuhin_Shaikh.final.pdf-0043-02.png)
@@ -1137,11 +1012,8 @@ An iterative incremental approach was chosen instead. Features are built as comp
 
 
 
-43 
 
-Tottenham Hotspur Stadium Travel and Parking Assistant 
 
-Tuhin Shaikh 
 
 |**Methodology**|**Integration Risk**|**Single-Dev Fit**|**API-Risk Handling**|**Selected**|
 |---|---|---|---|---|
@@ -1162,11 +1034,8 @@ Version control used a Git feature branch workflow on GitHub with branches named
 
 _Figure 21. Development timeline Gantt chart derived from diary.md, showing iterative delivery across both terms. Admin Dashboard and Docker Compose are shown as completed Term 2 deliverables (dark green)._ 
 
-44 
 
-Tottenham Hotspur Stadium Travel and Parking Assistant 
 
-Tuhin Shaikh 
 
 I made sure each vertical slice followed the same interna pattern: backend endpoint and service implementation, then repository and integration tests, then frontend page development, then frontend component tests. Doing it this way meant completed features were always tested and working rather than partially built and left to be validated later. 
 
@@ -1189,11 +1058,8 @@ The backend test suite uses JUnit 5 and Mockito with H2 in-memory database for r
 
 _Table 4. Backend and frontend test categories with example classes and validation scope._ 
 
-45 
 
-Tottenham Hotspur Stadium Travel and Parking Assistant 
 
-Tuhin Shaikh 
 
 
 ![](Documents/report-assets/Tuhin_Shaikh.final.pdf-0046-02.png)
@@ -1213,11 +1079,8 @@ Frontend testing uses Vitest, React Testing Library, and jsdom. API calls are mo
 
 _Figure 23. Frontend test run output with Vitest and V8 coverage across page, component, and context test files including admin page tests._ 
 
-46 
 
-Tottenham Hotspur Stadium Travel and Parking Assistant 
 
-Tuhin Shaikh 
 
 #### **4.4.3 Integration Testing** 
 
@@ -1243,11 +1106,8 @@ The main scaling limitation is the SSE architecture. Parking updates published o
 
 The Docker Compose setup from Term 2 is an initial step toward production deployment. Environment-variable-based configuration allows the same image to run in sandbox or production with only configuration changes. Next steps include a GitHub Actions CI/CD pipeline to automate testing and image builds, Spring Boot Actuator exposing a /health endpoint for load balancer checks, and Grafana dashboards for observability. 
 
-47 
 
-Tottenham Hotspur Stadium Travel and Parking Assistant 
 
-Tuhin Shaikh 
 
 ## Chapter 5: **Critical Analysis, Reflection, and Future Improvements** 
 
@@ -1269,11 +1129,8 @@ The route graph is also a limitation I need to be transparent about. The Dijkstr
 
 The SecurityConfig CSRF configuration uses ignoringRequestMatchers on /api/** which is broader than it needs to be, and the dual-prefix AuthController mapping adds unnecessary surface area. Both are near-term improvement actions I have identified in the roadmap. The absence of a 
 
-48 
 
-Tottenham Hotspur Stadium Travel and Parking Assistant 
 
-Tuhin Shaikh 
 
 refresh token is the most user-facing limitation. When the JWT expires the user has to reauthenticate, which in a matchday scenario where a fan spends several hours at the stadium could mean an inconvenient mid-session re-login. That is the highest priority near-term fix. 
 
@@ -1291,11 +1148,8 @@ The most impactful near-term change would be replacing the demonstration route g
 
 Cloud deployment on AWS or Render would be the natural next step, building directly on the Docker containerisation already in place. JMeter load testing would follow to empirically measure how the system behaves under simulated stadium-scale booking surges, since the optimistic locking and SSE architecture provide correctness guarantees in theory but the actual performance bounds under hundreds of simultaneous attempts have not been measured. I would also strengthen admin role enforcement by embedding the role claim directly in the JWT payload and validating it 
 
-49 
 
-Tottenham Hotspur Stadium Travel and Parking Assistant 
 
-Tuhin Shaikh 
 
 through Spring Security @PreAuthorize, replacing the current X-Admin-Email header approach which works for demonstration but is less robust. 
 
@@ -1315,11 +1169,8 @@ The third aim of integrating external services responsibly was partially achieve
 
 The fourth aim of treating accessibility as a first-class engineering obligation was fully achieved. AccessibilityContext delivers five persistent preferences across every page in the application without resetting on navigation. The Lighthouse audit returned 98/100 for accessibility and 100/100 for best practices. The step-free preference has real functional consequences on TfL route recommendations rather than being a cosmetic toggle, which demonstrates that accessibility was built into the system architecture rather than added as an afterthought. 
 
-50 
 
-Tottenham Hotspur Stadium Travel and Parking Assistant 
 
-Tuhin Shaikh 
 
 ## Chapter 6: **Conclusion** 
 
@@ -1331,11 +1182,8 @@ The project demonstrates that practical value and academic rigour are not mutual
 
 In conclusion, the skills developed across this project—backend architecture, React SPA development, JWT security, real-time event streaming, payment SDK integration, graph algorithm implementation, relational database design, role-based access control, and containerised deployment—are directly applicable to full-stack and platform engineering roles. Remaining gaps—demonstration route graphs, absent refresh tokens, permissive CSRF configuration, and lack of cloud deployment—are acknowledged with a concrete improvement roadmap rather than obscured, reflecting the BCS Code of Conduct principle that professional engineers represent system capabilities and limitations accurately to stakeholders. 
 
-51 
 
-Tottenham Hotspur Stadium Travel and Parking Assistant 
 
-Tuhin Shaikh 
 
 ## **Bibliography** 
 
@@ -1377,11 +1225,8 @@ Tuhin Shaikh
 
 - [19] Spring Security (2025) _Spring Security Reference Documentation_ . Available at: https://docs.spring.io/spring-security/reference/ 
 
-52 
 
-Tottenham Hotspur Stadium Travel and Parking Assistant 
 
-Tuhin Shaikh 
 
 [20] Square Developer (2025) _Square Payments API and Web SDK Documentation_ . Available at: https://developer.squareup.com/docs 
 
@@ -1403,11 +1248,8 @@ Tuhin Shaikh
 
 [29] British Computer Society (2022) _BCS Code of Conduct_ . Available at: https://www.bcs.org/membership-and-registrations/become-a-member/bcs-code-of-conduct/ 
 
-53 
 
-Tottenham Hotspur Stadium Travel and Parking Assistant 
 
-Tuhin Shaikh 
 
 ## **Appendix A: User Manual** 
 
@@ -1425,11 +1267,8 @@ Go to /register from the home screen. Fill in your full name, email address, and
 
 Figure 25. Registration page showing the name, email, and password fields 
 
-54 
 
-Tottenham Hotspur Stadium Travel and Parking Assistant 
 
-Tuhin Shaikh 
 
 #### **1.2  Logging In** 
 
@@ -1445,11 +1284,8 @@ _Figure 26. Login page showing the email and password fields_
 
 If you have been given a Season or Member ID, enter it in the Season/Member ID field on the login page and click the access button. Codes 2005 or 2025 will take you directly to the Admin Dashboard. 
 
-55 
 
-Tottenham Hotspur Stadium Travel and Parking Assistant 
 
-Tuhin Shaikh 
 
 ### **SECTION 2  —  Booking Parking** 
 
@@ -1467,11 +1303,8 @@ _Figure 27. Parking grid showing available slots and weather_
 
 Use the filter controls above the grid to narrow down what you can see — available only, occupied only, or reserved only. This is useful during busy matchday periods when scanning the whole grid manually is not practical. Click any green slot to select it. The slot highlights and a payment panel appears below showing the slot number and price. Occupied and reserved slots cannot be clicked. 
 
-56 
 
-Tottenham Hotspur Stadium Travel and Parking Assistant 
 
-Tuhin Shaikh 
 
 
 ![](Documents/report-assets/Tuhin_Shaikh.final.pdf-0057-02.png)
@@ -1493,11 +1326,8 @@ Once a slot is selected, the Square payment form appears below the grid. Card de
 
 - A success message confirms the booking. The slot turns red in every connected user's grid within around 500 milliseconds. 
 
-57 
 
-Tottenham Hotspur Stadium Travel and Parking Assistant 
 
-Tuhin Shaikh 
 
 
 ![](Documents/report-assets/Tuhin_Shaikh.final.pdf-0058-02.png)
@@ -1519,11 +1349,8 @@ Go to /status to see the current status of all TfL lines. Each line has a badge 
 
 Click Show Map to open an interactive Leaflet map centred on White Hart Lane, showing the London Overground route and the stadium marker. 
 
-58 
 
-Tottenham Hotspur Stadium Travel and Parking Assistant 
 
-Tuhin Shaikh 
 
 
 ![](Documents/report-assets/Tuhin_Shaikh.final.pdf-0059-02.png)
@@ -1547,11 +1374,8 @@ Go to /transport for the journey planner. Enter your origin and destination and 
 
 You can also click Add & Go to TfL to open the TfL Journey Planner website with your query already filled in. 
 
-59 
 
-Tottenham Hotspur Stadium Travel and Parking Assistant 
 
-Tuhin Shaikh 
 
 
 ![](Documents/report-assets/Tuhin_Shaikh.final.pdf-0060-02.png)
@@ -1569,11 +1393,8 @@ Go to /rides to see nearby ride options pulled from the Cabwise API. This page i
 
 The page loads nearby operators automatically. Each card shows the operator name, vehicle type, and estimated availability. If the Cabwise API is not available, clearly labelled fallback cards are shown with an explanatory banner so it is always obvious when live data is not being used. 
 
-60 
 
-Tottenham Hotspur Stadium Travel and Parking Assistant 
 
-Tuhin Shaikh 
 
 
 ![](Documents/report-assets/Tuhin_Shaikh.final.pdf-0061-02.png)
@@ -1593,11 +1414,8 @@ Go to /accessibility to adjust your preferences. Every setting persists across a
 
 
 
-61 
 
-Tottenham Hotspur Stadium Travel and Parking Assistant 
 
-Tuhin Shaikh 
 
 **Reduced Motion** Minimises animations and transitions for users sensitive to movement effects **Step-Free** Passes a step-free routing flag to TfL journey planning to filter for **Preference** accessible routes 
 
@@ -1611,11 +1429,8 @@ _Figure 33. Accessibility settings page showing font size controls, high contras
 
 Go to /assistant to use the keyword-driven chat interface. Type a question or click one of the prompt starters and the assistant will point you to the right part of the application with a quick navigation link. 
 
-62 
 
-Tottenham Hotspur Stadium Travel and Parking Assistant 
 
-Tuhin Shaikh 
 
 
 ![](Documents/report-assets/Tuhin_Shaikh.final.pdf-0063-02.png)
@@ -1633,11 +1448,8 @@ The dashboard shows total registered users, total bookings, total revenue, and p
 
 - Enter a registered user's email address in the Promote User field and click Promote to ADMIN. The user will have admin access on their next login. 
 
-63 
 
-Tottenham Hotspur Stadium Travel and Parking Assistant 
 
-Tuhin Shaikh 
 
 
 ![](Documents/report-assets/Tuhin_Shaikh.final.pdf-0064-02.png)
@@ -1645,11 +1457,8 @@ Tuhin Shaikh
 
 _Figure 35. Admin dashboard showing section open/close controls and the user promotion field_ 
 
-64 
 
-Tottenham Hotspur Stadium Travel and Parking Assistant 
 
-Tuhin Shaikh 
 
 ## **Appendix B: Installation Manual** 
 
@@ -1682,11 +1491,8 @@ This covers the full installation process. Two methods are provided — Docker C
 
 
 
-65 
 
-Tottenham Hotspur Stadium Travel and Parking Assistant 
 
-Tuhin Shaikh 
 
 #### **1.3  API Credentials Required** 
 
@@ -1742,11 +1548,8 @@ GRANT ALL PRIVILEGES ON DATABASE spurs_db TO spurs_user;
 \q
 ```
 
-66 
 
-Tottenham Hotspur Stadium Travel and Parking Assistant 
 
-Tuhin Shaikh 
 
 #### **Step 5 — Clone the Repository** 
 
@@ -1805,11 +1608,8 @@ Once startup is open:
 
 **Service URL Frontend** http://localhost:5173 
 
-67 
 
-Tottenham Hotspur Stadium Travel and Parking Assistant 
 
-Tuhin Shaikh 
 
 **Backend API** http://localhost:8080 **Database** localhost:5432 (internal) 
 
@@ -1860,11 +1660,8 @@ npm run coverage
 # Expected: 49 tests passing
 ```
 
-68 
 
-Tottenham Hotspur Stadium Travel and Parking Assistant 
 
-Tuhin Shaikh 
 
 ### **SECTION 6  —  Troubleshooting** 
 
