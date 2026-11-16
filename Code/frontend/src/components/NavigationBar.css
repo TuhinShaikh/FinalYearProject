@@ -1,0 +1,36 @@
+/* I keep fallback/legacy navbar styles here for alternate layouts. */
+.navbar {
+  /* Fixed nav variant for pages that need always-visible top navigation. */
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 60px;
+  background-color: #001489; /* Spurs navy blue */
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 40px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  z-index: 1000;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.navbar-logo {
+  font-size: 20px;
+  font-weight: 600;
+  color: white;
+}
+
+.navbar-links a {
+  /* Minimal link style keeps visual hierarchy calm in compact nav bars. */
+  margin-left: 30px;
+  color: white;
+  text-decoration: none;
+  font-size: 16px;
+  transition: color 0.2s ease;
+}
+
+.navbar-links a:hover {
+  color: #c0c0c0; /* subtle silver hover */
+}
