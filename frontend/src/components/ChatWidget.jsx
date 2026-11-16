@@ -253,10 +253,10 @@ function extractJourneyPlaces(normalized) {
   return null;
 }
 
-function generateAssistantResponse(message, stationZones) {
+function generateTravelResponse(message, stationZones) {
   const normalized = message?.toLowerCase() ?? "";
   if (isTriggered(normalized, greetingTriggers)) {
-    return "Hey! I'm the Travel Copilot—you can ask for journey planning, live status, or parking tips and I will help you find the right page.";
+    return "Hey! I'm the Travel Helper-you can ask for journey planning, live status, or parking tips and I will help you find the right page.";
   }
   if (isTriggered(normalized, appreciationTriggers)) {
     return "Happy to help! Whenever you're ready, just send another question.";
@@ -410,7 +410,7 @@ export default function ChatWidget() {
   };
 
   const sendMessage = async (text) => {
-    // Main chat pipeline: append user message, get assistant response, append bot output.
+    // Main chat pipeline: append user message, get response, append bot output.
     const trimmed = text?.trim();
     if (!trimmed) return;
 
@@ -419,11 +419,11 @@ export default function ChatWidget() {
     setDraft("");
     setLoading(true);
 
-    const assistantMessage = await new Promise((resolve) =>
-      setTimeout(() => resolve(generateAssistantResponse(trimmed, stationZones)), 450)
+    const botMessage = await new Promise((resolve) =>
+      setTimeout(() => resolve(generateTravelResponse(trimmed, stationZones)), 450)
     );
 
-    setMessages((prev) => [...prev, { id: nextMessageId("bot"), sender: "bot", text: assistantMessage }]);
+    setMessages((prev) => [...prev, { id: nextMessageId("bot"), sender: "bot", text: botMessage }]);
     setLoading(false);
   };
 
@@ -442,7 +442,7 @@ export default function ChatWidget() {
   return (
     <div className="chat-widget" aria-live="polite">
       <header className="chat-widget__header">
-        <strong>Travel Copilot</strong>
+        <strong>Travel Helper</strong>
         <button
           className="chat-widget__close"
           aria-label="Toggle helper"
@@ -454,7 +454,7 @@ export default function ChatWidget() {
 
       {disclaimerVisible && (
         <p className="chat-widget__disclaimer">
-          This assistant works entirely on your device and references the same TfL planner you already use on this page.
+          This helper works entirely on your device and references the same TfL planner you already use on this page.
         </p>
       )}
 

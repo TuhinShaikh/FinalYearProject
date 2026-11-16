@@ -1,5 +1,5 @@
 import React from "react";
-import { Routes, Route, Link, useLocation } from "react-router-dom";
+import { Routes, Route, Link, useLocation, Navigate } from "react-router-dom";
 import "./App.css";
 
 // Pages
@@ -12,12 +12,14 @@ import StatusPage from "./pages/StatusPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterUser from "./pages/RegisterUser";
 import ChatbotPage from "./pages/ChatbotPage";
+import AdminDashboardPage from "./pages/AdminDashboardPage";
 
 // I use App as the top-level shell that switches between landing mode and full in-app navigation.
 
 export default function App() {
   const location = useLocation();
   const isLoginPage = location.pathname === "/";
+  const hasAdminAccess = localStorage.getItem("adminAccessGranted") === "true";
 
   return (
     <div className="app">
@@ -54,16 +56,21 @@ export default function App() {
                 alt="Tottenham Hotspur"
                 className="navbar-logo"
               />
-              <span className="sr-only">Tottenham Hotspur Travel Assistant</span>
+              <span className="sr-only">Tottenham Hotspur Travel Planner</span>
             </Link>
             <div className="navbar-links">
               <Link to="/booking">
                 {/* I keep this first because parking is the primary user action before travel. */}
                 <button className="nav-pill">Book Parking</button>
               </Link>
-              <Link to="/assistant">
-                <button className="nav-pill">Copilot</button>
+              <Link to="/help">
+                <button className="nav-pill">Helper</button>
               </Link>
+              {hasAdminAccess && (
+                <Link to="/admin">
+                  <button className="nav-pill">Admin</button>
+                </Link>
+              )}
               <Link to="/rides">
                 <button className="nav-pill">Taxi</button>
               </Link>
@@ -95,7 +102,7 @@ export default function App() {
                         alt="Tottenham Hotspur Logo"
                       />
 
-                      <p className="home-logo-copy">Tottenham Hotspur Travel Assistant</p>
+                      <p className="home-logo-copy">Tottenham Hotspur Travel Planner</p>
 
                       <p className="home-logo-copy">
                         Plan your journey, book parking, check TfL status and more.
@@ -119,7 +126,8 @@ export default function App() {
 
               {/* Real TfL status dashboard */}
               <Route path="/status" element={<StatusPage />} />
-              <Route path="/assistant" element={<ChatbotPage />} />
+              <Route path="/help" element={<ChatbotPage />} />
+              <Route path="/admin" element={hasAdminAccess ? <AdminDashboardPage /> : <Navigate to="/login" replace />} />
             </Routes>
           </div>
         </>

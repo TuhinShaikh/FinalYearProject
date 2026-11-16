@@ -1,0 +1,42 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: finalproject-db
+    environment:
+      POSTGRES_DB: finalproject
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: ./FinalProject
+      dockerfile: Dockerfile
+    container_name: finalproject-backend
+    depends_on:
+      - db
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: finalproject
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      JWT_SECRET: dev-only-change-me-to-a-32-byte-secret
+      CORS_ALLOWED_ORIGINS: http://localhost:5173,http://localhost
+      SQUARE_ACCESS_TOKEN: set-in-env-for-local-and-ci
+    ports:
+      - "8080:8080"
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: finalproject-frontend
+    depends_on:
+      - backend
+    ports:
+      - "5173:80"
+
+volumes:
+  postgres_data:

@@ -59,7 +59,7 @@ describe('App routes', () => {
       ['/register', 'RegisterUser'],
       ['/travel', 'TravelPlanner'],
       ['/status', 'StatusPage'],
-      ['/assistant', 'ChatbotPage'],
+      ['/help', 'ChatbotPage'],
     ];
 
     routeExpectations.forEach(([route, expectedText]) => {

@@ -1,0 +1,20 @@
+# Dependencies and build output
+**/node_modules/
+**/target/
+**/.venv/
+**/dist/
+**/build/
+
+# Local configuration and secrets
+**/.env
+**/.env.*
+!.env.example
+**/*.pem
+**/*.key
+
+# IDE and OS files
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db
