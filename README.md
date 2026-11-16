@@ -24,10 +24,6 @@ A report submitted in part fulfilment of the degree of
 ![](Documents/report-assets/Tuhin_Shaikh.final.pdf-0001-08.png)
 
 
-Department of Computer Science 
-
-Royal Holloway, University of London 
-
 April 07, 2026 
 
 
@@ -40,9 +36,7 @@ Word Count: 14971
 
 Student Name: Tuhin Shaikh 
 
-Date of Submission: 06/04/2026 
-
-Signature:  TUHIN SHAIKH 
+Date of Submission: 06/04/2026
 
 
 ![](Documents/report-assets/Tuhin_Shaikh.final.pdf-0002-08.png)
